@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+  @page {
+    size: A4;
+    /* size: 210mm 297mm; */
+    margin: 5mm;
+    overflow: hidden;
+  }
+
+  html {
+    zoom: 0.55;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    width: calc(100% - 10mm);
+    padding: 5mm;
+    background-color: #fff;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  td {
+    padding: 1;
+  }
+
+  table table {
+    border-collapse: collapse;
+    border-left: 1px solid #333;
+    border-top: 1px solid #333;
+  }
+
+  table table td {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 1mm;
+    vertical-align: middle;
+  }
+
+  .logo_image {
+    max-width: calc(100% - 4mm);
+    max-height: 20mm;
+    margin: 0 3mm;
+  }
+
+  .laxmi_image {
+    max-width: calc(100% - 2mm);
+    max-height: 25mm;
+    margin: 0 3mm;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .noBdr-right {
+    border-right: 0;
+  }
+
+  .vAlignTop {
+    vertical-align: top;
+  }
+
+  .vAlignBtm {
+    vertical-align: bottom;
+  }
+
+  .noBdrBtm {
+    border-bottom: 0;
+  }
+
+  .content-body {
+    margin: 0.5mm 0;
+  }
+
+  .checkbox {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-bottom: 2mm;
+    margin-right: 5mm;
+    margin-left: 1mm;
+    position: relative;
+  }
+
+  .checkbox img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .copy_label {
+    background-color: #ccc;
+    display: inline-block;
+    margin-left: 10mm;
+    padding: 1mm 2mm;
+    margin-top: 1mm;
+    margin-bottom: 2mm;
+  }
+
+  .small {
+    font-size: 7pt;
+  }
+
+  .small-1 {
+    font-size: 10pt;
+  }
+
+  .noBdr {
+    border: 0 !important;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .mb1 {
+    margin-bottom: 5mm;
+  }
+
+  .mt1 {
+    margin-top: 2mm;
+  }
+
+  .noBdrTop {
+    border-top: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .footer_gst {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-left: 3mm;
+  }
+
+  .smaller {
+    font-size: 8pt;
+  }
+
+  .dashed {
+    border: 1px dashed black;
+    height: 1px;
+    margin: 5mm 0;
+  }
+</style>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lorry Receipt</title>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.8.0/dist/JsBarcode.all.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      JsBarcode("#barcode", "{{{info.lrNo}}}", {
+        width: 1,
+        height: 30,
+        displayValue: true,
+        fontSize: 13
+      });
+      JsBarcode("#barcode1", "{{{info.lrNo}}}", {
+        width: 1,
+        height: 30,
+        displayValue: true, fontSize: 13
+
+      });
+      JsBarcode("#barcode2", "{{{info.lrNo}}}", {
+        width: 1,
+        height: 30,
+        displayValue: true, fontSize: 13
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <table>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td width="15%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
+            </td>
+            <td width="45%" rowspan="3" class="noBdrBtm">
+              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <p class="small-1">
+                स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
+                ता. हवेली, जि. पुणे
+              </p>
+              <p class="small-1">
+                सर्वे नं. २३/२४ जाधव वेअर हाऊसिंग, जाधव वस्ती, प्रियांका नगरी,
+                नगर रोड, वाघोली, (पुणे)
+              </p>
+            </td>
+            <td width="10%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="laxmi_image" />
+            </td>
+            <td width="15%">
+              <canvas id="barcode"></canvas>
+            </td>
+            <td width="15%">Date: {{info.lr.date}}</td>
+          </tr>
+          <tr>
+            <td colspan="2">From: {{info.lr.from}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" class="noBdrBtm">To: {{info.lr.to}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
+            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="center">E-Way Bill no.</td>
+          </tr>
+          <tr>
+            <td class="noBdr-right noBdrBtm">
+              Consignee: {{info.consignee.name}}
+            </td>
+            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="center">No. of Pkg.</td>
+            <td class="center">Description (Said to Content)</td>
+            <td class="center">Invoice No</td>
+            <td class="center">Weight</td>
+            <td class="center">Charge Weight</td>
+            <td>Freight</td>
+            <td class="right">{{info.lr.totalFreight}}</td>
+          </tr>
+          <tr>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{articleNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{article}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{info.lr.invoiceNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{weight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{chargeWeight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td>Door delivery</td>
+            <td class="right">{{info.lr.deliveryCharges}}</td>
+          </tr>
+          <tr>
+            <td>Hamali</td>
+            <td class="right">{{info.lr.hamali}}</td>
+          </tr>
+          <tr>
+            <td>Bilty charges</td>
+            <td class="right"></td>
+          </tr>
+          <tr>
+            <td>Other</td>
+            <td class="right">{{info.lr.lrCharges}}</td>
+          </tr>
+          <tr>
+            <td class="center">{{info.totalArticles}}</td>
+            <td colspan="2"></td>
+            <td class="center">{{info.totalWeight}}</td>
+            <td class="center">{{info.totalChargeWeight}}</td>
+            <td>Total</td>
+            <td class="right">{{info.lr.total}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="noBdrTop">
+          <tr>
+            <td style="padding: 9px;">
+              <div>
+                PAID
+                <div class="checkbox">
+                  {{#info.isPaid}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isPaid}} {{^info.isPaid}}
+                  <img src="{{{info.unchecked}}}" alt="Jai Santoshi Maa" />
+                  {{/info.isPaid}}
+                </div>
+                TO PAY
+                <div class="checkbox">
+                  {{#info.isToPay}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isToPay}} {{^info.isToPay}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isToPay}}
+                </div>
+                BILLING
+                <div class="checkbox">
+                  {{#info.isTBB}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isTBB}} {{^info.isTBB}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isTBB}}
+                </div>
+                <div class="copy_label">CONSIGNOR COPY</div>
+              </div>
+              <div>
+                <p class="small">
+                  काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
+                  <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                </p>
+                <p class="small">
+                  मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी
+                  करावी. अन्यथा आमची जबाबदारी नाही.
+                </p>
+              </div>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+              <p>माल स्वीकारणार्‍याची सही</p>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+              <p>जय संतोषी माँ ट्रान्सपोर्ट करिता</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <hr class="dashed" />
+  <table>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td width="15%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
+            </td>
+            <td width="45%" rowspan="3" class="noBdrBtm">
+              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <p class="small-1">
+                स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
+                ता. हवेली, जि. पुणे
+              </p>
+              <p class="small-1">
+                सर्वे नं. २३/२४ जाधव वेअर हाऊसिंग, जाधव वस्ती, प्रियांका नगरी,
+                नगर रोड, वाघोली, (पुणे)
+              </p>
+            </td>
+            <td width="10%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="laxmi_image" />
+            </td>
+            <td width="15%"> <canvas id="barcode1"></canvas></td>
+            <td width="15%">Date: {{info.lr.date}}</td>
+          </tr>
+          <tr>
+            <td colspan="2">From: {{info.lr.from}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" class="noBdrBtm">To: {{info.lr.to}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
+            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="center">E-Way Bill no.</td>
+          </tr>
+          <tr>
+            <td class="noBdr-right noBdrBtm">
+              Consignee: {{info.consignee.name}}
+            </td>
+            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="center">No. of Pkg.</td>
+            <td class="center">Description (Said to Content)</td>
+            <td class="center">Invoice No</td>
+            <td class="center">Weight</td>
+            <td class="center">Charge Weight</td>
+            <td>Freight</td>
+            <td class="right">{{info.lr.totalFreight}}</td>
+          </tr>
+          <tr>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{articleNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{article}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{info.lr.invoiceNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{weight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{chargeWeight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td>Door delivery</td>
+            <td class="right">{{info.lr.deliveryCharges}}</td>
+          </tr>
+          <tr>
+            <td>Hamali</td>
+            <td class="right">{{info.lr.hamali}}</td>
+          </tr>
+          <tr>
+            <td>Bilty charges</td>
+            <td class="right"></td>
+          </tr>
+          <tr>
+            <td>Other</td>
+            <td class="right">{{info.lr.lrCharges}}</td>
+          </tr>
+          <tr>
+            <td class="center">{{info.totalArticles}}</td>
+            <td colspan="2"></td>
+            <td class="center">{{info.totalWeight}}</td>
+            <td class="center">{{info.totalChargeWeight}}</td>
+            <td>Total</td>
+            <td class="right">{{info.lr.total}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="noBdrTop">
+          <tr>
+            <td style="padding: 9px;">
+              <div>
+                PAID
+                <div class="checkbox">
+                  {{#info.isPaid}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isPaid}} {{^info.isPaid}}
+                  <img src="{{{info.unchecked}}}" alt="Jai Santoshi Maa" />
+                  {{/info.isPaid}}
+                </div>
+                TO PAY
+                <div class="checkbox">
+                  {{#info.isToPay}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isToPay}} {{^info.isToPay}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isToPay}}
+                </div>
+                BILLING
+                <div class="checkbox">
+                  {{#info.isTBB}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isTBB}} {{^info.isTBB}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isTBB}}
+                </div>
+                <div class="copy_label">CONSIGNEE COPY</div>
+              </div>
+              <div>
+                <p class="small">
+                  काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
+                  <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                </p>
+                <p class="small">
+                  मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी
+                  करावी. अन्यथा आमची जबाबदारी नाही.
+                </p>
+              </div>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+              <p>माल स्वीकारणार्‍याची सही</p>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+              <p>जय संतोषी माँ ट्रान्सपोर्ट करिता</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <hr class="dashed" />
+  <table>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td width="15%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
+            </td>
+            <td width="45%" rowspan="3" class="noBdrBtm">
+              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <p class="small-1">
+                स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
+                ता. हवेली, जि. पुणे
+              </p>
+              <p class="small-1">
+                सर्वे नं. २३/२४ जाधव वेअर हाऊसिंग, जाधव वस्ती, प्रियांका नगरी,
+                नगर रोड, वाघोली, (पुणे)
+              </p>
+            </td>
+            <td width="10%" rowspan="3" style="padding: 0" class="center noBdrBtm">
+              <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="laxmi_image" />
+            </td>
+            <td width="15%"> <canvas id="barcode2"></canvas></td>
+            <td width="15%">Date: {{info.lr.date}}</td>
+          </tr>
+          <tr>
+            <td colspan="2">From: {{info.lr.from}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" class="noBdrBtm">To: {{info.lr.to}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
+            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="center">E-Way Bill no.</td>
+          </tr>
+          <tr>
+            <td class="noBdr-right noBdrBtm">
+              Consignee: {{info.consignee.name}}
+            </td>
+            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="center">No. of Pkg.</td>
+            <td class="center">Description (Said to Content)</td>
+            <td class="center">Invoice No</td>
+            <td class="center">Weight</td>
+            <td class="center">Charge Weight</td>
+            <td>Freight</td>
+            <td class="right">{{info.lr.totalFreight}}</td>
+          </tr>
+          <tr>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{articleNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{article}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{info.lr.invoiceNo}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{weight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td class="vAlignTop center" rowspan="4">
+              {{#info.lr.transactions}}
+              <p class="content-body">{{chargeWeight}}</p>
+              {{/info.lr.transactions}}
+            </td>
+            <td>Door delivery</td>
+            <td class="right">{{info.lr.deliveryCharges}}</td>
+          </tr>
+          <tr>
+            <td>Hamali</td>
+            <td class="right">{{info.lr.hamali}}</td>
+          </tr>
+          <tr>
+            <td>Bilty charges</td>
+            <td class="right"></td>
+          </tr>
+          <tr>
+            <td>Other</td>
+            <td class="right">{{info.lr.lrCharges}}</td>
+          </tr>
+          <tr>
+            <td class="center">{{info.totalArticles}}</td>
+            <td colspan="2"></td>
+            <td class="center">{{info.totalWeight}}</td>
+            <td class="center">{{info.totalChargeWeight}}</td>
+            <td>Total</td>
+            <td class="right">{{info.lr.total}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="noBdrTop">
+          <tr>
+            <td style="padding: 9px;">
+              <div>
+                PAID
+                <div class="checkbox">
+                  {{#info.isPaid}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isPaid}} {{^info.isPaid}}
+                  <img src="{{{info.unchecked}}}" alt="Jai Santoshi Maa" />
+                  {{/info.isPaid}}
+                </div>
+                TO PAY
+                <div class="checkbox">
+                  {{#info.isToPay}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isToPay}} {{^info.isToPay}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isToPay}}
+                </div>
+                BILLING
+                <div class="checkbox">
+                  {{#info.isTBB}}
+                  <img src="{{{info.checked}}}" alt="Checked" />
+                  {{/info.isTBB}} {{^info.isTBB}}
+                  <img src="{{{info.unchecked}}}" alt="Checked" />
+                  {{/info.isTBB}}
+                </div>
+                <div class="copy_label">DRIVER COPY</div>
+              </div>
+              <div>
+                <p class="small">
+                  काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
+                  <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                </p>
+                <p class="small">
+                  मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी
+                  करावी. अन्यथा आमची जबाबदारी नाही.
+                </p>
+              </div>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+
+              <p>माल स्वीकारणार्‍याची सही</p>
+            </td>
+            <td class="center vAlignBtm" style="padding: 9px;">
+              <p>जय संतोषी माँ ट्रान्सपोर्ट करिता</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
