@@ -83,7 +83,7 @@ const LorryReceipts = () => {
       type: "number",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
       },
     },
     {

@@ -309,7 +309,15 @@ const addPlace = (req, res, next) => {
 
   Place.find(
     {
-      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
+      $or: [
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          abbreviation: {
+            $regex: getRegex(req.body.abbreviation?.trim?.()),
+            $options: "i",
+          },
+        },
+      ],
       active: true,
     },
     (error, foundPlaces) => {
@@ -317,7 +325,12 @@ const addPlace = (req, res, next) => {
         return next(error);
       }
       if (foundPlaces && foundPlaces.length > 0) {
-        let message = `Place with (${req.body.name} already exist!)`;
+        let message = `Place with (${
+          req.body.name?.trim?.().toUpperCase() ===
+          foundPlaces.name?.trim().toUpperCase()
+            ? req.body.name
+            : req.body.abbreviation
+        } already exist!)`;
         return res.status(200).json({
           message: message,
         });
@@ -368,7 +381,15 @@ const updatePlace = (req, res, next) => {
 
   Place.find(
     {
-      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
+      $or: [
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          abbreviation: {
+            $regex: getRegex(req.body.abbreviation?.trim?.()),
+            $options: "i",
+          },
+        },
+      ],
       _id: { $ne: _id },
       active: true,
     },
@@ -377,7 +398,12 @@ const updatePlace = (req, res, next) => {
         return next(error);
       }
       if (foundPlaces && foundPlaces.length > 0) {
-        let message = `Place with (${req.body.name} already exist!)`;
+        let message = `Place with (${
+          req.body.name?.trim?.().toUpperCase() ===
+          foundPlaces.name?.trim().toUpperCase()
+            ? req.body.name
+            : req.body.abbreviation
+        } already exist!)`;
         return res.status(200).json({
           message: message,
         });
@@ -434,13 +460,22 @@ const addEmployee = (req, res, next) => {
   });
 
   Employee.find(
-    { telephone: req.body.telephone?.trim?.(), active: true },
+    {
+      $or: [
+        { telephone: req.body.telephone?.trim?.() },
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
+        },
+      ],
+      active: true,
+    },
     (error, foundEmp) => {
       if (error) {
         return next(error);
       }
       if (foundEmp && foundEmp.length > 0) {
-        let message = `Employee with telephone (${req.body.telephone}) already exist!`;
+        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) or name (${req.body.email}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -509,7 +544,13 @@ const updateEmployee = (req, res, next) => {
 
   Employee.find(
     {
-      telephone: req.body.telephone?.trim?.(),
+      $or: [
+        { telephone: req.body.telephone?.trim?.() },
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
+        },
+      ],
       _id: { $ne: _id },
       active: true,
     },
@@ -518,7 +559,7 @@ const updateEmployee = (req, res, next) => {
         return next(error);
       }
       if (foundEmp && foundEmp.length > 0) {
-        let message = `Employee with telephone (${req.body.telephone}) already exist!`;
+        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) or name (${req.body.email}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -765,9 +806,18 @@ const addCustomer = (req, res, next) => {
 
   Customer.find(
     {
-      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
-      type: { $regex: getRegex(req.body.type?.trim?.()), $options: "i" },
-      city: { $regex: getRegex(req.body.city?.trim?.()), $options: "i" },
+      $or: [
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          telephone: {
+            $regex: getRegex(req.body.telephone?.trim?.()),
+            $options: "i",
+          },
+        },
+        {
+          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
+        },
+      ],
       active: true,
     },
     (error, foundCustomer) => {
@@ -775,7 +825,7 @@ const addCustomer = (req, res, next) => {
         return next(error);
       }
       if (foundCustomer && foundCustomer.length > 0) {
-        let message = `Customer with name (${req.body.name}) & type (${req.body.type}) already exist!`;
+        let message = `Customer with name (${req.body.name}) or telephone (${req.body.telephone}) email (${req.body.email}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -805,9 +855,18 @@ const updateCustomer = (req, res, next) => {
 
   Customer.find(
     {
-      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
-      type: { $regex: getRegex(req.body.type?.trim?.()), $options: "i" },
-      city: { $regex: getRegex(req.body.city?.trim?.()), $options: "i" },
+      $or: [
+        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
+        {
+          telephone: {
+            $regex: getRegex(req.body.telephone?.trim?.()),
+            $options: "i",
+          },
+        },
+        {
+          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
+        },
+      ],
       _id: { $ne: _id },
       active: true,
     },
@@ -816,7 +875,7 @@ const updateCustomer = (req, res, next) => {
         return next(error);
       }
       if (foundCustomer && foundCustomer.length > 0) {
-        let message = `Customer with name (${req.body.name}) & type (${req.body.type}) already exist!`;
+        let message = `Customer with name (${req.body.name}) or telephone (${req.body.telephone}) email (${req.body.email}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -1109,13 +1168,17 @@ const addSupplier = (req, res, next) => {
   });
 
   Supplier.find(
-    { phone: req.body.phone?.trim?.(), active: true },
+    {
+      type: req.body.type?.trim?.(),
+      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
+      active: true,
+    },
     (error, foundSupplier) => {
       if (error) {
         return next(error);
       }
       if (foundSupplier && foundSupplier.length > 0) {
-        let message = `Supplier with (${req.body.phone}) already exist!`;
+        let message = `Supplier with (${req.body.name}) & type (${req.body.type})  already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -1138,13 +1201,18 @@ const updateSupplier = (req, res, next) => {
     return res.status(200).json({ message: "Supplier ID is required!" });
   }
   Supplier.find(
-    { phone: req.body.phone?.trim?.(), _id: { $ne: _id }, active: true },
+    {
+      type: req.body.type?.trim?.(),
+      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
+      _id: { $ne: _id },
+      active: true,
+    },
     (error, foundSupplier) => {
       if (error) {
         return next(error);
       }
       if (foundSupplier && foundSupplier.length > 0) {
-        let message = `Supplier with (${req.body.phone}) already exist!`;
+        let message = `Supplier with (${req.body.name}) & type (${req.body.type})  already exist!`;
         return res.status(200).json({
           message: message,
         });

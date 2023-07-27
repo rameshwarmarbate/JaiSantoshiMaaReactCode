@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser, validateUser } from "@modules/user/slice/userSlice";
 import LoadingSpinner from "@ui-controls/LoadingSpinner";
 import { setToken } from "@services/utils";
-import { selectIsLoading } from "../slice/userSlice";
+import { removeUser, selectIsLoading } from "../slice/userSlice";
 import { logo } from "../../../assets";
 
 const initialState = {
@@ -39,6 +39,10 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(removeUser());
+  }, []);
 
   const goToHome = useCallback(() => {
     navigate("/");

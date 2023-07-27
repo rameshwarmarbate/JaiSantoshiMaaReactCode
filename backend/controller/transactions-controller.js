@@ -1611,7 +1611,7 @@ const getBillsByCustomer = (req, res, next) => {
     return res.status(200).json({ message: "Customer ID is required!" });
   }
 
-  Bill.find({ customer: req.body.customer?.trim?.(), active: true })
+  Bill.find({ customer: req.body.customer?.trim?.() })
     .limit(1000)
     .exec((error, bills) => {
       if (error) {

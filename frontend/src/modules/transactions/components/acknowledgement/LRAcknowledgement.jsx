@@ -123,7 +123,7 @@ const LRAcknowledgement = () => {
       minWidth: 150,
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.total?.toFixed(2)}</strong>;
       },
     },
     {

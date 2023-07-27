@@ -532,7 +532,7 @@ const BillEdit = () => {
                     name="customer"
                     label="Customer"
                     value={bill.customer}
-                    inputProps={{ readOnly: true }}
+                    // inputProps={{ readOnly: true }}
                     onChange={inputChangeHandler}
                   >
                     {customers.length > 0 &&

@@ -56,7 +56,7 @@ const LocalMemoList = () => {
       headerName: "From",
       flex: 1,
       renderCell: (params) => {
-        return params.row.from.name;
+        return params.row.from?.name;
       },
     },
     {
@@ -64,7 +64,7 @@ const LocalMemoList = () => {
       headerName: "To",
       flex: 1,
       renderCell: (params) => {
-        return params.row.to.name;
+        return params.row.to?.name;
       },
     },
     {
@@ -72,7 +72,7 @@ const LocalMemoList = () => {
       headerName: "Hire amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.hire.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.hire?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -80,7 +80,7 @@ const LocalMemoList = () => {
       headerName: "Balance",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
       },
     },
     {

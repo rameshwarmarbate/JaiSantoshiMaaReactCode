@@ -37,7 +37,7 @@ const FreightDetails = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {Number(params.row.total).toFixed(2)}</strong>;
+        return <strong>₹ {Number(params.row.total)?.toFixed(2)}</strong>;
       },
     },
   ];

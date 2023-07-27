@@ -59,7 +59,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
       headerName: "Amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {Number(params.row.total).toFixed(2)}</strong>;
+        return <strong>₹ {Number(params.row.total)?.toFixed(2)}</strong>;
       },
     },
   ];

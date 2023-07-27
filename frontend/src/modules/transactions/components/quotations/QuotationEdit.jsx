@@ -229,6 +229,7 @@ const QuotationEdit = () => {
                         <TextField
                           name="date"
                           size="small"
+                          autoComplete="off"
                           {...params}
                           error={formErrors.date.invalid}
                         />
@@ -276,6 +277,7 @@ const QuotationEdit = () => {
                         <TextField
                           name="from"
                           size="small"
+                          autoComplete="off"
                           {...params}
                           error={formErrors.from.invalid}
                         />
@@ -300,6 +302,7 @@ const QuotationEdit = () => {
                         <TextField
                           name="to"
                           size="small"
+                          autoComplete="off"
                           {...params}
                           error={formErrors.to.invalid}
                         />

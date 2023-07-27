@@ -78,7 +78,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
           return params.row.article;
         }
         if (params.row.article?.label) {
-          return params.row.article.label;
+          return params.row.article?.label;
         }
         return null;
       },
@@ -92,7 +92,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
       headerName: "Rate type",
       flex: 1,
       renderCell: (params) => {
-        if (typeof params.row.rateType === "string") {
+        if (typeof params.row?.rateType === "string") {
           return params.row.rateType;
         }
         if (params.row.rateType?.value) {

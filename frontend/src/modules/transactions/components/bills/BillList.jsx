@@ -72,7 +72,7 @@ const BillList = () => {
       headerName: "Customer",
       flex: 1,
       renderCell: (params) => {
-        return params.row.customer.name
+        return params.row.customer?.name
           ? params.row.customer.name
           : params.row.customer;
       },
@@ -82,7 +82,7 @@ const BillList = () => {
       headerName: "Bill amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.grandTotal.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.grandTotal?.toFixed(2)}</strong>;
       },
     },
     {

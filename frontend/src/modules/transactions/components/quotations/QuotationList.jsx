@@ -67,7 +67,7 @@ const QuotationList = () => {
       headerName: "Customer",
       flex: 1,
       renderCell: (params) => {
-        return params.row.customer.name
+        return params.row.customer?.name
           ? params.row.customer.name
           : params.row.customer;
       },

@@ -115,7 +115,7 @@ const LRPaymentAdvice = ({
       headerName: "From",
       flex: 1,
       renderCell: (params) => {
-        return params.row.from.name;
+        return params.row.from?.name;
       },
     },
     {
@@ -123,7 +123,7 @@ const LRPaymentAdvice = ({
       headerName: "To",
       flex: 1,
       renderCell: (params) => {
-        return params.row.to.name;
+        return params.row.to?.name;
       },
     },
     {
@@ -132,7 +132,7 @@ const LRPaymentAdvice = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <>₹ {params.row.totalFreight.toFixed(2)}</>;
+        return <>₹ {params.row.totalFreight?.toFixed?.(2)}</>;
       },
     },
     {
@@ -141,7 +141,7 @@ const LRPaymentAdvice = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <>₹ {params.row.rent.toFixed(2)}</>;
+        return <>₹ {params.row.rent?.toFixed?.(2)}</>;
       },
     },
     {
@@ -150,7 +150,7 @@ const LRPaymentAdvice = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <>₹ {params.row.advance.toFixed(2)}</>;
+        return <>₹ {params.row.advance?.toFixed?.(2)}</>;
       },
     },
     {
@@ -159,7 +159,7 @@ const LRPaymentAdvice = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <>₹ {params.row.totalPayable.toFixed(2)}</>;
+        return <>₹ {params.row.totalPayable?.toFixed?.(2)}</>;
       },
     },
     {

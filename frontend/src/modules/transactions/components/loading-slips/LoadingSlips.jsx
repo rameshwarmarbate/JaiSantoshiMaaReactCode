@@ -83,7 +83,7 @@ const LoadingSlips = () => {
       headerName: "Hire amount",
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {params.row.totalFreight.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.totalFreight?.toFixed?.(2)}</strong>;
       },
       flex: 1,
     },
@@ -92,7 +92,7 @@ const LoadingSlips = () => {
       headerName: "Balance",
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {params.row.totalPayable.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.totalPayable?.toFixed?.(2)}</strong>;
       },
       flex: 1,
     },

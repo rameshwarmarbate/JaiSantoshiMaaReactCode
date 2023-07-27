@@ -70,7 +70,7 @@ const MoneyTransfers = () => {
       headerName: "Amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.amount.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.amount?.toFixed?.(2)}</strong>;
       },
     },
     {

@@ -348,16 +348,27 @@ const EditRateMaster = () => {
           rate: rateList.rate,
           ddCharges: rateList.ddCharges,
         };
-        setRateList((currState) => {
-          return {
-            ...currState,
-            rates: [...currState.rates, rateListItem],
-            article: "",
-            station: null,
-            rate: 0,
-            ddCharges: 0,
-          };
-        });
+        if (
+          rateList.rates?.some?.(
+            ({ station, article }) =>
+              station === rateListItem.station &&
+              article === rateListItem.article
+          )
+        ) {
+          setHttpError("Already item exist.");
+        } else {
+          setRateList((currState) => {
+            return {
+              ...currState,
+              rates: [...currState.rates, rateListItem],
+              article: "",
+              station: null,
+              rate: 0,
+              ddCharges: 0,
+            };
+          });
+          setHttpError("");
+        }
       } else {
         const filteredList = rateList.rates.filter((item) => {
           if (item.id) {
@@ -375,17 +386,28 @@ const EditRateMaster = () => {
           rate: rateList.rate,
           ddCharges: rateList.ddCharges,
         };
-        setRateList((currState) => {
-          return {
-            ...currState,
-            rates: [...filteredList, rateListItem],
-            article: "",
-            station: null,
-            rate: 0,
-            ddCharges: 0,
-          };
-        });
-        setEditId("");
+        if (
+          filteredList?.some?.(
+            ({ station, article }) =>
+              station === rateListItem.station &&
+              article === rateListItem.article
+          )
+        ) {
+          setHttpError("Already item exist.");
+        } else {
+          setRateList((currState) => {
+            return {
+              ...currState,
+              rates: [...filteredList, rateListItem],
+              article: "",
+              station: null,
+              rate: 0,
+              ddCharges: 0,
+            };
+          });
+          setEditId("");
+          setHttpError("");
+        }
       }
     }
   };

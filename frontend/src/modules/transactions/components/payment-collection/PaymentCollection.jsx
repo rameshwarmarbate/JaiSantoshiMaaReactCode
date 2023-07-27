@@ -137,7 +137,7 @@ const PaymentCollection = () => {
       type: "number",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -146,7 +146,7 @@ const PaymentCollection = () => {
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {(+params.row.received).toFixed(2)}</strong>;
+        return <strong>₹ {(+params.row.received)?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -155,7 +155,7 @@ const PaymentCollection = () => {
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {(+params.row.balance).toFixed(2)}</strong>;
+        return <strong>₹ {(+params.row.balance)?.toFixed?.(2)}</strong>;
       },
     },
     {

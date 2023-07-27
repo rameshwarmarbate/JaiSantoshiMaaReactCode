@@ -125,7 +125,7 @@ const SupplierBillList = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {params.row.amount.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.amount?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -134,7 +134,7 @@ const SupplierBillList = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {params.row.totalPaid.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.totalPaid?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -143,7 +143,7 @@ const SupplierBillList = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {params.row.balance.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.balance?.toFixed?.(2)}</strong>;
       },
     },
     {
