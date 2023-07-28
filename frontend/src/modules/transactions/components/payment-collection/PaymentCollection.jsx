@@ -23,6 +23,7 @@ import {
   getFormattedDate,
   getFormattedLSNumber,
   isSuperAdminOrAdmin,
+  validateNumber,
 } from "../../../../services/utils";
 import PaymentCollectionHistory from "./PaymentCollectionHistory";
 import { PAYMENT_MODES } from "../../../../services/constants";
@@ -40,9 +41,9 @@ const initialState = {
   branch: "",
   customer: "",
   receivingDate: new Date(),
-  totalReceivable: 0,
-  totalReceived: 0,
-  receivedToday: 0,
+  totalReceivable: "",
+  totalReceived: "",
+  receivedToday: "",
   payMode: null,
   bankName: "",
   chequeNo: "",
@@ -170,6 +171,7 @@ const PaymentCollection = () => {
               variant="outlined"
               value={params.row.receive}
               onChange={inputChangeHandler.bind(null, "amount")}
+              onInput={validateNumber}
               name={params.row._id}
               id={`${params.row._id}_amount`}
               InputProps={{
@@ -335,7 +337,7 @@ const PaymentCollection = () => {
               );
               return {
                 ...bill,
-                receive: 0,
+                receive: "",
                 received: received,
                 balance: bill.total - received,
                 field: <TextField />,

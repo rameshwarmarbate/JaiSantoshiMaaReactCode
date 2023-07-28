@@ -55,12 +55,12 @@ const initialState = {
   consigneePhone: "",
   from: "",
   to: "",
-  totalFreight: 0,
-  hamali: 0,
-  deliveryCharges: 0,
-  lrCharges: 10,
-  total: 0,
-  materialCost: 0,
+  totalFreight: "",
+  hamali: "",
+  deliveryCharges: "",
+  lrCharges: "",
+  total: "",
+  materialCost: "",
   deliveryType: null,
   serviceTaxBy: null,
   payType: null,
@@ -361,10 +361,10 @@ const LorryReceiptAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (!formData.consignor && !formData.consignorName) {
+    if (!formData.consignor && !formData.consignorName?.trim?.()) {
       errors.consignor = { invalid: true, message: "Consignor is required" };
     }
     if (!formData.consignorAddress) {
@@ -373,10 +373,10 @@ const LorryReceiptAdd = () => {
         message: "Consignor address is required",
       };
     }
-    if (formData.from.trim() === "") {
+    if (!formData.from?.trim?.()) {
       errors.from = { invalid: true, message: "From is required" };
     }
-    if (!formData.consignee && !formData.consigneeName) {
+    if (!formData.consignee && !formData.consigneeName?.trim?.()) {
       errors.consignee = { invalid: true, message: "Consignee is required" };
     }
     if (!formData.consigneeAddress) {
@@ -385,7 +385,7 @@ const LorryReceiptAdd = () => {
         message: "Consignee address is required",
       };
     }
-    if (formData.to === "") {
+    if (!formData.to?.trim?.()) {
       errors.to = { invalid: true, message: "To is required" };
     }
     if (!formData.transactions.length) {
@@ -487,6 +487,15 @@ const LorryReceiptAdd = () => {
     }
   };
 
+  const consignorChange = ({ target }) => {
+    setLorryReceipt((currState) => {
+      return {
+        ...currState,
+        consignorName: target.value,
+      };
+    });
+  };
+
   const consigneeChangeHandler = (e, value) => {
     if (value) {
       if (typeof value === "object") {
@@ -515,6 +524,14 @@ const LorryReceiptAdd = () => {
     }
   };
 
+  const consigneeChange = ({ target }) => {
+    setLorryReceipt((currState) => {
+      return {
+        ...currState,
+        consigneeName: target.value,
+      };
+    });
+  };
   const autocompleteChangeListener = (e, option, name) => {
     setLorryReceipt((currState) => {
       return {
@@ -687,6 +704,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Consignor"
+                        onChange={(e) => consignorChange(e)}
                         error={formErrors.consignor.invalid}
                         fullWidth
                       />
@@ -728,7 +746,6 @@ const LorryReceiptAdd = () => {
                 >
                   <TextField
                     size="small"
-                    type="number"
                     variant="outlined"
                     label="Consignor phone"
                     value={lorryReceipt.consignorPhone}
@@ -782,6 +799,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Consignee"
+                        onChange={(e) => consigneeChange(e)}
                         error={formErrors.consignee.invalid}
                         fullWidth
                       />
@@ -823,7 +841,6 @@ const LorryReceiptAdd = () => {
                 >
                   <TextField
                     size="small"
-                    type="number"
                     variant="outlined"
                     label="Consignee phone"
                     value={lorryReceipt.consigneePhone}
@@ -881,7 +898,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Total freight"
-                    value={lorryReceipt.totalFreight}
+                    value={lorryReceipt.totalFreight || ""}
                     name="totalFreight"
                     id="totalFreight"
                     InputProps={{
@@ -971,7 +988,7 @@ const LorryReceiptAdd = () => {
                     type="number"
                     variant="outlined"
                     label="Total"
-                    value={lorryReceipt.total}
+                    value={lorryReceipt.total || ""}
                     name="total"
                     id="total"
                     InputProps={{

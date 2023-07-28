@@ -35,15 +35,17 @@ const getLorryReceipts = (req, res, next) => {
     query.branch = req.body.branch?.trim?.();
   }
 
-  LorryReceipt.find(query).exec((lrError, lorryReceipts) => {
-    if (lrError) {
-      return res.status(200).json({
-        message: "Error fetching lorry receipts!",
-      });
-    } else {
-      res.json(lorryReceipts);
-    }
-  });
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((lrError, lorryReceipts) => {
+      if (lrError) {
+        return res.status(200).json({
+          message: "Error fetching lorry receipts!",
+        });
+      } else {
+        res.json(lorryReceipts);
+      }
+    });
 };
 
 const getLorryReceiptsForLS = (req, res, next) => {
@@ -55,19 +57,21 @@ const getLorryReceiptsForLS = (req, res, next) => {
   const limit = 50;
   const start = (req.body.page - 1) * limit;
   const end = req.body.page * limit;
-  LorryReceipt.find(query).exec((lrError, lorryReceipts) => {
-    if (lrError) {
-      return res.status(200).json({
-        message: "Error fetching lorry receipts!",
-      });
-    } else {
-      const records = lorryReceipts.slice(start, end);
-      return res.json({
-        lorryReceipts: records,
-        isLastPage: lorryReceipts?.length <= end,
-      });
-    }
-  });
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((lrError, lorryReceipts) => {
+      if (lrError) {
+        return res.status(200).json({
+          message: "Error fetching lorry receipts!",
+        });
+      } else {
+        const records = lorryReceipts.slice(start, end);
+        return res.json({
+          lorryReceipts: records,
+          isLastPage: lorryReceipts?.length <= end,
+        });
+      }
+    });
 };
 
 const getLorryReceiptsWithCount = (req, res, next) => {
@@ -325,16 +329,16 @@ const addLorryReceipt = async (req, res, next) => {
         try {
           const consignor = new Customer({
             name: req.body.consignorName?.toUpperCase(),
-            address: req.body.consignorAddress,
-            city: req.body.from,
+            address: req.body.consignorAddress?.trim?.(),
+            city: req.body.from?.trim?.(),
             telephone: req.body.consignorPhone,
             createdBy: req.body.createdBy,
           });
 
           const consignee = new Customer({
             name: req.body.consigneeName?.toUpperCase(),
-            address: req.body.consigneeAddress,
-            city: req.body.to,
+            address: req.body.consigneeAddress?.trim?.(),
+            city: req.body.to?.trim?.(),
             telephone: req.body.consigneePhone,
             createdBy: req.body.createdBy,
           });
@@ -346,8 +350,8 @@ const addLorryReceipt = async (req, res, next) => {
               branch: req.body.branch?.trim?.(),
               lrNo: formattedLR?.trim?.(),
               date: req.body.date,
-              invoiceNo: req.body.invoiceNo,
-              eWayBillNo: req.body.eWayBillNo,
+              invoiceNo: req.body.invoiceNo?.trim?.(),
+              eWayBillNo: req.body.eWayBillNo?.trim?.(),
               foNum: req.body.foNum,
               consignor: createdConsignor._id,
               consignorName: createdConsignor.name?.trim?.(),
@@ -405,8 +409,8 @@ const addLorryReceipt = async (req, res, next) => {
         try {
           const consignee = new Customer({
             name: req.body.consigneeName?.toUpperCase(),
-            address: req.body.consigneeAddress,
-            city: req.body.to,
+            address: req.body.consigneeAddress?.trim?.(),
+            city: req.body.to?.trim?.(),
             telephone: req.body.consigneePhone,
             createdBy: req.body.createdBy,
           });
@@ -476,8 +480,8 @@ const addLorryReceipt = async (req, res, next) => {
         try {
           const consignor = new Customer({
             name: req.body.consignorName?.toUpperCase(),
-            address: req.body.consignorAddress,
-            city: req.body.from,
+            address: req.body.consignorAddress?.trim?.(),
+            city: req.body.from?.trim?.(),
             telephone: req.body.consignorPhone,
             createdBy: req.body.createdBy,
           });
@@ -727,51 +731,61 @@ const updateLorryReceipt = async (req, res, next) => {
   if (!req.params.id || !_id) {
     return res.status(200).json({ message: "Lorry receipt ID is required!" });
   }
-  const updateLorryReceipt = () => {
+  const foundConsignor = await Customer.findOne({
+    name: req.body.consignorName?.toUpperCase()?.trim?.(),
+  });
+
+  const foundConsignee = await Customer.findOne({
+    name: req.body.consigneeName?.toUpperCase()?.trim?.(),
+  });
+
+  let model = {
+    branch: req.body.branch?.trim?.(),
+    lrNo: req.body.lrNo?.trim?.(),
+    date: req.body.date,
+    invoiceNo: req.body.invoiceNo?.trim?.(),
+    eWayBillNo: req.body.eWayBillNo?.trim?.(),
+    foNum: req.body.foNum?.trim?.(),
+    consignor: req.body.consignor?.trim?.(),
+    consignorName: req.body.consignorName?.trim?.(),
+    consignorAddress: req.body.consignorAddress?.trim?.(),
+    consignorPhone: req.body.consignorPhone?.trim?.(),
+    from: req.body.from?.trim?.(),
+    consignee: req.body.consignee?.trim?.(),
+    consigneeName: req.body.consigneeName?.trim?.(),
+    consigneeAddress: req.body.consigneeAddress?.trim?.(),
+    consigneePhone: req.body.consigneePhone?.trim?.(),
+    to: req.body.to?.trim?.(),
+    materialCost: req.body.materialCost?.trim?.(),
+    deliveryType: req.body.deliveryType?.trim?.(),
+    deliveryInDays: req.body.deliveryInDays?.trim?.(),
+    serviceTaxBy: req.body.serviceTaxBy?.trim?.(),
+    payType: req.body.payType,
+    toBilled: req.body.toBilled,
+    collectAt: req.body.collectAt,
+    payMode: req.body.payMode,
+    bankName: req.body.bankName?.trim?.(),
+    chequeNo: req.body.chequeNo,
+    chequeDate: req.body.chequeDate,
+    remark: req.body.remark,
+    transactions: req.body.transactions,
+    totalFreight: req.body.totalFreight,
+    hamali: req.body.hamali,
+    deliveryCharges: req.body.deliveryCharges,
+    lrCharges: req.body.lrCharges,
+    total: req.body.total,
+    unloadDate: req.body.unloadDate,
+    deliveryDate: req.body.deliveryDate,
+    deliveredTo: req.body.deliveredTo,
+    close: req.body.close,
+    updatedBy: req.body.updatedBy,
+  };
+
+  const updateLorryReceipt = (_model) => {
     LorryReceipt.findByIdAndUpdate(
       _id,
       {
-        $set: {
-          branch: req.body.branch,
-          lrNo: req.body.lrNo,
-          date: req.body.date,
-          invoiceNo: req.body.invoiceNo,
-          eWayBillNo: req.body.eWayBillNo,
-          foNum: req.body.foNum,
-          consignor: req.body.consignor,
-          consignorName: req.body.consignorName,
-          consignorAddress: req.body.consignorAddress,
-          consignorPhone: req.body.consignorPhone,
-          from: req.body.from,
-          consignee: req.body.consignee,
-          consigneeName: req.body.consigneeName,
-          consigneeAddress: req.body.consigneeAddress,
-          consigneePhone: req.body.consigneePhone,
-          to: req.body.to,
-          materialCost: req.body.materialCost,
-          deliveryType: req.body.deliveryType,
-          deliveryInDays: req.body.deliveryInDays,
-          serviceTaxBy: req.body.serviceTaxBy,
-          payType: req.body.payType,
-          toBilled: req.body.toBilled,
-          collectAt: req.body.collectAt,
-          payMode: req.body.payMode,
-          bankName: req.body.bankName,
-          chequeNo: req.body.chequeNo,
-          chequeDate: req.body.chequeDate,
-          remark: req.body.remark,
-          transactions: req.body.transactions,
-          totalFreight: req.body.totalFreight,
-          hamali: req.body.hamali,
-          deliveryCharges: req.body.deliveryCharges,
-          lrCharges: req.body.lrCharges,
-          total: req.body.total,
-          unloadDate: req.body.unloadDate,
-          deliveryDate: req.body.deliveryDate,
-          deliveredTo: req.body.deliveredTo,
-          close: req.body.close,
-          updatedBy: req.body.updatedBy,
-        },
+        $set: _model,
       },
       { new: true },
       (error, data) => {
@@ -793,7 +807,7 @@ const updateLorryReceipt = async (req, res, next) => {
       },
       active: true,
     };
-    LoadingSlip.findOne(query).exec((lrError, found) => {
+    LoadingSlip.findOne(query).exec(async (lrError, found) => {
       if (lrError) {
         return res.status(200).json({
           message: "Error fetching lorry receipts!",
@@ -804,7 +818,88 @@ const updateLorryReceipt = async (req, res, next) => {
             message: `This LR is used in Challan ${found.lsNo}. First, delete the challan.`,
           });
         }
-        updateLorryReceipt();
+        if (foundConsignor && foundConsignee) {
+          updateLorryReceipt(model);
+        } else {
+          if (!foundConsignor && !foundConsignee) {
+            try {
+              const consignor = new Customer({
+                name: req.body.consignorName?.toUpperCase(),
+                address: req.body.consignorAddress?.trim?.(),
+                city: req.body.from?.trim?.(),
+                telephone: req.body.consignorPhone,
+                createdBy: req.body.createdBy,
+              });
+
+              const consignee = new Customer({
+                name: req.body.consigneeName?.toUpperCase(),
+                address: req.body.consigneeAddress?.trim?.(),
+                city: req.body.to?.trim?.(),
+                telephone: req.body.consigneePhone,
+                createdBy: req.body.createdBy,
+              });
+
+              const createdConsignor = await Customer.create(consignor);
+              const createdConsignee = await Customer.create(consignee);
+              if (createdConsignor && createdConsignee) {
+                updateLorryReceipt({
+                  ...model,
+                  consignor: createdConsignor._id,
+                  consignee: createdConsignee._id,
+                  consignorName: createdConsignor.name,
+                  consigneeName: createdConsignee.name,
+                });
+              }
+            } catch (e) {
+              return res.status(200).json({ message: e.message });
+            }
+          }
+
+          if (foundConsignor && !foundConsignee) {
+            try {
+              const consignee = new Customer({
+                name: req.body.consigneeName?.toUpperCase(),
+                address: req.body.consigneeAddress?.trim?.(),
+                city: req.body.to?.trim?.(),
+                telephone: req.body.consigneePhone,
+                createdBy: req.body.createdBy,
+              });
+
+              const createdConsignee = await Customer.create(consignee);
+              if (createdConsignee) {
+                updateLorryReceipt({
+                  ...model,
+                  consignee: createdConsignee._id,
+                  consigneeName: createdConsignee.name,
+                });
+              }
+            } catch (e) {
+              return res.status(200).json({ message: e.message });
+            }
+          }
+          if (!foundConsignor && foundConsignee) {
+            try {
+              const consignor = new Customer({
+                name: req.body.consignorName?.toUpperCase(),
+                address: req.body.consignorAddress?.trim?.(),
+                city: req.body.from?.trim?.(),
+                telephone: req.body.consignorPhone,
+                createdBy: req.body.createdBy,
+              });
+
+              const createdConsignor = await Customer.create(consignor);
+              if (createdConsignor) {
+                updateLorryReceipt({
+                  ...model,
+                  consignor: createdConsignor._id,
+                  consignorName: createdConsignor.name,
+                });
+              }
+            } catch (e) {
+              return res.status(200).json({ message: e.message });
+            }
+          }
+        }
       }
     });
   } catch (e) {
@@ -1286,6 +1381,7 @@ const getMoneyTransfers = (req, res, next) => {
 
   MoneyTransfer.find({ branch: req.body.branch?.trim?.(), active: true })
     .limit(1000)
+    .sort("-createdAt")
     .exec((error, moneyTransfers) => {
       if (error) {
         return res.status(200).json({
@@ -1406,6 +1502,7 @@ const getPettyTransactions = (req, res, next) => {
 
   PettyTransaction.find({ branch: req.body.branch?.trim?.(), active: true })
     .limit(1000)
+    .sort("-createdAt")
     .exec((error, pettyTransactions) => {
       if (error) {
         return res.status(200).json({
@@ -2193,12 +2290,17 @@ const updateLorryReceiptAckByLRNo = (req, res, next) => {
 };
 
 const getQuotations = (req, res) => {
-  Quotation.find({ active: true }, (err, data) => {
-    if (err) {
-      return res.status(200).json({ message: err.message });
+  Quotation.find(
+    { active: true },
+    {},
+    { sort: { createdAt: -1 } },
+    (err, data) => {
+      if (err) {
+        return res.status(200).json({ message: err.message });
+      }
+      return res.send(data);
     }
-    return res.send(data);
-  });
+  );
 };
 
 const getQuotation = (req, res) => {

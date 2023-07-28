@@ -52,11 +52,11 @@ const initialState = {
   to: null,
   toName: "",
   lrList: [],
-  totalFreight: 0,
-  rent: 0,
-  advance: 0,
-  totalPayable: 0,
-  totalWeight: 0,
+  totalFreight: "",
+  rent: "",
+  advance: "",
+  totalPayable: "",
+  totalWeight: "",
   currentTime: null,
   reachTime: null,
   paybleAt: null,
@@ -953,7 +953,7 @@ const LoadingSlipEdit = () => {
                     type="number"
                     variant="outlined"
                     label="Total payable"
-                    value={loadingSlip.totalPayable}
+                    value={loadingSlip.totalPayable || ""}
                     onChange={inputChangeHandler}
                     name="totalPayable"
                     id="totalPayable"

@@ -33,9 +33,9 @@ const initialState = {
   branch: "",
   customer: "",
   paymentDate: new Date(),
-  outstanding: 0,
-  totalPaid: 0,
-  paidToday: 0,
+  outstanding: "",
+  totalPaid: "",
+  paidToday: "",
   payMode: null,
   chequeNo: "",
   chequeDate: null,
@@ -181,7 +181,7 @@ const LRPaymentAdvice = ({
             <TextField
               size="small"
               variant="outlined"
-              value={params.row.suppPay}
+              value={params.row.suppPay || ""}
               onChange={inputChangeHandler.bind(null, "suppPay")}
               onInput={validateNumber}
               name={params.row._id}
@@ -563,7 +563,7 @@ const LRPaymentAdvice = ({
                   size="small"
                   variant="outlined"
                   label="Total outstanding"
-                  value={payments.outstanding}
+                  value={payments.outstanding || ""}
                   name="outstanding"
                   id="outstanding"
                   InputProps={{
@@ -581,7 +581,7 @@ const LRPaymentAdvice = ({
                   size="small"
                   variant="outlined"
                   label="Total paid"
-                  value={payments.totalPaid}
+                  value={payments.totalPaid || ""}
                   name="totalPaid"
                   id="totalPaid"
                   InputProps={{

@@ -8,7 +8,11 @@ import {
   Paper,
 } from "@mui/material";
 import { Alert, Stack } from "@mui/material";
-import { mobileNoRegEx, emailRegEx } from "../../../../services/utils";
+import {
+  mobileNoRegEx,
+  emailRegEx,
+  validatePhoneNumber,
+} from "../../../../services/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { createBank, selectIsLoading } from "./slice/bankSlice";
 import { LoadingSpinner } from "../../../../ui-controls";
@@ -310,6 +314,7 @@ const BankAdd = () => {
                     value={bank.phone}
                     error={formErrors.phone.invalid}
                     onChange={inputChangeHandler}
+                    onInput={validatePhoneNumber}
                     name="phone"
                     id="phone"
                   />

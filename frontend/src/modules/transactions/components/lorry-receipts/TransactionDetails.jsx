@@ -29,11 +29,11 @@ const initialState = {
   article: null,
   articleNo: "",
   description: "",
-  weight: 0,
-  chargeWeight: 0,
+  weight: "",
+  chargeWeight: "",
   rateType: RATE_TYPES[0],
-  rate: 0,
-  freight: 0,
+  rate: "",
+  freight: "",
 };
 
 const initialErrorState = {
@@ -302,7 +302,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
       setTransactionDetail((currState) => {
         return {
           ...currState,
-          rate: 0,
+          rate: "",
         };
       });
     }

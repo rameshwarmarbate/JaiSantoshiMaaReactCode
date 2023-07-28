@@ -7,8 +7,8 @@
 // export const CUSTOMER_BILLS_PATH = "http://localhost:4800/bills/bills/";
 // export const QUOTATIONS_PATH = "http://localhost:4800/bills/quotations/";
 // export const VOUCHERS_PATH = "http://localhost:4800/bills/vouchers/";
-export const API_BASE_PATH = "http://localhost:4800/";
-// export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
+// export const API_BASE_PATH = "http://localhost:4800/";
+export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
 export const API_BASE_PATH_MASTER =
   "https://api.jaisantoshimaatransport.com/api/master";
 export const API_BASE_PATH_TRANSACTIONS =

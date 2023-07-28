@@ -99,15 +99,17 @@ const addBranch = (req, res, next) => {
 
 // Get all branches (100 branches)
 const getBranches = (req, res, next) => {
-  Branch.find({ active: true }).exec((error, branches) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching branches!",
-      });
-    } else {
-      res.json(branches);
-    }
-  });
+  Branch.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, branches) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching branches!",
+        });
+      } else {
+        res.json(branches);
+      }
+    });
 };
 
 // Get all branches (100 branches)
@@ -133,6 +135,7 @@ const getBranchList = (req, res, next) => {
         place: "$place.name",
       },
     },
+    { $sort: { createdAt: -1 } },
     {
       $project: {
         _id: 1,
@@ -288,15 +291,17 @@ const updateBranch = (req, res, next) => {
 
 // Get places
 const getPlaces = (req, res, next) => {
-  Place.find({ active: true }).exec((error, places) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching places!",
-      });
-    } else {
-      res.json(places);
-    }
-  });
+  Place.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, places) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching places!",
+        });
+      } else {
+        res.json(places);
+      }
+    });
 };
 
 // Add a Place
@@ -498,15 +503,17 @@ const addEmployee = (req, res, next) => {
 
 // Get 100 employees
 const getEmployees = (req, res, next) => {
-  Employee.find({ active: true }).exec((error, employees) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching employees!",
-      });
-    } else {
-      res.json(employees);
-    }
-  });
+  Employee.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, employees) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching employees!",
+        });
+      } else {
+        res.json(employees);
+      }
+    });
 };
 
 // Remove a employee
@@ -608,15 +615,17 @@ const getEmployee = (req, res, next) => {
 
 // Get articles
 const getArticles = (req, res, next) => {
-  Article.find({ active: true }).exec((error, articles) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching articles!",
-      });
-    } else {
-      res.json(articles);
-    }
-  });
+  Article.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, articles) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching articles!",
+        });
+      } else {
+        res.json(articles);
+      }
+    });
 };
 
 // Get a article
@@ -948,15 +957,17 @@ const removeCustomer = (req, res, next) => {
 
 // Get drivers
 const getDrivers = (req, res, next) => {
-  Driver.find({ active: true }).exec((error, drivers) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching drivers!",
-      });
-    } else {
-      res.json(drivers);
-    }
-  });
+  Driver.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, drivers) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching drivers!",
+        });
+      } else {
+        res.json(drivers);
+      }
+    });
 };
 
 // Get a driver
@@ -1109,15 +1120,17 @@ const updateDriver = (req, res, next) => {
 
 // Get suppliers
 const getSuppliers = (req, res, next) => {
-  Supplier.find({ active: true }).exec((error, suppliers) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching suppliers!",
-      });
-    } else {
-      res.json(suppliers);
-    }
-  });
+  Supplier.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, suppliers) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching suppliers!",
+        });
+      } else {
+        res.json(suppliers);
+      }
+    });
 };
 
 const getSuppliersByType = (req, res, next) => {
@@ -1276,15 +1289,17 @@ const removeSupplier = (req, res, next) => {
 
 // Get vehicle types
 const getVehicleTypes = (req, res, next) => {
-  VehicleType.find({ active: true }).exec((error, vehicleTypes) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching vehicle types!",
-      });
-    } else {
-      res.json(vehicleTypes);
-    }
-  });
+  VehicleType.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, vehicleTypes) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching vehicle types!",
+        });
+      } else {
+        res.json(vehicleTypes);
+      }
+    });
 };
 
 // Get a vehicle type
@@ -1389,15 +1404,17 @@ const updateVehicleType = (req, res, next) => {
 
 // Get vehicles
 const getVehicles = (req, res, next) => {
-  Vehicle.find({ active: true }).exec((error, vehicles) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching vehicles!",
-      });
-    } else {
-      res.json(vehicles);
-    }
-  });
+  Vehicle.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, vehicles) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching vehicles!",
+        });
+      } else {
+        res.json(vehicles);
+      }
+    });
 };
 
 // Get vehicles
@@ -1446,6 +1463,7 @@ const getVehicleList = (req, res, next) => {
         ownerAddress: "$owner.address",
       },
     },
+    { $sort: { createdAt: -1 } },
     {
       $project: {
         _id: 1,
@@ -1591,15 +1609,17 @@ const removeVehicle = (req, res, next) => {
 
 // Get banks
 const getBanks = (req, res, next) => {
-  Bank.find({ active: true }).exec((error, banks) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching banks!",
-      });
-    } else {
-      res.json(banks);
-    }
-  });
+  Bank.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, banks) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching banks!",
+        });
+      } else {
+        res.json(banks);
+      }
+    });
 };
 
 // Get a bank
@@ -1735,15 +1755,17 @@ const removeBank = (req, res, next) => {
 
 // Get banks
 const getBankAccounts = (req, res, next) => {
-  BankAccount.find({ active: true }).exec((error, banks) => {
-    if (error) {
-      return res.status(200).json({
-        message: "Error fetching bank accounts!",
-      });
-    } else {
-      res.json(banks);
-    }
-  });
+  BankAccount.find({ active: true })
+    .sort("-createdAt")
+    .exec((error, banks) => {
+      if (error) {
+        return res.status(200).json({
+          message: "Error fetching bank accounts!",
+        });
+      } else {
+        res.json(banks);
+      }
+    });
 };
 
 // Get banks
@@ -1769,6 +1791,7 @@ const getBankAccountList = (req, res, next) => {
         bank: "$bank.name",
       },
     },
+    { $sort: { createdAt: -1 } },
     {
       $project: {
         _id: 1,

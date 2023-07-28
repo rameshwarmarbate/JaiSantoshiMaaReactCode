@@ -18,6 +18,7 @@ import {
   selectIsLoading,
 } from "./slice/bankAccountSlice";
 import { LoadingSpinner } from "../../../../ui-controls";
+import { validateNumber } from "../../../../services/utils";
 
 const initialState = {
   bank: "",
@@ -393,6 +394,7 @@ const BankAccountAdd = () => {
                     value={bankAccount.openingBalance}
                     error={formErrors.openingBalance.invalid}
                     onChange={inputChangeHandler}
+                    onInput={validateNumber}
                     name="openingBalance"
                     id="openingBalance"
                   />

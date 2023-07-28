@@ -44,8 +44,8 @@ const MoneyTransferAdd = () => {
     transactionName: "",
     type: "",
     lsNo: "",
-    amount: 0,
-    availableBal: 0,
+    amount: "",
+    availableBal: "",
     date: new Date(),
     bank: "",
     bankAccountNumber: "",
@@ -371,7 +371,7 @@ const MoneyTransferAdd = () => {
         transactionType: "",
         transactionName: "",
         lsNo: "",
-        amount: 0,
+        amount: "",
       };
     });
   };

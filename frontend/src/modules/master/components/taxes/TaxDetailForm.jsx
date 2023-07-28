@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { validateNumber } from "../../../../services/utils";
 
 const initialErrorState = {
   taxType: {
@@ -171,6 +172,7 @@ const TaxDetailForm = ({ onTaxDetailAdd, editTaxDetail }) => {
                 value={taxDetail.amount}
                 error={formErrors.amount.invalid}
                 onChange={inputChangeHandler}
+                onInput={validateNumber}
                 name="amount"
                 id="amount"
               />

@@ -21,6 +21,7 @@ import {
   getBranches,
   selectIsLoading,
 } from "./slice/moneyTransferSlice";
+import { validateNumber } from "../../../../services/utils";
 
 const initialState = {
   branch: "",
@@ -289,6 +290,7 @@ const MoneyTransferAdd = () => {
                     value={moneyTransfer.amount}
                     error={formErrors.amount.invalid}
                     onChange={inputChangeHandler}
+                    onInput={validateNumber}
                     name="amount"
                     id="amount"
                   />

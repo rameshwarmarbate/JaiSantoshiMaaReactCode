@@ -54,8 +54,8 @@ const AddRateMaster = () => {
     rates: [],
     article: "",
     station: null,
-    rate: 0,
-    ddCharges: 0,
+    rate: "",
+    ddCharges: "",
   };
   const columns = [
     { field: "_id", headerName: "Id" },
@@ -314,8 +314,8 @@ const AddRateMaster = () => {
             rates: [...currState.rates, rateListItem],
             article: "",
             station: null,
-            rate: 0,
-            ddCharges: 0,
+            rate: "",
+            ddCharges: "",
           };
         });
         setHttpError("");

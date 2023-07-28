@@ -85,7 +85,13 @@ const UserPermissions = () => {
             setHttpError(message);
           } else {
             setHttpError("");
-            setBranchUsers(payload?.data);
+            if (user.type.toLowerCase() === "superadmin") {
+              setBranchUsers(payload?.data);
+            } else {
+              setBranchUsers(
+                payload?.data?.filter(({ id }) => user._id !== id)
+              );
+            }
           }
         })
         .catch(() => {

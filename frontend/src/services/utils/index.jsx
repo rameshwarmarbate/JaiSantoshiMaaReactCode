@@ -239,6 +239,6 @@ export const validateNumber = (e) => {
 };
 
 export const validatePhoneNumber = (e) => {
-  const value = e.target.value.slice(0, 10);
+  const value = e.target.value.slice(0, 10).replace(/[^0-9]/g, "");
   e.target.value = value;
 };

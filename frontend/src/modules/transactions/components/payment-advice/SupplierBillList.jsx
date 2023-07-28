@@ -29,9 +29,9 @@ const initialState = {
   branch: "",
   customer: "",
   paymentDate: new Date(),
-  outstanding: 0,
-  totalPaid: 0,
-  paidToday: 0,
+  outstanding: "",
+  totalPaid: "",
+  paidToday: "",
   payMode: null,
   chequeNo: "",
   chequeDate: null,
@@ -539,7 +539,7 @@ const SupplierBillList = ({
                 size="small"
                 variant="outlined"
                 label="Total outstanding"
-                value={payments.outstanding}
+                value={payments.outstanding || ""}
                 name="outstanding"
                 id="outstanding"
                 InputProps={{
@@ -557,7 +557,7 @@ const SupplierBillList = ({
                 size="small"
                 variant="outlined"
                 label="Total paid"
-                value={payments.totalPaid}
+                value={payments.totalPaid || ""}
                 name="totalPaid"
                 id="totalPaid"
                 InputProps={{

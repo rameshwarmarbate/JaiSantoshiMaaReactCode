@@ -128,6 +128,7 @@ const getUsers = (req, res) => {
 
   User.aggregate([
     { $match: { active: true } },
+    { $sort: { createdAt: -1 } },
     {
       $addFields: {
         convertedBranchId: { $toObjectId: "$branch" },
@@ -469,6 +470,7 @@ const getSearchedUsers = (req, res, next) => {
   }
   User.aggregate([
     { $match: { active: true, $text: { $search: req.body.search } } },
+    { $sort: { createdAt: -1 } },
     {
       $addFields: {
         convertedBranchId: { $toObjectId: "$branch" },

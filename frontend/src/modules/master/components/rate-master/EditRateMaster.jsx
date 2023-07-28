@@ -30,8 +30,8 @@ const initialState = {
   rates: [],
   article: "",
   station: null,
-  rate: 0,
-  ddCharges: 0,
+  rate: "",
+  ddCharges: "",
 };
 
 const initialErrorState = {
@@ -363,8 +363,8 @@ const EditRateMaster = () => {
               rates: [...currState.rates, rateListItem],
               article: "",
               station: null,
-              rate: 0,
-              ddCharges: 0,
+              rate: "",
+              ddCharges: "",
             };
           });
           setHttpError("");
@@ -401,8 +401,8 @@ const EditRateMaster = () => {
               rates: [...filteredList, rateListItem],
               article: "",
               station: null,
-              rate: 0,
-              ddCharges: 0,
+              rate: "",
+              ddCharges: "",
             };
           });
           setEditId("");
@@ -419,8 +419,8 @@ const EditRateMaster = () => {
         ...currState,
         article: "",
         station: null,
-        rate: 0,
-        ddCharges: 0,
+        rate: "",
+        ddCharges: "",
       };
     });
     setEditId("");

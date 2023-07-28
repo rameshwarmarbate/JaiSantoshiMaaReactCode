@@ -55,12 +55,12 @@ const initialState = {
   consigneePhone: "",
   from: "",
   to: "",
-  totalFreight: 0,
-  hamali: 0,
-  deliveryCharges: 0,
-  lrCharges: 0,
-  total: 0,
-  materialCost: 0,
+  totalFreight: "",
+  hamali: "",
+  deliveryCharges: "",
+  lrCharges: "",
+  total: "",
+  materialCost: "",
   deliveryType: null,
   serviceTaxBy: null,
   payType: null,
@@ -323,7 +323,7 @@ const LorryReceiptEdit = () => {
   const submitHandler = (e, isSaveAndPrint, isWithoutAmount = false) => {
     e.preventDefault();
     if (!validateForm(lorryReceipt)) {
-      const updatedLR = lorryReceipt;
+      const updatedLR = { ...lorryReceipt };
       if (updatedLR.consignor) {
         updatedLR.consignor = updatedLR.consignor._id;
         updatedLR.consignee = updatedLR.consignee._id;
@@ -406,10 +406,10 @@ const LorryReceiptEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (!formData.consignor) {
+    if (!formData.consignor && !formData.consignorName?.trim?.()) {
       errors.consignor = { invalid: true, message: "Consignor is required" };
     }
     if (!formData.consignorAddress) {
@@ -418,10 +418,10 @@ const LorryReceiptEdit = () => {
         message: "Consignor address is required",
       };
     }
-    if (formData.from.trim() === "") {
+    if (!formData.from?.trim?.()) {
       errors.from = { invalid: true, message: "From is required" };
     }
-    if (!formData.consignee) {
+    if (!formData.consignee && !formData.consigneeName?.trim?.()) {
       errors.consignee = { invalid: true, message: "Consignee is required" };
     }
     if (!formData.consigneeAddress) {
@@ -430,7 +430,7 @@ const LorryReceiptEdit = () => {
         message: "Consignee address is required",
       };
     }
-    if (formData.to === "") {
+    if (!formData.to?.trim?.()) {
       errors.to = { invalid: true, message: "To is required" };
     }
     if (!formData.transactions.length) {
@@ -506,24 +506,24 @@ const LorryReceiptEdit = () => {
 
   const consignorChangeHandler = (e, value) => {
     if (value) {
-      setLorryReceipt((currState) => {
-        return {
-          ...currState,
-          consignor: value,
-          consignorName: value.name,
-          consignorGst: value.gstNo,
-          consignorAddress: value.address,
-          consignorPhone: value.telephone,
-          from: value.city,
-        };
-      });
+      if (typeof value === "object") {
+        setLorryReceipt((currState) => {
+          return {
+            ...currState,
+            consignor: value,
+            consignorName: value.label,
+            consignorAddress: value.address,
+            from: value.city,
+            consignorPhone: value.telephone,
+          };
+        });
+      }
     } else {
       setLorryReceipt((currState) => {
         return {
           ...currState,
           consignor: null,
           consignorName: "",
-          consignorGst: "",
           consignorAddress: "",
           consignorPhone: "",
           from: "",
@@ -532,26 +532,35 @@ const LorryReceiptEdit = () => {
     }
   };
 
+  const consignorChange = ({ target }) => {
+    setLorryReceipt((currState) => {
+      return {
+        ...currState,
+        consignorName: target.value,
+      };
+    });
+  };
+
   const consigneeChangeHandler = (e, value) => {
     if (value) {
-      setLorryReceipt((currState) => {
-        return {
-          ...currState,
-          consignee: value,
-          consigneeName: value.name,
-          consigneeGst: value.gstNo,
-          consigneeAddress: value.address,
-          consigneePhone: value.telephone,
-          to: value.city,
-        };
-      });
+      if (typeof value === "object") {
+        setLorryReceipt((currState) => {
+          return {
+            ...currState,
+            consignee: value,
+            consigneeName: value.label,
+            consigneeAddress: value.address,
+            to: value.city,
+            consigneePhone: value.telephone,
+          };
+        });
+      }
     } else {
       setLorryReceipt((currState) => {
         return {
           ...currState,
           consignee: null,
           consigneeName: "",
-          consigneeGst: "",
           consigneeAddress: "",
           consigneePhone: "",
           to: "",
@@ -560,6 +569,14 @@ const LorryReceiptEdit = () => {
     }
   };
 
+  const consigneeChange = ({ target }) => {
+    setLorryReceipt((currState) => {
+      return {
+        ...currState,
+        consigneeName: target.value,
+      };
+    });
+  };
   const autocompleteChangeListener = (e, option, name) => {
     setLorryReceipt((currState) => {
       return {
@@ -705,9 +722,9 @@ const LorryReceiptEdit = () => {
                   error={formErrors.consignor.invalid}
                 >
                   <Autocomplete
-                    disablePortal
+                    id="consignor"
+                    freeSolo
                     autoSelect
-                    autoHighlight={true}
                     size="small"
                     name="consignor"
                     options={customers}
@@ -718,6 +735,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Consignor"
+                        onChange={(e) => consignorChange(e)}
                         error={formErrors.consignor.invalid}
                         fullWidth
                       />
@@ -759,7 +777,6 @@ const LorryReceiptEdit = () => {
                 >
                   <TextField
                     size="small"
-                    type="number"
                     variant="outlined"
                     label="Consignor phone"
                     value={lorryReceipt.consignorPhone}
@@ -800,9 +817,9 @@ const LorryReceiptEdit = () => {
                   error={formErrors.consignee.invalid}
                 >
                   <Autocomplete
-                    disablePortal
+                    id="consignee"
+                    freeSolo
                     autoSelect
-                    autoHighlight={true}
                     size="small"
                     name="consignee"
                     options={customers}
@@ -813,6 +830,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Consignee"
+                        onChange={(e) => consigneeChange(e)}
                         error={formErrors.consignee.invalid}
                         fullWidth
                       />
@@ -854,7 +872,6 @@ const LorryReceiptEdit = () => {
                 >
                   <TextField
                     size="small"
-                    type="number"
                     variant="outlined"
                     label="Consignee phone"
                     value={lorryReceipt.consigneePhone}

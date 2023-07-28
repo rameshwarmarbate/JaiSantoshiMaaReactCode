@@ -32,15 +32,15 @@ const initialState = {
   date: new Date(),
   customer: "",
   lrList: [],
-  totalFreight: 0,
-  freight: 0,
-  localFreight: 0,
-  cgst: 0,
-  cgstPercent: 0,
-  sgst: 0,
-  sgstPercent: 0,
-  total: 0,
-  grandTotal: 0,
+  totalFreight: "",
+  freight: "",
+  localFreight: "",
+  cgst: "",
+  cgstPercent: "",
+  sgst: "",
+  sgstPercent: "",
+  total: "",
+  grandTotal: "",
   remark: "",
 };
 
@@ -532,7 +532,7 @@ const BillAdd = () => {
                     type="number"
                     variant="outlined"
                     label="Total freight"
-                    value={bill.totalFreight}
+                    value={bill.totalFreight || ""}
                     onChange={inputChangeHandler}
                     name="totalFreight"
                     id="totalFreight"
@@ -636,7 +636,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="CGST"
-                    value={bill.cgst}
+                    value={bill.cgst || ""}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
                     name="cgst"
@@ -685,7 +685,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="SGST"
-                    value={bill.sgst}
+                    value={bill.sgst || ""}
                     onChange={inputChangeHandler}
                     name="sgst"
                     id="sgst"
@@ -706,7 +706,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Total"
-                    value={bill.total}
+                    value={bill.total || ""}
                     onChange={inputChangeHandler}
                     name="total"
                     id="total"
@@ -728,7 +728,7 @@ const BillAdd = () => {
                     type="number"
                     variant="outlined"
                     label="Grand total"
-                    value={bill.grandTotal}
+                    value={bill.grandTotal || ""}
                     onChange={inputChangeHandler}
                     name="grandTotal"
                     id="grandTotal"
