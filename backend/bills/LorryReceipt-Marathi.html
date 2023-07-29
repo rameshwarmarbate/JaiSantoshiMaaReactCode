@@ -103,7 +103,7 @@
   .copy_label {
     background-color: #ccc;
     display: inline-block;
-    margin-left: 10mm;
+    margin-left: 2mm;
     padding: 1mm 2mm;
     margin-top: 1mm;
     margin-bottom: 2mm;
@@ -196,7 +196,7 @@
               <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
             </td>
             <td width="45%" rowspan="3" class="noBdrBtm">
-              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <h1 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h1>
               <p class="small-1">
                 स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
                 ता. हवेली, जि. पुणे
@@ -287,8 +287,8 @@
             <td class="right">{{info.lr.hamali}}</td>
           </tr>
           <tr>
-            <td>Bilty charges</td>
-            <td class="right"></td>
+            <td>Billty charges</td>
+            <td class="right">{{info.lr.billtyCharges}}</td>
           </tr>
           <tr>
             <td>Other</td>
@@ -310,7 +310,9 @@
         <table class="noBdrTop">
           <tr>
             <td style="padding: 9px;">
-              <div>
+              <div style="
+              display: flex;
+          ">
                 PAID
                 <div class="checkbox">
                   {{#info.isPaid}}
@@ -336,11 +338,13 @@
                   {{/info.isTBB}}
                 </div>
                 <div class="copy_label">CONSIGNOR COPY</div>
+                <span style="padding-left: 10mm;"> Mobile: {{info.consignor.telephone}}</span>
               </div>
               <div>
                 <p class="small">
                   काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
                   <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                  <span style="padding-left: 8mm; font-size: 10pt;"> Email: {{info.consignor.email}}</span>
                 </p>
                 <p class="small">
                   मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी
@@ -369,7 +373,7 @@
               <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
             </td>
             <td width="45%" rowspan="3" class="noBdrBtm">
-              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <h1 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h1>
               <p class="small-1">
                 स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
                 ता. हवेली, जि. पुणे
@@ -458,8 +462,8 @@
             <td class="right">{{info.lr.hamali}}</td>
           </tr>
           <tr>
-            <td>Bilty charges</td>
-            <td class="right"></td>
+            <td>Billty charges</td>
+            <td class="right">{{info.lr.billtyCharges}}</td>
           </tr>
           <tr>
             <td>Other</td>
@@ -481,7 +485,9 @@
         <table class="noBdrTop">
           <tr>
             <td style="padding: 9px;">
-              <div>
+              <div style="
+              display: flex;
+          ">
                 PAID
                 <div class="checkbox">
                   {{#info.isPaid}}
@@ -507,11 +513,13 @@
                   {{/info.isTBB}}
                 </div>
                 <div class="copy_label">CONSIGNEE COPY</div>
+                <span style="padding-left: 10mm;"> Mobile: {{info.consignee.telephone}}</span>
               </div>
               <div>
                 <p class="small">
                   काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
                   <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                  <span style="padding-left: 8mm; font-size: 10pt;"> Email: {{info.consignee.email}}</span>
                 </p>
                 <p class="small">
                   मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी
@@ -540,7 +548,7 @@
               <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
             </td>
             <td width="45%" rowspan="3" class="noBdrBtm">
-              <h2 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h2>
+              <h1 class="center mt1 mb1">जय संतोषी माँ ट्रान्सपोर्ट</h1>
               <p class="small-1">
                 स. नं. ४८/१ (नवीन) उरुळी देवाची, पुणे - सासवड रोड, फुरसुंगी,
                 ता. हवेली, जि. पुणे
@@ -629,8 +637,8 @@
             <td class="right">{{info.lr.hamali}}</td>
           </tr>
           <tr>
-            <td>Bilty charges</td>
-            <td class="right"></td>
+            <td>Billty charges</td>
+            <td class="right">{{info.lr.billtyCharges}}</td>
           </tr>
           <tr>
             <td>Other</td>
@@ -652,9 +660,9 @@
         <table class="noBdrTop">
           <tr>
             <td style="padding: 9px;">
-              <div>
+              <div style=" display: flex; ">
                 PAID
-                <div class="checkbox">
+                <div class=" checkbox">
                   {{#info.isPaid}}
                   <img src="{{{info.checked}}}" alt="Checked" />
                   {{/info.isPaid}} {{^info.isPaid}}
@@ -678,11 +686,15 @@
                   {{/info.isTBB}}
                 </div>
                 <div class="copy_label">DRIVER COPY</div>
+                <span style="padding-left: 10mm;"> Mobile: {{info.consignor.telephone}}</span>
+
               </div>
               <div>
                 <p class="small">
                   काचसामान आणि तेल डब्याची मोडतोड झाल्यास आम्ही जवाबदार नाही
                   <span class="footer_gst">GSTIN: 27AJBPJ0448F1ZK</span>
+                  <span style="padding-left: 8mm; font-size: 10pt;"> Email: {{info.consignor.email}}</span>
+
                 </p>
                 <p class="small">
                   मालाबद्दल कोणत्याही प्रकारची तक्रार ७ दिवसांच्‍या आत लेखी

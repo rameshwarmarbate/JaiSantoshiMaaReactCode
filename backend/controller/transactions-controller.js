@@ -603,15 +603,25 @@ const viewLorryReceipt = (req, res, next) => {
         if (consigneeError) {
           return res.status(200).json({ message: consigneeError.message });
         }
-        fetchedConsignee = consignee;
+        fetchedConsignee = {
+          ...consignee,
+          telephone: consignee?.telephone || "-",
+          email: consignee?.email || "-",
+        };
         Customer.findById(LRData.consignor, (consignorError, consignor) => {
           if (consignorError) {
             return res.status(200).json({ message: consignorError.message });
           }
-          fetchedConsignor = consignor;
+          fetchedConsignor = {
+            ...consignor,
+            telephone: consignor?.telephone || "-",
+            email: consignor?.email || "-",
+          };
           let totalArticles = 0;
           let totalWeight = 0;
           let totalChargeWeight = 0;
+          LRData.total = LRData.total - LRData.lrCharges + 10;
+          LRData.billtyCharges = isWithoutAmount ? "-" : "10.00";
 
           LRData.transactions.forEach((tr, index) => {
             if (tr.articleNo) {
@@ -633,9 +643,7 @@ const viewLorryReceipt = (req, res, next) => {
           LRData.deliveryCharges = isWithoutAmount
             ? "   -   "
             : LRData.deliveryCharges.toFixed(2);
-          LRData.lrCharges = isWithoutAmount
-            ? "   -   "
-            : LRData.lrCharges.toFixed(2);
+          LRData.lrCharges = isWithoutAmount ? "   -   " : `0.00`;
           LRData.hamali = isWithoutAmount
             ? "   -   "
             : LRData.hamali.toFixed(2);
@@ -1299,9 +1307,12 @@ const printLoadingSlip = (req, res) => {
           .reduce((acc, item) => acc + item.weight, 0)
           .toFixed(2);
         updatedLR.srNo = index + 1;
-        updatedLR.total = updatedLR.total.toFixed(2);
+        updatedLR.total =
+          updatedLR.payType === "ToPay" ? updatedLR.total.toFixed(2) : "-";
         updatedLR.lrNo = updatedLR.lrNo;
-        total += +updatedLR.total;
+        if (updatedLR.payType === "ToPay") {
+          total += +updatedLR.total;
+        }
         lrList.push(updatedLR);
       }
       if (lsData.lrList.length === lrList.length) {
@@ -1934,9 +1945,19 @@ const printBill = (req, res) => {
       const lrList = [];
       data.lrList.forEach(async (lorryReceipt) => {
         const foundLR = await LorryReceipt.findById(lorryReceipt._id);
+        const _id = lorryReceipt._id;
+        const query = {
+          lrList: {
+            $elemMatch: {
+              _id,
+            },
+          },
+        };
+        const foundChallan = await LoadingSlip.findOne(query);
         const lr = JSON.parse(JSON.stringify(foundLR));
         lr.formattedDate = getFormattedDate(lr.date);
-        (lr.formattedLRNo = lr.lrNo), 6;
+        lr.formattedLRNo = lr.lrNo;
+        lr.challanNo = foundChallan?.lsNo || "-";
         lrList.push(lr);
         if (data.lrList.length === lrList.length) {
           const updatedLRList = [];
