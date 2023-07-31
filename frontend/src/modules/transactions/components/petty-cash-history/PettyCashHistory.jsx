@@ -300,7 +300,7 @@ const PettyCashHistory = () => {
       <div className="page_head">
         <h1 className="pageHead">Petty cash transactions</h1>
         <div className="page_actions">
-          {selectedBranch && (
+          {
             <FormControl
               size="small"
               sx={{ width: "150px", marginRight: "5px" }}
@@ -310,7 +310,7 @@ const PettyCashHistory = () => {
                 labelId="branch"
                 name="branch"
                 label="Select branch"
-                value={selectedBranch._id}
+                value={selectedBranch?._id || ""}
                 onChange={branchChangeHandler}
               >
                 {branches.length > 0 &&
@@ -325,7 +325,7 @@ const PettyCashHistory = () => {
                   ))}
               </Select>
             </FormControl>
-          )}
+          }
           <Button
             variant="contained"
             size="small"

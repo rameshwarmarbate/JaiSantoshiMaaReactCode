@@ -259,32 +259,36 @@ const MoneyTransfers = () => {
         <div className="page_head">
           <h1 className="pageHead">Money transfers</h1>
           <div className="page_actions">
-            {selectedBranch && (
-              <FormControl
-                size="small"
-                sx={{ width: "150px", marginRight: "5px" }}
+            <FormControl
+              size="small"
+              sx={{ width: "150px", marginRight: "5px" }}
+            >
+              <InputLabel id="branch">Select branch</InputLabel>
+              <Select
+                labelId="branch"
+                name="branch"
+                label="Select branch"
+                value={selectedBranch?._id || ""}
+                onChange={branchChangeHandler}
+                disabled={
+                  user &&
+                  user.type &&
+                  user.type.toLowerCase() !== "superadmin" &&
+                  user.type.toLowerCase() !== "admin"
+                }
               >
-                <InputLabel id="branch">Select branch</InputLabel>
-                <Select
-                  labelId="branch"
-                  name="branch"
-                  label="Select branch"
-                  value={selectedBranch._id}
-                  onChange={branchChangeHandler}
-                >
-                  {branches.length > 0 &&
-                    branches.map((branch) => (
-                      <MenuItem
-                        key={branch._id}
-                        value={branch._id}
-                        className="menuItem"
-                      >
-                        {branch.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            )}
+                {branches.length > 0 &&
+                  branches.map((branch) => (
+                    <MenuItem
+                      key={branch._id}
+                      value={branch._id}
+                      className="menuItem"
+                    >
+                      {branch.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
             <Button
               variant="contained"
               size="small"

@@ -99,8 +99,15 @@
   }
 
   .logo_image {
-    max-width: 120px;
-    max-height: 80px;
+    max-width: calc(100% - 6mm);
+    max-height: 26mm;
+    margin: 0 3mm;
+  }
+
+  .logo_image-1 {
+    max-width: 150px;
+    max-height: 90px;
+    margin: 0 3mm;
   }
 
   .tbl-header {
@@ -123,14 +130,15 @@
 <body>
   <table class="tbl-header">
     <tr>
-      <td width="20%">
+      <td width="25%" class="center">
+        <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image-1" />
       </td>
-      <td width="60%">
+      <td width="50%" class="center">
         <h2>Freight Invoice</h2>
         <h1>Jai Santoshi Maa Transport</h1>
       </td>
-      <td width="20%">
-        <img src="{{info.logo}}" alt="Jai Santoshi Maa" class="logo_image" />
+      <td width="25%" class="center">
+        <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="logo_image" />
       </td>
     </tr>
   </table>
@@ -185,7 +193,7 @@
           <tr>
             <td>Date</td>
             <td>LR No.</td>
-            <td>Description</td>
+            <td>Customer</td>
             <td>Challan No.</td>
             <td>Article</td>
             <td>FO Num</td>
@@ -201,7 +209,7 @@
           <tr>
             <td>{{formattedDate}}</td>
             <td>{{formattedLRNo}}</td>
-            <td>{{description}}</td>
+            <td>{{consigneeName}}</td>
             <td>{{challanNo}}</td>
             <td>{{article}}</td>
             <td class="right">{{foNum}}</td>

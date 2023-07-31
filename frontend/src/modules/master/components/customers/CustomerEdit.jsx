@@ -194,8 +194,13 @@ const CustomerEdit = () => {
   const handleOnContactPersonAdd = (receivedPerson) => {
     if (!editContact) {
       setCustomer((currentState) => {
-        const currentCustomer = { ...currentState };
-        currentCustomer.contactPerson.push(receivedPerson);
+        let currentCustomer = {
+          ...currentState,
+          contactPerson: [
+            ...(currentState?.contactPerson || []),
+            receivedPerson,
+          ],
+        };
         return currentCustomer;
       });
     } else {

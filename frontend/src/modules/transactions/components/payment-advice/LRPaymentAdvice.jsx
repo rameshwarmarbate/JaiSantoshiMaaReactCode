@@ -214,7 +214,12 @@ const LRPaymentAdvice = ({
 
   useEffect(() => {
     if (selectedSupplier && selectedSupplierType) {
-      dispatch(getLoadingSlipsBySupplier(selectedSupplier))
+      dispatch(
+        getLoadingSlipsBySupplier({
+          supplier: selectedSupplier,
+          branch: user.branch,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {

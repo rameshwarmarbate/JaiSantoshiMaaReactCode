@@ -439,7 +439,7 @@ const AddRateMaster = () => {
                         size="small"
                         variant="outlined"
                         label="Rate"
-                        value={rateList.rate}
+                        value={rateList.rate || ""}
                         onChange={inputChangeHandler}
                         onInput={validateNumber}
                         name="rate"
@@ -459,7 +459,7 @@ const AddRateMaster = () => {
                         size="small"
                         variant="outlined"
                         label="DD charges"
-                        value={rateList.ddCharges}
+                        value={rateList.ddCharges || ""}
                         onChange={inputChangeHandler}
                         onInput={validateNumber}
                         name="ddCharges"

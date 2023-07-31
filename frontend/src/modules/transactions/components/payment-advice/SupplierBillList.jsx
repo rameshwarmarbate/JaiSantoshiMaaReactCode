@@ -156,7 +156,7 @@ const SupplierBillList = ({
             <TextField
               size="small"
               variant="outlined"
-              value={params.row.suppPay}
+              value={params.row.suppPay || ""}
               onChange={inputChangeHandler.bind(null, "suppPay")}
               onInput={validateNumber}
               name={params.row._id}
@@ -202,7 +202,9 @@ const SupplierBillList = ({
 
   useEffect(() => {
     if (selectedSupplier && triggerFetch && selectedSupplierType) {
-      dispatch(getSupplierBills(selectedSupplier))
+      dispatch(
+        getSupplierBills({ supplier: selectedSupplier, branch: user.branch })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {

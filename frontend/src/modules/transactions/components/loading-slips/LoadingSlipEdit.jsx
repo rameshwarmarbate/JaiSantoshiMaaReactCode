@@ -895,7 +895,7 @@ const LoadingSlipEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Total freight"
-                    value={loadingSlip.totalFreight}
+                    value={loadingSlip.totalFreight || ""}
                     error={formErrors.totalFreight.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
@@ -915,7 +915,7 @@ const LoadingSlipEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Rent"
-                    value={loadingSlip.rent}
+                    value={loadingSlip.rent || ""}
                     error={formErrors.rent.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
@@ -933,7 +933,7 @@ const LoadingSlipEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Advance"
-                    value={loadingSlip.advance}
+                    value={loadingSlip.advance || ""}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
                     name="advance"

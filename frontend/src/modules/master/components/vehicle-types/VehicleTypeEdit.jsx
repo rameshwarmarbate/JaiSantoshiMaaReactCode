@@ -174,7 +174,7 @@ const VehicleTypeEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Tyre quantity"
-                    value={vehicleType.tyreQuantity}
+                    value={vehicleType.tyreQuantity || ""}
                     error={formErrors.tyreQuantity.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}

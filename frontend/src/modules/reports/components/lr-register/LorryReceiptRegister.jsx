@@ -145,7 +145,7 @@ const LorryReceiptRegister = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (isSubmitted) {
+    if (isSubmitted && ((user.branch && selectedBranch) || !user.branch)) {
       const query = {};
       if (selectedBranch && selectedBranch._id) {
         query.branch = selectedBranch._id;
@@ -176,7 +176,6 @@ const LorryReceiptRegister = () => {
       dispatch(getLorryReceiptsForReport(requestObject))
         .then(({ payload = {} }) => {
           setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -308,33 +307,31 @@ const LorryReceiptRegister = () => {
         <div className="page_head">
           <h1 className="pageHead">Lorry Receipt Stock Status</h1>
           <div className="page_actions">
-            {selectedBranch && (
-              <FormControl
-                size="small"
-                sx={{ width: "150px", marginRight: "5px" }}
+            <FormControl
+              size="small"
+              sx={{ width: "150px", marginRight: "5px" }}
+            >
+              <InputLabel id="branch">Select branch</InputLabel>
+              <Select
+                labelId="branch"
+                name="branch"
+                label="Select branch"
+                value={selectedBranch?._id || ""}
+                onChange={branchChangeHandler}
+                disabled={!isSuperAdminOrAdmin()}
               >
-                <InputLabel id="branch">Select branch</InputLabel>
-                <Select
-                  labelId="branch"
-                  name="branch"
-                  label="Select branch"
-                  value={selectedBranch._id}
-                  onChange={branchChangeHandler}
-                  disabled={!isSuperAdminOrAdmin()}
-                >
-                  {branches.length > 0 &&
-                    branches.map((branch) => (
-                      <MenuItem
-                        key={branch._id}
-                        value={branch._id}
-                        className="menuItem"
-                      >
-                        {branch.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            )}
+                {branches.length > 0 &&
+                  branches.map((branch) => (
+                    <MenuItem
+                      key={branch._id}
+                      value={branch._id}
+                      className="menuItem"
+                    >
+                      {branch.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
           </div>
         </div>
 

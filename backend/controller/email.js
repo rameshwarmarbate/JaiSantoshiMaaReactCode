@@ -35,6 +35,14 @@ async function sendEmail(to, base64Content, fileName, subject, text, html) {
         },
       ],
     });
+  } else if (to && subject && text && html) {
+    let info = await transporter.sendMail({
+      from: '"JSM Support" <support@jaisantoshimaatransport.com>',
+      to: to,
+      subject: subject,
+      text: text,
+      html: html,
+    });
   } else {
     throw new Error("Parameters are missing!");
   }

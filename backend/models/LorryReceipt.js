@@ -41,6 +41,9 @@ const LorryReceipt = new Schema(
     consignorPhone: {
       type: String,
     },
+    consignorEmail: {
+      type: String,
+    },
     consignee: {
       type: String,
       required: true,
@@ -53,6 +56,9 @@ const LorryReceipt = new Schema(
       type: String,
     },
     consigneePhone: {
+      type: String,
+    },
+    consigneeEmail: {
       type: String,
     },
     from: {

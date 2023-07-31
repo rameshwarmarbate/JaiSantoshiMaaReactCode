@@ -15,9 +15,9 @@ export function fetchBankAccounts() {
   return fetchFromApiServer("GET", url);
 }
 
-export function fetchBillsByCustomer(customer) {
+export function fetchBillsByCustomer({ customer, branch }) {
   const url = `api/transactions/getBillsByCustomer`;
-  return fetchFromApiServer("POST", url, { customer: customer });
+  return fetchFromApiServer("POST", url, { customer, branch });
 }
 
 export function modifyBills(requestObject) {

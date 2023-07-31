@@ -131,6 +131,12 @@
     max-height: 26mm;
     margin: 0 3mm;
   }
+
+  .logo_image-1 {
+    max-width: 150px;
+    max-height: 90px;
+    margin: 0 3mm;
+  }
 </style>
 
 <head>
@@ -143,14 +149,14 @@
 <body>
   <table class="tbl-header">
     <tr>
-      <td width="25%">
-        <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image" />
+      <td width="25%" class="center">
+        <img src="{{{info.logo}}}" alt="Jai Santoshi Maa" class="logo_image-1" />
       </td>
-      <td width="50%">
+      <td width="50%" class="center">
         <h1>Jai Santoshi Maa Transport</h1>
         <h2>Lorry Receipt Challan</h2>
       </td>
-      <td width="25%">
+      <td width="25%" class="center">
         <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="logo_image" />
       </td>
     </tr>
@@ -212,7 +218,7 @@
           <tr>
             <td class="center">{{srNo}}</td>
             <td class="center">{{lrNo}}</td>
-            <td>{{to}}</td>
+            <td>{{consigneeAddress}}</td>
             <td>{{consignorName}}</td>
             <td>{{consigneeName}}</td>
             <td class="right">{{articles}}</td>

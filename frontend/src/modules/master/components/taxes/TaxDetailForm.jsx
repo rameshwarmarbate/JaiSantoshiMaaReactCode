@@ -169,7 +169,7 @@ const TaxDetailForm = ({ onTaxDetailAdd, editTaxDetail }) => {
                 size="small"
                 variant="outlined"
                 label="Amount"
-                value={taxDetail.amount}
+                value={taxDetail.amount || ""}
                 error={formErrors.amount.invalid}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}

@@ -49,9 +49,9 @@ export function addLorryReceipt(requestObject) {
   return fetchFromApiServer("POST", url, requestObject);
 }
 
-export function viewLorryReceipt({ id, email, isWithoutAmount }) {
+export function viewLorryReceipt({ id, email, isWithoutAmount, user }) {
   const url = `api/transactions/viewLorryReceipt/${id}`;
-  return fetchFromApiServer("POST", url, { email, isWithoutAmount });
+  return fetchFromApiServer("POST", url, { email, isWithoutAmount, user });
 }
 
 export function fetchLoadingSlips(requestObject) {

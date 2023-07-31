@@ -431,6 +431,12 @@ const BillAdd = () => {
                     label="Branch"
                     value={bill.branch}
                     onChange={inputChangeHandler}
+                    disabled={
+                      user &&
+                      user.type &&
+                      user.type.toLowerCase() !== "superadmin" &&
+                      user.type.toLowerCase() !== "admin"
+                    }
                   >
                     {branches.length > 0 &&
                       branches.map((branch) => (
@@ -554,7 +560,7 @@ const BillAdd = () => {
                     type="text"
                     variant="outlined"
                     label="Freight"
-                    value={bill.freight}
+                    value={bill.freight || ""}
                     error={formErrors.freight.invalid}
                     onInput={validateNumber}
                     onChange={inputChangeHandler}
@@ -582,7 +588,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Local freight"
-                    value={bill.localFreight}
+                    value={bill.localFreight || ""}
                     error={formErrors.localFreight.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
@@ -610,7 +616,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="CGST %"
-                    value={bill.cgstPercent}
+                    value={bill.cgstPercent || ""}
                     error={formErrors.cgstPercent.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
@@ -659,7 +665,7 @@ const BillAdd = () => {
                     size="small"
                     variant="outlined"
                     label="SGST %"
-                    value={bill.sgstPercent}
+                    value={bill.sgstPercent || ""}
                     error={formErrors.sgstPercent.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}

@@ -505,7 +505,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 size="small"
                 variant="outlined"
                 label="No of articles"
-                value={transactionDetail.articleNo}
+                value={transactionDetail.articleNo || ""}
                 error={formErrors.articleNo.invalid}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}
@@ -536,7 +536,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 size="small"
                 variant="outlined"
                 label="Weight"
-                value={transactionDetail.weight}
+                value={transactionDetail.weight || ""}
                 error={formErrors.weight.invalid}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}
@@ -554,7 +554,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 size="small"
                 variant="outlined"
                 label="Charge weight"
-                value={transactionDetail.chargeWeight}
+                value={transactionDetail.chargeWeight || ""}
                 error={formErrors.chargeWeight.invalid}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}
@@ -604,7 +604,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 size="small"
                 variant="outlined"
                 label="Rate"
-                value={transactionDetail.rate}
+                value={transactionDetail.rate || ""}
                 error={formErrors.rate.invalid}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}
@@ -628,7 +628,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 size="small"
                 variant="outlined"
                 label="Freight"
-                value={transactionDetail.freight}
+                value={transactionDetail.freight || ""}
                 error={formErrors.freight.invalid}
                 name="freight"
                 id="freight"

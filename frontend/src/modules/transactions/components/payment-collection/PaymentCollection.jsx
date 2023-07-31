@@ -169,7 +169,7 @@ const PaymentCollection = () => {
             <TextField
               size="small"
               variant="outlined"
-              value={params.row.receive}
+              value={params.row.receive || ""}
               onChange={inputChangeHandler.bind(null, "amount")}
               onInput={validateNumber}
               name={params.row._id}
@@ -318,8 +318,13 @@ const PaymentCollection = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (selectedCustomer) {
-      dispatch(getBillsByCustomer(selectedCustomer))
+    if (selectedCustomer && selectedBranch) {
+      dispatch(
+        getBillsByCustomer({
+          customer: selectedCustomer,
+          branch: selectedBranch._id,
+        })
+      )
         .then(({ payload = {} }) => {
           setLoading(false);
 
@@ -371,7 +376,7 @@ const PaymentCollection = () => {
     } else {
       setLoading(false);
     }
-  }, [selectedCustomer]);
+  }, [selectedCustomer, selectedBranch]);
 
   useEffect(() => {
     let receivedToday = 0;

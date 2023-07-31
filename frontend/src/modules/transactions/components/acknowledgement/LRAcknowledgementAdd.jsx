@@ -39,6 +39,7 @@ const initialErrorState = {
 
 const LRAcknowledgementAdd = () => {
   const isLoading = useSelector(selectIsLoading);
+  const user = useSelector((state) => state.user);
 
   const [lorryReceipt, setLorryReceipt] = useState(initialState);
   const [lorryReceipts, setLorryReceipts] = useState([]);
@@ -56,7 +57,11 @@ const LRAcknowledgementAdd = () => {
 
   useEffect(() => {
     if (getUpdatedLR) {
-      dispatch(getAllLRAck())
+      let query = {};
+      if (user.branch) {
+        query = { branch: user.branch };
+      }
+      dispatch(getAllLRAck(query))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {

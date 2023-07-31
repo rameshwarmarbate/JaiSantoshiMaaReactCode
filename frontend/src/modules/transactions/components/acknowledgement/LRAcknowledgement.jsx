@@ -309,7 +309,7 @@ const LRAcknowledgement = () => {
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch);
-    setIsSubmitted(false);
+    setIsSubmitted(true);
   };
 
   const submitHandler = (e) => {

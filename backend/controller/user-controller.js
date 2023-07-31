@@ -67,7 +67,7 @@ const signupCtrl = (req, res, next) => {
       },
 
       branch: {
-        $regex: getRegex(req.body.branch?.trim?.()),
+        $regex: getRegex(req.body.branch),
         $options: "i",
       },
 
@@ -322,7 +322,7 @@ const updateUser = (req, res, next) => {
         $options: "i",
       },
       branch: {
-        $regex: getRegex(req.body.branch?.trim?.()),
+        $regex: getRegex(req.body.branch),
         $options: "i",
       },
 

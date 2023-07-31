@@ -138,7 +138,7 @@ const Stations = ({ places, quotation, setQuotation }) => {
                 variant="outlined"
                 label="Amount"
                 error={formErrors.amount.invalid}
-                value={station.amount}
+                value={station.amount || ""}
                 onChange={inputChangeHandler}
                 onInput={validateNumber}
                 name="amount"
@@ -161,7 +161,7 @@ const Stations = ({ places, quotation, setQuotation }) => {
                 size="small"
                 variant="outlined"
                 label="Other field value"
-                value={station.otherFieldValue}
+                value={station.otherFieldValue || ""}
                 onInput={validateNumber}
                 onChange={inputChangeHandler}
                 name="otherFieldValue"

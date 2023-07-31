@@ -15,9 +15,9 @@ export function fetchLoadingSlipsById(lsList) {
   return fetchFromApiServer("POST", url, { lsList: lsList });
 }
 
-export function fetchAllLRAck() {
+export function fetchAllLRAck(requestObject) {
   const url = `api/transactions/getAllLRAck`;
-  return fetchFromApiServer("GET", url);
+  return fetchFromApiServer("POST", url, requestObject);
 }
 export function fetchChallanAck(id) {
   const url = `api/transactions/getChallanAck/${id}`;

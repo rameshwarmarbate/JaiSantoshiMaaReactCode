@@ -234,7 +234,13 @@ const LorryReceipts = () => {
 
   useEffect(() => {
     if (viewLRId) {
-      dispatch(downloadLorryReceipt({ id: viewLRId._id, email: "" }))
+      dispatch(
+        downloadLorryReceipt({
+          id: viewLRId._id,
+          email: "",
+          user: user?.employee?.name || "",
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -264,7 +270,11 @@ const LorryReceipts = () => {
     if (sendEmail && emailAddress && selectedLR) {
       setIsOpenEmail(false);
       dispatch(
-        downloadLorryReceipt({ id: selectedLR._id, email: emailAddress })
+        downloadLorryReceipt({
+          id: selectedLR._id,
+          email: emailAddress,
+          user: user?.employee?.name || "",
+        })
       )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};

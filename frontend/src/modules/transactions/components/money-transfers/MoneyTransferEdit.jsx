@@ -57,6 +57,7 @@ const initialErrorState = {
 
 const MoneyTransferEdit = () => {
   const isLoading = useSelector(selectIsLoading);
+  const user = useSelector((state) => state.user);
 
   const [branches, setBranches] = useState([]);
   const [moneyTransfer, setMoneyTransfer] = useState(initialState);
@@ -229,6 +230,12 @@ const MoneyTransferEdit = () => {
                     label="Branch"
                     value={moneyTransfer.branch}
                     onChange={inputChangeHandler}
+                    disabled={
+                      user &&
+                      user.type &&
+                      user.type.toLowerCase() !== "superadmin" &&
+                      user.type.toLowerCase() !== "admin"
+                    }
                   >
                     {branches.length > 0 &&
                       branches.map((branch) => (
@@ -314,7 +321,7 @@ const MoneyTransferEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Amount"
-                    value={moneyTransfer.amount}
+                    value={moneyTransfer.amount || ""}
                     error={formErrors.amount.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}

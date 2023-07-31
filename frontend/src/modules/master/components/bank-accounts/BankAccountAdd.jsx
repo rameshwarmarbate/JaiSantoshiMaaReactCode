@@ -391,7 +391,7 @@ const BankAccountAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Opening balance"
-                    value={bankAccount.openingBalance}
+                    value={bankAccount.openingBalance || ""}
                     error={formErrors.openingBalance.invalid}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}

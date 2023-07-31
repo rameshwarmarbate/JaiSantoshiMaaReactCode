@@ -23,9 +23,9 @@ export function fetchBankAccounts() {
   const url = `api/master/getBankAccounts`;
   return fetchFromApiServer("GET", url);
 }
-export function fetchLoadingSlipsBySupplier(supplier) {
+export function fetchLoadingSlipsBySupplier({ supplier, branch }) {
   const url = `api/transactions/getLoadingSlipsBySupplier/${supplier}`;
-  return fetchFromApiServer("GET", url, {});
+  return fetchFromApiServer("POST", url, { branch });
 }
 
 export function addSupplierBill(requestObject) {
@@ -49,7 +49,7 @@ export function fetchSuppliersByType(supplierType) {
   return fetchFromApiServer("POST", url, { supplierType: supplierType });
 }
 
-export function fetchSupplierBills(supplier) {
+export function fetchSupplierBills({ supplier, branch }) {
   const url = `api/transactions/getSupplierBills/${supplier}`;
-  return fetchFromApiServer("GET", url, {});
+  return fetchFromApiServer("POST", url, { branch });
 }

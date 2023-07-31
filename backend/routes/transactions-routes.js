@@ -243,7 +243,7 @@ routes.route("/getLastLR").get(checkAuth, transactionsCtrl.getLastLR);
 
 routes
   .route("/getLoadingSlipsBySupplier/:id")
-  .get(checkAuth, transactionsCtrl.getLoadingSlipsBySupplier);
+  .post(checkAuth, transactionsCtrl.getLoadingSlipsBySupplier);
 
 routes
   .route("/saveSupplierPayments")
@@ -255,7 +255,7 @@ routes
 
 routes
   .route("/getSupplierBills/:supplier")
-  .get(checkAuth, transactionsCtrl.getSupplierBills);
+  .post(checkAuth, transactionsCtrl.getSupplierBills);
 
 routes
   .route("/updateSupplierBills")
@@ -295,7 +295,7 @@ routes
   .route("/downloadLRReport")
   .post(checkAuth, transactionsCtrl.downloadLRReport);
 
-routes.route("/getAllLRAck").get(checkAuth, transactionsCtrl.getAllLRAck);
+routes.route("/getAllLRAck").post(checkAuth, transactionsCtrl.getAllLRAck);
 routes
   .route("/getChallanAck/:id")
   .get(checkAuth, transactionsCtrl.getChallanAck);

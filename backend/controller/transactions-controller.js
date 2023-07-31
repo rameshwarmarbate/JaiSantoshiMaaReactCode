@@ -32,7 +32,7 @@ const getLorryReceipts = (req, res, next) => {
   const query = { active: true };
 
   if (req.body.branch) {
-    query.branch = req.body.branch?.trim?.();
+    query.branch = req.body.branch;
   }
 
   LorryReceipt.find(query)
@@ -52,7 +52,7 @@ const getLorryReceiptsForLS = (req, res, next) => {
   const query = { active: true, status: 0 };
 
   if (req.body.branch) {
-    query.branch = req.body.branch?.trim?.();
+    query.branch = req.body.branch;
   }
   const limit = 50;
   const start = (req.body.page - 1) * limit;
@@ -89,7 +89,7 @@ const getLorryReceiptsWithCount = (req, res, next) => {
   const start = (req.body.pagination.page - 1) * limit;
   const end = req.body.pagination.page * limit;
 
-  LorryReceipt.find({ branch: req.body.branch?.trim?.(), active: true })
+  LorryReceipt.find({ branch: req.body.branch, active: true })
     .sort("-createdAt")
     .exec((lrError, lorryReceipts) => {
       if (lrError) {
@@ -123,14 +123,14 @@ const getLRAckWithCount = (req, res, next) => {
 
   const query = {
     active: true,
-    branch: req.body.branch?.trim?.(),
+    branch: req.body.branch,
     status: { $ne: 0 },
   };
 
   if (req.body.query.startDate) {
     const date = new Date(req.body.query.startDate);
     const updatedDate = new Date(date).setDate(date?.getDate() + 1);
-    const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+    const newDate = new Date(updatedDate)?.setUTCHours(0, 0, 0, 000);
     query.date = {
       ...query.date,
       $gte: new Date(newDate)?.toISOString(),
@@ -211,8 +211,8 @@ const getLorryReceiptsByConsignor = (req, res, next) => {
   }
 
   LorryReceipt.find({
-    branch: req.body.branch?.trim?.(),
-    consignor: req.body.consignor?.trim?.(),
+    branch: req.body.branch,
+    consignor: req.body.consignor,
     active: true,
   })
     .limit(1000)
@@ -225,6 +225,29 @@ const getLorryReceiptsByConsignor = (req, res, next) => {
         res.json(lorryReceipts);
       }
     });
+};
+
+const sendMailToCustomer = (lr) => {
+  if (lr.consigneeEmail?.trim?.()) {
+    sendEmail(
+      lr.consigneeEmail?.trim?.(),
+      undefined,
+      undefined,
+      `JSM - Lorry receipt no. ${lr.lrNo}`,
+      `JSM - Lorry receipt no. ${lr.lrNo}`,
+      `<p><b>Hello</b></p><p>Please check created lorry receipt</p>`
+    );
+  }
+  if (lr.consignorEmail?.trim?.()) {
+    sendEmail(
+      lr.consignorEmail?.trim?.(),
+      undefined,
+      undefined,
+      `JSM - Lorry receipt no. ${lr.lrNo}`,
+      `JSM - Lorry receipt no. ${lr.lrNo}`,
+      `<p><b>Hello</b></p><p>Please check created lorry receipt</p>`
+    );
+  }
 };
 
 const addLorryReceipt = async (req, res, next) => {
@@ -266,7 +289,7 @@ const addLorryReceipt = async (req, res, next) => {
 
       if (foundConsignor && foundConsignee) {
         const lorryReceipt = new LorryReceipt({
-          branch: req.body.branch?.trim?.(),
+          branch: req.body.branch,
           lrNo: formattedLR?.trim?.(),
           date: req.body.date,
           invoiceNo: req.body.invoiceNo,
@@ -276,11 +299,13 @@ const addLorryReceipt = async (req, res, next) => {
           consignorName: req.body.consignorName?.trim?.(),
           consignorAddress: req.body.consignorAddress?.trim?.(),
           consignorPhone: req.body.consignorPhone,
+          consignorEmail: req.body.consignorEmail?.trim?.(),
           from: req.body.from,
           consignee: req.body.consignee,
           consigneeName: req.body.consigneeName?.trim?.(),
           consigneeAddress: req.body.consigneeAddress?.trim?.(),
           consigneePhone: req.body.consigneePhone,
+          consigneeEmail: req.body.consigneeEmail?.trim?.(),
           to: req.body.to,
           materialCost: req.body.materialCost,
           deliveryType: req.body.deliveryType,
@@ -313,6 +338,7 @@ const addLorryReceipt = async (req, res, next) => {
                 message: `LorryReceipt with LR no (${lorryReceipt.lrNo}) already exist!`,
               });
             }
+            sendMailToCustomer(data);
             return res.status(200).json({ message: error.message });
           } else {
             // TransactionPrefix.findOneAndUpdate(
@@ -333,6 +359,7 @@ const addLorryReceipt = async (req, res, next) => {
             city: req.body.from?.trim?.(),
             telephone: req.body.consignorPhone,
             createdBy: req.body.createdBy,
+            email: req.body.consignorEmail,
           });
 
           const consignee = new Customer({
@@ -341,13 +368,14 @@ const addLorryReceipt = async (req, res, next) => {
             city: req.body.to?.trim?.(),
             telephone: req.body.consigneePhone,
             createdBy: req.body.createdBy,
+            email: req.body.consigneeEmail,
           });
 
           const createdConsignor = await Customer.create(consignor);
           const createdConsignee = await Customer.create(consignee);
           if (createdConsignor && createdConsignee) {
             const lorryReceipt = new LorryReceipt({
-              branch: req.body.branch?.trim?.(),
+              branch: req.body.branch,
               lrNo: formattedLR?.trim?.(),
               date: req.body.date,
               invoiceNo: req.body.invoiceNo?.trim?.(),
@@ -357,11 +385,13 @@ const addLorryReceipt = async (req, res, next) => {
               consignorName: createdConsignor.name?.trim?.(),
               consignorAddress: createdConsignor.address?.trim?.(),
               consignorPhone: createdConsignor.telephone,
+              consignorEmail: createdConsignor.email?.trim?.(),
               from: req.body.from,
               consignee: createdConsignee._id,
               consigneeName: createdConsignee.name?.trim?.(),
               consigneeAddress: createdConsignee.address?.trim?.(),
               consigneePhone: createdConsignee.telephone,
+              consigneeEmail: createdConsignee.email?.trim?.(),
               to: req.body.to,
               materialCost: req.body.materialCost,
               deliveryType: req.body.deliveryType,
@@ -396,6 +426,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // ).exec();
+                sendMailToCustomer(data);
                 return res.send(data);
               }
             });
@@ -413,12 +444,13 @@ const addLorryReceipt = async (req, res, next) => {
             city: req.body.to?.trim?.(),
             telephone: req.body.consigneePhone,
             createdBy: req.body.createdBy,
+            email: req.body.consigneeEmail?.trim?.(),
           });
 
           const createdConsignee = await Customer.create(consignee);
           if (createdConsignee) {
             const lorryReceipt = new LorryReceipt({
-              branch: req.body.branch?.trim?.(),
+              branch: req.body.branch,
               lrNo: formattedLR?.trim?.(),
               date: req.body.date,
               invoiceNo: req.body.invoiceNo,
@@ -428,11 +460,13 @@ const addLorryReceipt = async (req, res, next) => {
               consignorName: req.body.consignorName?.trim?.(),
               consignorAddress: req.body.consignorAddress?.trim?.(),
               consignorPhone: req.body.consignorPhone,
+              consignorEmail: req.body.consignorEmail?.trim?.(),
               from: req.body.from,
               consignee: createdConsignee._id,
               consigneeName: createdConsignee.name?.trim?.(),
               consigneeAddress: createdConsignee.address?.trim?.(),
               consigneePhone: createdConsignee.telephone,
+              consigneeEmail: createdConsignee.email?.trim?.(),
               to: req.body.to,
               materialCost: req.body.materialCost,
               deliveryType: req.body.deliveryType,
@@ -467,6 +501,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // ).exec();
+                sendMailToCustomer(data);
                 return res.send(data);
               }
             });
@@ -484,6 +519,7 @@ const addLorryReceipt = async (req, res, next) => {
             city: req.body.from?.trim?.(),
             telephone: req.body.consignorPhone,
             createdBy: req.body.createdBy,
+            email: req.body.consignorEmail,
           });
 
           const createdConsignor = await Customer.create(consignor);
@@ -499,11 +535,13 @@ const addLorryReceipt = async (req, res, next) => {
               consignorName: createdConsignor.name,
               consignorAddress: createdConsignor.address,
               consignorPhone: createdConsignor.telephone,
+              consignorEmail: createdConsignor.email?.trim?.(),
               from: req.body.from,
               consignee: req.body.consignee,
               consigneeName: req.body.consigneeName,
               consigneeAddress: req.body.consigneeAddress,
               consigneePhone: req.body.consigneePhone,
+              consigneeEmail: req.body.consigneeEmail?.trim?.(),
               to: req.body.to,
               materialCost: req.body.materialCost,
               deliveryType: req.body.deliveryType,
@@ -538,6 +576,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // );
+                sendMailToCustomer(data);
                 return res.send(data);
               }
             });
@@ -633,21 +672,21 @@ const viewLorryReceipt = (req, res, next) => {
             if (tr.chargeWeight) {
               totalChargeWeight = totalChargeWeight + tr.chargeWeight;
             }
-            tr.freight = tr.freight.toFixed(2);
-            tr.rate = tr.rate.toFixed(2);
+            tr.freight = tr.freight?.toFixed(2);
+            tr.rate = tr.rate?.toFixed(2);
             tr.srNo = index + 1;
           });
           LRData.totalFreight = isWithoutAmount
             ? "   -   "
-            : LRData.totalFreight.toFixed(2);
+            : LRData.totalFreight?.toFixed(2);
           LRData.deliveryCharges = isWithoutAmount
             ? "   -   "
-            : LRData.deliveryCharges.toFixed(2);
+            : LRData.deliveryCharges?.toFixed(2);
           LRData.lrCharges = isWithoutAmount ? "   -   " : `0.00`;
           LRData.hamali = isWithoutAmount
             ? "   -   "
-            : LRData.hamali.toFixed(2);
-          LRData.total = isWithoutAmount ? "   -   " : LRData.total.toFixed(2);
+            : LRData.hamali?.toFixed(2);
+          LRData.total = isWithoutAmount ? "   -   " : LRData.total?.toFixed(2);
 
           const logo = base64_encode(
             path.join(__dirname, "../public/images/logo.png")
@@ -668,7 +707,7 @@ const viewLorryReceipt = (req, res, next) => {
             {
               info: {
                 lr: LRData,
-                lrNo: LRData.LRNo,
+                lrNo: LRData.LRNo || "-",
                 isTBB:
                   LRData.payType && LRData.payType?.toLowerCase() === "tbb",
                 isToPay:
@@ -684,6 +723,7 @@ const viewLorryReceipt = (req, res, next) => {
                 laxmi: laxmi,
                 checked: checked,
                 unchecked: unchecked,
+                user: req.body.user,
               },
             },
             (err, HTML) => {
@@ -748,7 +788,7 @@ const updateLorryReceipt = async (req, res, next) => {
   });
 
   let model = {
-    branch: req.body.branch?.trim?.(),
+    branch: req.body.branch,
     lrNo: req.body.lrNo?.trim?.(),
     date: req.body.date,
     invoiceNo: req.body.invoiceNo?.trim?.(),
@@ -758,11 +798,13 @@ const updateLorryReceipt = async (req, res, next) => {
     consignorName: req.body.consignorName?.trim?.(),
     consignorAddress: req.body.consignorAddress?.trim?.(),
     consignorPhone: req.body.consignorPhone?.trim?.(),
+    consignorEmail: req.body.consignorEmail?.trim?.(),
     from: req.body.from?.trim?.(),
     consignee: req.body.consignee?.trim?.(),
     consigneeName: req.body.consigneeName?.trim?.(),
     consigneeAddress: req.body.consigneeAddress?.trim?.(),
     consigneePhone: req.body.consigneePhone?.trim?.(),
+    consigneeEmail: req.body.consigneeEmail?.trim?.(),
     to: req.body.to?.trim?.(),
     materialCost: req.body.materialCost?.trim?.(),
     deliveryType: req.body.deliveryType?.trim?.(),
@@ -800,6 +842,26 @@ const updateLorryReceipt = async (req, res, next) => {
         if (error) {
           return res.status(200).json({ message: error.message });
         } else {
+          if (req.body.consigneeEmail?.trim?.()) {
+            sendEmail(
+              req.body.consigneeEmail?.trim?.(),
+              undefined,
+              undefined,
+              `JSM - Lorry receipt no. ${data.lrNo}`,
+              `JSM - Lorry receipt no. ${data.lrNo}`,
+              `<p><b>Hello</b></p><p>Please check updated lorry receipt</p>`
+            );
+          }
+          if (req.body.consignorEmail?.trim?.()) {
+            sendEmail(
+              req.body.consignorEmail?.trim?.(),
+              undefined,
+              undefined,
+              `JSM - Lorry receipt no. ${data.lrNo}`,
+              `JSM - Lorry receipt no. ${data.lrNo}`,
+              `<p><b>Hello</b></p><p>Please check updated lorry receipt</p>`
+            );
+          }
           return res.json(data);
         }
       }
@@ -837,6 +899,7 @@ const updateLorryReceipt = async (req, res, next) => {
                 city: req.body.from?.trim?.(),
                 telephone: req.body.consignorPhone,
                 createdBy: req.body.createdBy,
+                email: req.body.consignorEmail,
               });
 
               const consignee = new Customer({
@@ -845,6 +908,7 @@ const updateLorryReceipt = async (req, res, next) => {
                 city: req.body.to?.trim?.(),
                 telephone: req.body.consigneePhone,
                 createdBy: req.body.createdBy,
+                email: req.body.consigneeEmail,
               });
 
               const createdConsignor = await Customer.create(consignor);
@@ -871,6 +935,7 @@ const updateLorryReceipt = async (req, res, next) => {
                 city: req.body.to?.trim?.(),
                 telephone: req.body.consigneePhone,
                 createdBy: req.body.createdBy,
+                email: req.body.consigneeEmail,
               });
 
               const createdConsignee = await Customer.create(consignee);
@@ -893,6 +958,7 @@ const updateLorryReceipt = async (req, res, next) => {
                 city: req.body.from?.trim?.(),
                 telephone: req.body.consignorPhone,
                 createdBy: req.body.createdBy,
+                email: req.body.consignorEmail,
               });
 
               const createdConsignor = await Customer.create(consignor);
@@ -1302,13 +1368,13 @@ const printLoadingSlip = (req, res) => {
         const updatedLR = JSON.parse(JSON.stringify(lrData));
         updatedLR.articles = updatedLR.transactions
           .reduce((acc, item) => acc + item.articleNo, 0)
-          .toFixed(2);
+          ?.toFixed(2);
         updatedLR.weight = updatedLR.transactions
           .reduce((acc, item) => acc + item.weight, 0)
-          .toFixed(2);
+          ?.toFixed(2);
         updatedLR.srNo = index + 1;
         updatedLR.total =
-          updatedLR.payType === "ToPay" ? updatedLR.total.toFixed(2) : "-";
+          updatedLR.payType === "ToPay" ? updatedLR.total?.toFixed(2) : "-";
         updatedLR.lrNo = updatedLR.lrNo;
         if (updatedLR.payType === "ToPay") {
           total += +updatedLR.total;
@@ -1316,11 +1382,18 @@ const printLoadingSlip = (req, res) => {
         lrList.push(updatedLR);
       }
       if (lsData.lrList.length === lrList.length) {
+        const isTwoRowsOccupied = lrList?.some(
+          ({ consigneeAddress, consignorName, consigneeName }) =>
+            consigneeAddress?.length > 20 ||
+            consignorName?.length > 20 ||
+            consigneeName?.length > 20
+        );
         const blankRows = [];
-        if (lsData.lrList.length < 8) {
-          for (let i = lsData.lrList.length; i < 29; i = i + 1) {
-            blankRows.push({ sr: "-" });
-          }
+        const length =
+          30 -
+          (isTwoRowsOccupied ? (lrList.length + 1) * 2 : lrList.length + 1);
+        for (let i = 0; i < length; i = i + 1) {
+          blankRows.push({ sr: "-" });
         }
         const logo = base64_encode(
           path.join(__dirname, "../public/images/logo.png")
@@ -1342,14 +1415,14 @@ const printLoadingSlip = (req, res) => {
                 srNo: index + 1,
               })),
               payable: getWordNumber(lsData.totalPayable || 0),
-              freight: lsData.totalFreight.toFixed(2),
-              advance: lsData.advance.toFixed(2),
-              rent: lsData.rent.toFixed(2),
-              totalPayable: lsData.totalPayable.toFixed(2),
+              freight: lsData.totalFreight?.toFixed(2),
+              advance: lsData.advance?.toFixed(2),
+              rent: lsData.rent?.toFixed(2),
+              totalPayable: lsData.totalPayable?.toFixed(2),
               blankRows: blankRows,
               logo: logo,
               laxmi: laxmi,
-              total: [{ total: total.toFixed(2) }],
+              total: [{ total: total?.toFixed(2) }],
             },
           },
           (err, HTML) => {
@@ -1390,7 +1463,7 @@ const getMoneyTransfers = (req, res, next) => {
     return res.status(200).json({ message: "Branch ID is required!" });
   }
 
-  MoneyTransfer.find({ branch: req.body.branch?.trim?.(), active: true })
+  MoneyTransfer.find({ branch: req.body.branch, active: true })
     .limit(1000)
     .sort("-createdAt")
     .exec((error, moneyTransfers) => {
@@ -1511,7 +1584,7 @@ const getPettyTransactions = (req, res, next) => {
     return res.status(200).json({ message: "Branch ID is required!" });
   }
 
-  PettyTransaction.find({ branch: req.body.branch?.trim?.(), active: true })
+  PettyTransaction.find({ branch: req.body.branch, active: true })
     .limit(1000)
     .sort("-createdAt")
     .exec((error, pettyTransactions) => {
@@ -1698,7 +1771,7 @@ const getBills = (req, res, next) => {
   const start = (req.body.pagination.page - 1) * limit;
   const end = req.body.pagination.page * limit;
 
-  Bill.find({ branch: req.body.branch?.trim?.(), active: true })
+  Bill.find({ branch: req.body.branch, active: true })
     .sort("-createdAt")
     .exec((error, bills) => {
       if (error) {
@@ -1719,7 +1792,7 @@ const getBillsByCustomer = (req, res, next) => {
     return res.status(200).json({ message: "Customer ID is required!" });
   }
 
-  Bill.find({ customer: req.body.customer?.trim?.() })
+  Bill.find({ customer: req.body.customer, branch: req.body.branch })
     .limit(1000)
     .exec((error, bills) => {
       if (error) {
@@ -1971,33 +2044,40 @@ const printBill = (req, res) => {
                 updatedLRList.push({
                   ...lr,
                   ...tr,
-                  articleNo: tr.articleNo.toFixed(2),
-                  rate: tr.rate.toFixed(2),
-                  lrCharges: lr.lrCharges ? lr.lrCharges.toFixed(2) : "0.00",
-                  hamali: lr.hamali ? lr.hamali.toFixed(2) : "0.00",
+                  articleNo: tr.articleNo?.toFixed(2),
+                  rate: tr.rate?.toFixed(2),
+                  lrCharges: lr.lrCharges ? lr.lrCharges?.toFixed(2) : "0.00",
+                  hamali: lr.hamali ? lr.hamali?.toFixed(2) : "0.00",
                   deliveryCharges: lr.deliveryCharges
-                    ? lr.deliveryCharges.toFixed(2)
+                    ? lr.deliveryCharges?.toFixed(2)
                     : "0.00",
                   total: (
                     +tr.freight +
                     +lr.lrCharges +
                     +lr.hamali +
                     +lr.deliveryCharges
-                  ).toFixed(2),
+                  )?.toFixed(2),
                 });
               } else {
                 updatedLRList.push({
                   ...tr,
-                  articleNo: tr.articleNo.toFixed(2),
-                  rate: tr.rate.toFixed(2),
-                  total: tr.freight.toFixed(2),
+                  articleNo: tr.articleNo?.toFixed(2),
+                  rate: tr.rate?.toFixed(2),
+                  total: tr.freight?.toFixed(2),
                 });
               }
             });
           });
           let blankRows = [];
-          if (28 - updatedLRList?.length > 0) {
-            blankRows.length = 28 - updatedLRList?.length;
+          const isTwoRowsOccupied = lrList?.some(
+            ({ article, consigneeName }) =>
+              consigneeName?.length > 15 || article?.length > 15
+          );
+          const length =
+            27 -
+            (isTwoRowsOccupied ? (lrList.length + 1) * 2 : lrList.length + 1);
+          for (let i = 0; i < length; i = i + 1) {
+            blankRows.push({ sr: "-" });
           }
           const printData = {
             billNo: data.billNo,
@@ -2017,20 +2097,20 @@ const printBill = (req, res) => {
             lrList: lrList,
             updatedLRList: updatedLRList,
             blankRows,
-            totalWeight: totalWeight.toFixed(2),
-            totalArticles: totalArticles.toFixed(2),
-            freight: (+data.totalFreight).toFixed(2),
-            cgst: (+data.cgst).toFixed(2),
-            cgstPercent: +data.cgstPercent.toFixed(2),
-            sgst: (+data.sgst).toFixed(2),
-            sgstPercent: +data.sgstPercent.toFixed(2),
+            totalWeight: totalWeight?.toFixed(2),
+            totalArticles: totalArticles?.toFixed(2),
+            freight: (+data.totalFreight)?.toFixed(2),
+            cgst: (+data.cgst)?.toFixed(2),
+            cgstPercent: +data.cgstPercent?.toFixed(2),
+            sgst: (+data.sgst)?.toFixed(2),
+            sgstPercent: +data.sgstPercent?.toFixed(2),
             grandTotal: (
               +data.totalFreight +
               +data.freight +
               +data.localFreight +
               +data.sgst +
               +data.cgst
-            ).toFixed(2),
+            )?.toFixed(2),
             totalInWords: getWordNumber(
               +data.totalFreight +
                 +data.freight +
@@ -2041,7 +2121,9 @@ const printBill = (req, res) => {
             otherFreight: data.freight,
             localFreight: data.localFreight,
           };
-
+          const laxmi = base64_encode(
+            path.join(__dirname, "../public/images/laxmi.jpeg")
+          );
           const logo = base64_encode(
             path.join(__dirname, "../public/images/logo.png")
           );
@@ -2052,6 +2134,7 @@ const printBill = (req, res) => {
               info: {
                 ...printData,
                 logo,
+                laxmi,
               },
             },
             (err, HTML) => {
@@ -2156,20 +2239,21 @@ const getLoadingSlipsBySupplier = (req, res, next) => {
       }
       if (vehicleData.length) {
         const vehicleNos = vehicleData.map(({ vehicleNo }) => vehicleNo);
-        LoadingSlip.find(
-          {
-            vehicleNo: {
-              $in: vehicleNos,
-            },
-            active: true,
+        let query = {
+          vehicleNo: {
+            $in: vehicleNos,
           },
-          (LSErr, LSData) => {
-            if (LSErr) {
-              return res.status(200).json({ message: LSErr.message });
-            }
-            res.send(LSData);
+          active: true,
+        };
+        if (req.body.branch) {
+          query = { ...query, branch: req.params.branch };
+        }
+        LoadingSlip.find(query, (LSErr, LSData) => {
+          if (LSErr) {
+            return res.status(200).json({ message: LSErr.message });
           }
-        );
+          res.send(LSData);
+        });
       } else {
         res.send([]);
       }
@@ -2228,8 +2312,15 @@ const getSupplierBills = (req, res, next) => {
   if (!req.params.supplier) {
     return res.status(200).json({ message: "Supplier ID is required!" });
   }
+  let params = {
+    supplier: req.params.supplier,
+    active: true,
+  };
+  if (req.body.branch) {
+    params = { ...params, branch: req.body.branch };
+  }
   SuppliersBill.find(
-    { supplier: req.params.supplier?.trim?.(), active: true },
+    { supplier: req.params.supplier, active: true },
     (err, data) => {
       if (err) {
         res.status(200).json({ message: err.message });
@@ -2580,7 +2671,7 @@ const viewPaymentCollection = (req, res) => {
                 : getFormattedDateString(payment.receivingDate),
               voucherNumber: voucherNumber,
               customer: customerData,
-              payment: payment.receive.toFixed(2),
+              payment: payment.receive?.toFixed(2),
               paymentMode:
                 payment.payMode?.toLowerCase() === "cheque"
                   ? `by ${payment.payMode} no`
@@ -2788,11 +2879,14 @@ const downloadLRReport = (req, res) => {
 };
 
 const getAllLRAck = (req, res) => {
-  const query = {
+  let query = {
     active: true,
     status: { $ne: 0 },
     $or: [{ deliveryDate: null }, { deliveryDate: "" }],
   };
+  if (req.body.branch) {
+    query = { ...query, branch: req.params.branch };
+  }
   LorryReceipt.find(query).exec((lrError, lorryReceipts) => {
     if (lrError) {
       return res.status(200).json({
@@ -2864,7 +2958,7 @@ const getLoadingSlipForReport = (req, res) => {
   const query = { active: true };
   if (req.body.query) {
     if (req.body.query.branch) {
-      query.branch = req.body.query.branch?.trim?.();
+      query.branch = req.body.query.branch;
     }
     if (req.body.query.from) {
       const date = new Date(req.body.query.from);
@@ -3014,7 +3108,7 @@ const pad = (num, size) => {
 };
 
 const getWordNumber = (num) => {
-  const [rupee, paise] = (num || 0).toFixed(2).split(".");
+  const [rupee, paise] = (num || 0)?.toFixed(2).split(".");
   if (parseInt(paise || 0)) {
     return `${titleCase(numWords(+rupee))} Rupees And ${titleCase(
       numWords(+paise)
@@ -3026,7 +3120,7 @@ const getWordNumber = (num) => {
 const titleCase = (str) => {
   str = str?.toLowerCase().split(" ");
   for (var i = 0; i < str.length; i++) {
-    str[i] = str[i]?.charAt(0).toUpperCase() + str[i]?.slice(1);
+    str[i] = str[i]?.charAt(0)?.toUpperCase() + str[i]?.slice(1);
   }
   return str.join(" ");
 };

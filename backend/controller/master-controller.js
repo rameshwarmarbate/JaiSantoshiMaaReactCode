@@ -331,8 +331,8 @@ const addPlace = (req, res, next) => {
       }
       if (foundPlaces && foundPlaces.length > 0) {
         let message = `Place with (${
-          req.body.name?.trim?.().toUpperCase() ===
-          foundPlaces.name?.trim().toUpperCase()
+          req.body.name?.trim?.()?.toUpperCase() ===
+          foundPlaces.name?.trim()?.toUpperCase()
             ? req.body.name
             : req.body.abbreviation
         } already exist!)`;
@@ -404,8 +404,8 @@ const updatePlace = (req, res, next) => {
       }
       if (foundPlaces && foundPlaces.length > 0) {
         let message = `Place with (${
-          req.body.name?.trim?.().toUpperCase() ===
-          foundPlaces.name?.trim().toUpperCase()
+          req.body.name?.trim?.()?.toUpperCase() ===
+          foundPlaces.name?.trim()?.toUpperCase()
             ? req.body.name
             : req.body.abbreviation
         } already exist!)`;
@@ -642,7 +642,7 @@ const getArticle = (req, res, next) => {
 // Add a article
 const addArticle = (req, res, next) => {
   const article = new Article({
-    name: req.body.name.toUpperCase()?.trim?.(),
+    name: req.body.name?.toUpperCase()?.trim?.(),
     description: req.body.description?.trim?.(),
     createdBy: req.body.createdBy,
   });
@@ -731,7 +731,7 @@ const updateArticle = (req, res, next) => {
         {
           $set: {
             branch: req.body.branch?.trim?.(),
-            name: req.body.name.toUpperCase()?.trim?.(),
+            name: req.body.name?.toUpperCase()?.trim?.(),
             description: req.body.description?.trim?.(),
             updatedBy: req.body.updatedBy,
           },
@@ -797,7 +797,9 @@ const getCustomer = (req, res, next) => {
 // Add a customer
 const addCustomer = (req, res, next) => {
   const customer = new Customer({
-    name: req.body.name ? req.body.name.toUpperCase()?.trim?.() : req.body.name,
+    name: req.body.name
+      ? req.body.name?.toUpperCase()?.trim?.()
+      : req.body.name,
     address: req.body.address?.trim?.(),
     telephone: req.body.telephone,
     fax: req.body.fax,
@@ -894,7 +896,7 @@ const updateCustomer = (req, res, next) => {
         {
           $set: {
             name: req.body.name
-              ? req.body.name.toUpperCase()?.trim?.()
+              ? req.body.name?.toUpperCase()?.trim?.()
               : req.body.name,
             address: req.body.address?.trim?.(),
             telephone: req.body.telephone,
@@ -1499,7 +1501,7 @@ const getVehicle = (req, res, next) => {
 const addVehicle = (req, res, next) => {
   const vehicle = new Vehicle({
     owner: req.body.owner?.trim?.(),
-    vehicleNo: req.body.vehicleNo.toUpperCase()?.trim?.(),
+    vehicleNo: req.body.vehicleNo?.toUpperCase()?.trim?.(),
     vehicleType: req.body.vehicleType?.trim?.(),
     make: req.body.make,
     capacity: req.body.capacity,
@@ -1568,7 +1570,7 @@ const updateVehicle = (req, res, next) => {
         {
           $set: {
             owner: req.body.owner?.trim?.(),
-            vehicleNo: req.body.vehicleNo.toUpperCase()?.trim?.(),
+            vehicleNo: req.body.vehicleNo?.toUpperCase()?.trim?.(),
             vehicleType: req.body.vehicleType?.trim?.(),
             make: req.body.make,
             capacity: req.body.capacity,
@@ -2018,16 +2020,18 @@ const addToRateMaster = (req, res) => {
             try {
               const foundArticle = await Article.findOne({
                 name: {
-                  $regex: getRegex(rate.article.toUpperCase()?.trim?.()),
+                  $regex: getRegex(rate.article?.toUpperCase()?.trim?.()),
                   $options: "i",
                 },
               });
               if (foundArticle) {
-                rate.article = foundArticle.name.toUpperCase();
+                rate.article = foundArticle.name?.toUpperCase();
                 if (index === req.body.rates.length - 1) {
                   const rateList = new RateMaster({
                     customer: req.body.customer,
-                    customerName: req.body.customerName.toUpperCase()?.trim?.(),
+                    customerName: req.body.customerName
+                      ?.toUpperCase()
+                      ?.trim?.(),
                     rates: req.body.rates,
                     createdBy: req.body.createdBy,
                   });
@@ -2046,17 +2050,17 @@ const addToRateMaster = (req, res) => {
                 }
               } else {
                 const article = new Article({
-                  name: rate.article.toUpperCase(),
+                  name: rate.article?.toUpperCase(),
                   createdBy: req.body.createdBy,
                 });
                 const createdArticle = await Article.create(article);
                 if (createdArticle) {
-                  rate.article = createdArticle.name.toUpperCase();
+                  rate.article = createdArticle.name?.toUpperCase();
                   if (index === req.body.rates.length - 1) {
                     const rateList = new RateMaster({
                       customer: req.body.customer,
                       customerName: req.body.customerName
-                        .toUpperCase()
+                        ?.toUpperCase()
                         ?.trim?.(),
                       rates: req.body.rates,
                       createdBy: req.body.createdBy,
@@ -2157,12 +2161,12 @@ const updateRateMaster = (req, res) => {
         try {
           const foundArticle = await Article.findOne({
             name: {
-              $regex: getRegex(rate.article.toUpperCase()?.trim?.()),
+              $regex: getRegex(rate.article?.toUpperCase()?.trim?.()),
               $options: "i",
             },
           });
           if (foundArticle) {
-            rate.article = foundArticle.name.toUpperCase();
+            rate.article = foundArticle.name?.toUpperCase();
             udpatedRates.push(rate);
             if (udpatedRates.length === req.body.rates.length) {
               const saveRate = [...udpatedRates];
@@ -2186,12 +2190,12 @@ const updateRateMaster = (req, res) => {
             }
           } else {
             const article = new Article({
-              name: rate.article.toUpperCase(),
+              name: rate.article?.toUpperCase(),
               createdBy: req.body.createdBy,
             });
             const createdArticle = await Article.create(article);
             if (createdArticle) {
-              rate.article = createdArticle.name.toUpperCase();
+              rate.article = createdArticle.name?.toUpperCase();
               udpatedRates.push(rate);
             }
             if (udpatedRates.length === req.body.rates.length) {

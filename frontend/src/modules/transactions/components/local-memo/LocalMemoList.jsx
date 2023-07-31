@@ -266,7 +266,7 @@ const LocalMemoList = () => {
       <div className="page_head">
         <h1 className="pageHead">Local memo loading slips</h1>
         <div className="page_actions">
-          {selectedBranch && (
+          {
             <FormControl
               size="small"
               sx={{ width: "150px", marginRight: "5px" }}
@@ -276,7 +276,7 @@ const LocalMemoList = () => {
                 labelId="branch"
                 name="branch"
                 label="Select branch"
-                value={selectedBranch._id}
+                value={selectedBranch?._id || ""}
                 onChange={branchChangeHandler}
               >
                 {branches.length > 0 &&
@@ -291,7 +291,7 @@ const LocalMemoList = () => {
                   ))}
               </Select>
             </FormControl>
-          )}
+          }
           <Button
             variant="contained"
             size="small"

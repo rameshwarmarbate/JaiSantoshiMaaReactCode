@@ -23,6 +23,7 @@ import { Dialog, LoadingSpinner } from "../../../../ui-controls";
 import TransactionDetails from "./TransactionDetails";
 import {
   base64ToObjectURL,
+  emailRegEx,
   validateNumber,
   validatePhoneNumber,
 } from "../../../../services/utils";
@@ -50,9 +51,11 @@ const initialState = {
   consignor: null,
   consignorAddress: "",
   consignorPhone: "",
+  consignorEmail: "",
   consignee: null,
   consigneeAddress: "",
   consigneePhone: "",
+  consigneeEmail: "",
   from: "",
   to: "",
   totalFreight: "",
@@ -95,6 +98,10 @@ const initialErrorState = {
     invalid: false,
     message: "",
   },
+  consignorEmail: {
+    invalid: false,
+    message: "",
+  },
   from: {
     invalid: false,
     message: "",
@@ -108,6 +115,10 @@ const initialErrorState = {
     message: "",
   },
   consigneePhone: {
+    invalid: false,
+    message: "",
+  },
+  consigneeEmail: {
     invalid: false,
     message: "",
   },
@@ -322,6 +333,7 @@ const LorryReceiptAdd = () => {
                     id: payload?.data._id,
                     email: "",
                     isWithoutAmount,
+                    user: user?.employee?.name || "",
                   })
                 )
                   .then(({ payload = {} }) => {
@@ -406,6 +418,19 @@ const LorryReceiptAdd = () => {
         message: "Payment type is required",
       };
     }
+    if (
+      formData.consigneeEmail?.trim?.() !== "" &&
+      !emailRegEx.test(formData.consigneeEmail)
+    ) {
+      errors.consigneeEmail = { invalid: true, message: "Email is invalid" };
+    }
+
+    if (
+      formData.consignorEmail?.trim?.() !== "" &&
+      !emailRegEx.test(formData.consignorEmail)
+    ) {
+      errors.consignorEmail = { invalid: true, message: "Email is invalid" };
+    }
     if (!formData.payMode && formData.payType === "Paid") {
       errors.payMode = {
         invalid: true,
@@ -470,6 +495,7 @@ const LorryReceiptAdd = () => {
             consignorAddress: value.address,
             from: value.city,
             consignorPhone: value.telephone,
+            consignorEmail: value.email,
           };
         });
       }
@@ -481,6 +507,7 @@ const LorryReceiptAdd = () => {
           consignorName: "",
           consignorAddress: "",
           consignorPhone: "",
+          consignorEmail: "",
           from: "",
         };
       });
@@ -507,6 +534,7 @@ const LorryReceiptAdd = () => {
             consigneeAddress: value.address,
             to: value.city,
             consigneePhone: value.telephone,
+            consigneeEmail: value.email,
           };
         });
       }
@@ -518,6 +546,7 @@ const LorryReceiptAdd = () => {
           consigneeName: "",
           consigneeAddress: "",
           consigneePhone: "",
+          consigneeEmail: "",
           to: "",
         };
       });
@@ -763,6 +792,28 @@ const LorryReceiptAdd = () => {
                 </FormControl>
               </div>
               <div className="grid-item">
+                <FormControl
+                  fullWidth
+                  error={formErrors.consignorEmail.invalid}
+                >
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Consignor email"
+                    value={lorryReceipt.consignorEmail}
+                    error={formErrors.consignorEmail.invalid}
+                    onChange={inputChangeHandler}
+                    name="consignorEmail"
+                    id="consignorEmail"
+                  />
+                  {formErrors.consignorEmail.invalid && (
+                    <FormHelperText>
+                      {formErrors.consignorEmail.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
                 <FormControl fullWidth error={formErrors.from.invalid}>
                   <TextField
                     size="small"
@@ -858,6 +909,28 @@ const LorryReceiptAdd = () => {
                 </FormControl>
               </div>
               <div className="grid-item">
+                <FormControl
+                  fullWidth
+                  error={formErrors.consigneeEmail.invalid}
+                >
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Consignee email"
+                    value={lorryReceipt.consigneeEmail}
+                    error={formErrors.consigneeEmail.invalid}
+                    onChange={inputChangeHandler}
+                    name="consigneeEmail"
+                    id="consigneeEmail"
+                  />
+                  {formErrors.consigneeEmail.invalid && (
+                    <FormHelperText>
+                      {formErrors.consigneeEmail.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
                 <FormControl fullWidth error={formErrors.to.invalid}>
                   <TextField
                     size="small"
@@ -918,7 +991,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Delivery charges"
-                    value={lorryReceipt.deliveryCharges}
+                    value={lorryReceipt.deliveryCharges || ""}
                     name="deliveryCharges"
                     id="deliveryCharges"
                     onChange={inputChangeHandler}
@@ -939,7 +1012,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     variant="outlined"
                     label="LR charges"
-                    value={lorryReceipt.lrCharges}
+                    value={lorryReceipt.lrCharges || ""}
                     error={formErrors.lrCharges.invalid}
                     name="lrCharges"
                     id="lrCharges"
@@ -966,7 +1039,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Hamali"
-                    value={lorryReceipt.hamali}
+                    value={lorryReceipt.hamali || ""}
                     name="hamali"
                     id="hamali"
                     onChange={inputChangeHandler}
@@ -1015,7 +1088,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Material cost"
-                    value={lorryReceipt.materialCost}
+                    value={lorryReceipt.materialCost || ""}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
                     name="materialCost"
