@@ -200,7 +200,6 @@ const PaymentCollection = () => {
   const [banks, setBanks] = useState([]);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [accountsByBank, setAccountsByBank] = useState([]);
-  const [isloading, setLoading] = useState([]);
 
   useEffect(() => {
     dispatch(getBranches())
@@ -292,12 +291,9 @@ const PaymentCollection = () => {
   }, [httpError]);
 
   useEffect(() => {
-    setLoading(true);
     if (selectedBranch && selectedBranch._id) {
       dispatch(getCustomersByBranch(selectedBranch._id))
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -311,13 +307,10 @@ const PaymentCollection = () => {
             "Something went wrong! Please try later or contact Administrator."
           );
         });
-    } else {
-      setLoading(false);
     }
   }, [selectedBranch]);
 
   useEffect(() => {
-    setLoading(true);
     if (selectedCustomer && selectedBranch) {
       dispatch(
         getBillsByCustomer({
@@ -326,8 +319,6 @@ const PaymentCollection = () => {
         })
       )
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -371,10 +362,7 @@ const PaymentCollection = () => {
           setHttpError(
             "Something went wrong! Please try later or contact Administrator."
           );
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
   }, [selectedCustomer, selectedBranch]);
 
@@ -577,7 +565,7 @@ const PaymentCollection = () => {
 
   return (
     <>
-      {(isLoading || isloading) && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
 
       <div className="page_head">
         <h1 className="pageHead">Payment collection</h1>

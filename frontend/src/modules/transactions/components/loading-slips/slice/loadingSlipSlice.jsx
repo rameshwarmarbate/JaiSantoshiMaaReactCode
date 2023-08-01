@@ -152,7 +152,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.branches = payload?.data.map((branch) => {
           return { ...branch, label: branch.name, value: branch._id };
         });
@@ -165,7 +165,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.customers = payload?.data;
       })
       .addCase(getCustomers.rejected, (state) => {
@@ -176,7 +176,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getVehicles.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.vehicles = payload?.data?.map((vehicle) => {
           return {
             ...vehicle,
@@ -193,7 +193,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSuppliers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.suppliers = payload?.data;
       })
       .addCase(getSuppliers.rejected, (state) => {
@@ -204,7 +204,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.places = payload?.data?.map((place) => {
           return { ...place, label: place.name, value: place.name };
         });
@@ -217,7 +217,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getDrivers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.drivers = payload?.data?.map((driver) => {
           return { ...driver, label: driver.name, value: driver.name };
         });
@@ -290,7 +290,7 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getLoadingSlip.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getLoadingSlip.rejected, (state) => {
         state.status = "failed";

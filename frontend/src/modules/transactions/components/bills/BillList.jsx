@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   DataGrid,
-  GridToolbar,
   GridToolbarContainer,
   useGridApiRef,
 } from "@mui/x-data-grid";
@@ -41,7 +40,6 @@ import {
   getBills,
   getBranches,
   deleteBill as removeBill,
-  getCustomers,
   downloadBill,
   selectIsLoading,
   setSearch as onSearch,
@@ -145,7 +143,6 @@ const BillList = () => {
 
   const navigate = useNavigate();
   const [branches, setBranches] = useState([]);
-  const [customers, setCustomers] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [httpError, setHttpError] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -164,7 +161,7 @@ const BillList = () => {
     data: [],
     total: 0,
   });
-  const [isloading, setLoading] = useState([]);
+  const [isloading, setLoading] = useState(false);
   const { search: searchData } = useSelector(({ bill }) => bill);
   const apiRef = useGridApiRef();
 
@@ -192,27 +189,10 @@ const BillList = () => {
           "Something went wrong! Please try later or contact Administrator."
         );
       });
-
-    dispatch(getCustomers())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          setCustomers(payload?.data);
-        }
-      })
-      .catch(() => {
-        setHttpError(
-          "Something went wrong! Please try later or contact Administrator."
-        );
-      });
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    if (selectedBranch?._id && customers.length) {
+    if (selectedBranch?._id) {
       const requestObject = {
         branch: selectedBranch._id,
         pagination: {
@@ -222,27 +202,16 @@ const BillList = () => {
       };
       dispatch(getBills(requestObject))
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
           } else {
             if (payload?.data.bills) {
-              const updatedBills = payload?.data.bills.map((bill) => {
-                const customer = customers.filter(
-                  (customer) => customer._id === bill.customer
-                )[0];
-                return {
-                  ...bill,
-                  customer: customer || "",
-                };
-              });
               setPageState((currState) => {
                 return {
                   ...currState,
                   isLoading: false,
-                  data: updatedBills,
+                  data: payload?.data.bills,
                   total: payload?.data.count,
                 };
               });
@@ -251,17 +220,9 @@ const BillList = () => {
         })
         .catch((error) => {
           setHttpError(error.message);
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
-  }, [
-    selectedBranch,
-    paginationModel.page,
-    paginationModel.pageSize,
-    customers,
-  ]);
+  }, [selectedBranch, paginationModel.page, paginationModel.pageSize]);
 
   useEffect(() => {
     if (viewBill && viewBill._id) {

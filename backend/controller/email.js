@@ -42,6 +42,7 @@ async function sendEmail(to, base64Content, fileName, subject, text, html) {
       subject: subject,
       text: text,
       html: html,
+      attachments: [],
     });
   } else {
     throw new Error("Parameters are missing!");

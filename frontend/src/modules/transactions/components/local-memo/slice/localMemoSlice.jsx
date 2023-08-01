@@ -52,7 +52,7 @@ export const localMemoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -62,7 +62,7 @@ export const localMemoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getPlaces.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getPlaces.rejected, (state) => {
         state.status = "failed";
@@ -72,7 +72,7 @@ export const localMemoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getLoadingSlips.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getLoadingSlips.rejected, (state) => {
         state.status = "failed";
@@ -82,7 +82,7 @@ export const localMemoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(deleteLoadingSlip.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(deleteLoadingSlip.rejected, (state) => {
         state.status = "failed";

@@ -162,7 +162,7 @@ const LoadingSlips = () => {
   const [sendEmail, setSendEmail] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const [selectedLS, setSelectedLS] = useState(null);
-  const [isloading, setLoading] = useState([]);
+  const [isloading, setLoading] = useState(false);
   const { search: searchData } = useSelector(({ loadingslip }) => loadingslip);
   const apiRef = useGridApiRef();
 
@@ -219,8 +219,6 @@ const LoadingSlips = () => {
     };
     dispatch(getLoadingSlips(requestObject))
       .then(({ payload = {} }) => {
-        setLoading(false);
-
         const { message } = payload?.data || {};
         if (message) {
           setHttpError(message);
@@ -241,16 +239,12 @@ const LoadingSlips = () => {
       })
       .catch((error) => {
         setHttpError(error.message);
-        setLoading(false);
       });
   };
 
   useEffect(() => {
-    setLoading(true);
     if (selectedBranch) {
       fetchData();
-    } else {
-      setLoading(false);
     }
   }, [selectedBranch, paginationModel.page, paginationModel.pageSize]);
 

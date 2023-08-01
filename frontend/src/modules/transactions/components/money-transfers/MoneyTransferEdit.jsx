@@ -168,6 +168,12 @@ const MoneyTransferEdit = () => {
     if (formData.branch.trim() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
+    if (formData.transferToBranch.trim() === "") {
+      errors.transferToBranch = {
+        invalid: true,
+        message: "Branch is required",
+      };
+    }
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }

@@ -140,7 +140,6 @@ const LoadingSlipEdit = () => {
   const [lsLrList, setLsLrList] = useState([]);
   const [, setUpdatedLRList] = useState([]);
   const [isLocalMemo, setIsLocalMemo] = useState(false);
-  const [isloading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -165,7 +164,6 @@ const LoadingSlipEdit = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    setLoading(true);
     if (loadingSlip.branch) {
       dispatch(getLorryReceipts(loadingSlip.branch))
         .then(({ payload = {} }) => {
@@ -182,7 +180,6 @@ const LoadingSlipEdit = () => {
             const filteredLorryReceipts = lrList.filter((lr) => {
               return !lr.associatedLS || lr.associatedLS === lsId;
             });
-            setLoading(false);
             setLorryReceipts(filteredLorryReceipts);
           }
         })
@@ -190,10 +187,7 @@ const LoadingSlipEdit = () => {
           setHttpError(
             "Something went wrong! Please try later or contact Administrator."
           );
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
   }, [loadingSlip.branch, lsId]);
 
@@ -254,7 +248,6 @@ const LoadingSlipEdit = () => {
         })
         .catch((error) => {
           setHttpError(error.message);
-          setLoading(false);
         });
     }
   }, [lsId, vehicles, drivers, places, branches]);
@@ -584,7 +577,7 @@ const LoadingSlipEdit = () => {
 
   return (
     <>
-      {(isLoading || isloading) && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
         <h1 className="pageHead">
           {isLocalMemo ? "Update a local challan" : "Update a challan"}

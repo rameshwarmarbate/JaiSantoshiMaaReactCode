@@ -61,7 +61,7 @@ const initialState = {
   totalFreight: "",
   hamali: "",
   deliveryCharges: "",
-  lrCharges: "",
+  lrCharges: 10,
   total: "",
   materialCost: "",
   deliveryType: null,
@@ -419,14 +419,14 @@ const LorryReceiptAdd = () => {
       };
     }
     if (
-      formData.consigneeEmail?.trim?.() !== "" &&
+      formData.consigneeEmail?.trim?.() &&
       !emailRegEx.test(formData.consigneeEmail)
     ) {
       errors.consigneeEmail = { invalid: true, message: "Email is invalid" };
     }
 
     if (
-      formData.consignorEmail?.trim?.() !== "" &&
+      formData.consignorEmail?.trim?.() &&
       !emailRegEx.test(formData.consignorEmail)
     ) {
       errors.consignorEmail = { invalid: true, message: "Email is invalid" };

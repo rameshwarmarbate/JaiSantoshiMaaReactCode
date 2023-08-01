@@ -162,7 +162,7 @@ const LRAcknowledgement = () => {
   const [isSubmitted, setIsSubmitted] = useState(true);
   const [hasErrors, setHasErrors] = useState(false);
   const [getLR, setGetLR] = useState(true);
-  const [isloading, setLoading] = useState([]);
+  const [isloading, setLoading] = useState(false);
   const { search: searchData } = useSelector(({ acknowledge }) => acknowledge);
 
   const [paginationModel, setPaginationModel] = useState({
@@ -270,7 +270,7 @@ const LRAcknowledgement = () => {
           setHttpError(error.message);
           setLoading(false);
         });
-    } else {
+    } else if (!isSubmitted) {
       setLoading(false);
     }
   }, [acknowledgements]);

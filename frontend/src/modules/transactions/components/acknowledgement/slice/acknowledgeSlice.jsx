@@ -82,7 +82,7 @@ export const acknowledgeSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";

@@ -469,9 +469,6 @@ const addEmployee = (req, res, next) => {
       $or: [
         { telephone: req.body.telephone?.trim?.() },
         { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
-        {
-          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
-        },
       ],
       active: true,
     },
@@ -480,7 +477,7 @@ const addEmployee = (req, res, next) => {
         return next(error);
       }
       if (foundEmp && foundEmp.length > 0) {
-        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) or name (${req.body.email}) already exist!`;
+        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -554,9 +551,6 @@ const updateEmployee = (req, res, next) => {
       $or: [
         { telephone: req.body.telephone?.trim?.() },
         { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
-        {
-          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
-        },
       ],
       _id: { $ne: _id },
       active: true,
@@ -566,7 +560,7 @@ const updateEmployee = (req, res, next) => {
         return next(error);
       }
       if (foundEmp && foundEmp.length > 0) {
-        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) or name (${req.body.email}) already exist!`;
+        let message = `Employee with telephone (${req.body.telephone}) or name (${req.body.name}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -817,18 +811,7 @@ const addCustomer = (req, res, next) => {
 
   Customer.find(
     {
-      $or: [
-        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
-        {
-          telephone: {
-            $regex: getRegex(req.body.telephone?.trim?.()),
-            $options: "i",
-          },
-        },
-        {
-          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
-        },
-      ],
+      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
       active: true,
     },
     (error, foundCustomer) => {
@@ -836,7 +819,7 @@ const addCustomer = (req, res, next) => {
         return next(error);
       }
       if (foundCustomer && foundCustomer.length > 0) {
-        let message = `Customer with name (${req.body.name}) or telephone (${req.body.telephone}) email (${req.body.email}) already exist!`;
+        let message = `Customer with name (${req.body.name}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -866,18 +849,7 @@ const updateCustomer = (req, res, next) => {
 
   Customer.find(
     {
-      $or: [
-        { name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" } },
-        {
-          telephone: {
-            $regex: getRegex(req.body.telephone?.trim?.()),
-            $options: "i",
-          },
-        },
-        {
-          email: { $regex: getRegex(req.body.email?.trim?.()), $options: "i" },
-        },
-      ],
+      name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
       _id: { $ne: _id },
       active: true,
     },
@@ -886,7 +858,7 @@ const updateCustomer = (req, res, next) => {
         return next(error);
       }
       if (foundCustomer && foundCustomer.length > 0) {
-        let message = `Customer with name (${req.body.name}) or telephone (${req.body.telephone}) email (${req.body.email}) already exist!`;
+        let message = `Customer with name (${req.body.name}) already exist!`;
         return res.status(200).json({
           message: message,
         });
@@ -1023,7 +995,7 @@ const addDriver = (req, res, next) => {
         if (error) {
           if (error.code === 11000) {
             return res.status(200).json({
-              message: `Driver with code (${req.body.code}) already exist!`,
+              message: `Driver with (${req.body.code}) already exist!`,
             });
           }
           res.send(error);
@@ -1184,7 +1156,6 @@ const addSupplier = (req, res, next) => {
 
   Supplier.find(
     {
-      type: req.body.type?.trim?.(),
       name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
       active: true,
     },
@@ -1217,7 +1188,6 @@ const updateSupplier = (req, res, next) => {
   }
   Supplier.find(
     {
-      type: req.body.type?.trim?.(),
       name: { $regex: getRegex(req.body.name?.trim?.()), $options: "i" },
       _id: { $ne: _id },
       active: true,

@@ -199,7 +199,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.branches = payload?.data;
       })
       .addCase(getBranches.rejected, (state) => {
@@ -210,7 +210,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.customers = payload?.data.map?.((customer) => {
           return { ...customer, label: customer.name };
         });
@@ -223,7 +223,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getVehicles.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.vehicles = payload?.data;
       })
       .addCase(getVehicles.rejected, (state) => {
@@ -234,7 +234,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSuppliers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.suppliers = payload?.data;
       })
       .addCase(getSuppliers.rejected, (state) => {
@@ -245,7 +245,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.places = payload?.data.map((place) => {
           return { ...place, label: place.name, value: place.name };
         });
@@ -258,7 +258,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getDrivers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.drivers = payload?.data;
       })
       .addCase(getDrivers.rejected, (state) => {
@@ -269,7 +269,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getArticles.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.articles = payload?.data?.map((article) => {
           return {
             ...article,
@@ -286,7 +286,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getLastLR.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getLastLR.rejected, (state) => {
         state.status = "failed";
@@ -336,7 +336,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getLorryReceipt.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getLorryReceipt.rejected, (state) => {
         state.status = "failed";

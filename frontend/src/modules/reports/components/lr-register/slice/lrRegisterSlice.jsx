@@ -51,7 +51,7 @@ export const tripSheetSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -61,7 +61,7 @@ export const tripSheetSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getCustomers.rejected, (state) => {
         state.status = "failed";

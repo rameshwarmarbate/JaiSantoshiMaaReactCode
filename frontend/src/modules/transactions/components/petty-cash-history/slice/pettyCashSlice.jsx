@@ -121,7 +121,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -131,7 +131,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getCustomers.rejected, (state) => {
         state.status = "failed";
@@ -141,7 +141,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBanks.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBanks.rejected, (state) => {
         state.status = "failed";
@@ -151,7 +151,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSuppliers.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getSuppliers.rejected, (state) => {
         state.status = "failed";
@@ -161,7 +161,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBankAccounts.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBankAccounts.rejected, (state) => {
         state.status = "failed";
@@ -171,7 +171,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getDrivers.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getDrivers.rejected, (state) => {
         state.status = "failed";
@@ -181,7 +181,7 @@ export const pettyCashSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getEmployees.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getEmployees.rejected, (state) => {
         state.status = "failed";

@@ -96,7 +96,6 @@ const BillEdit = () => {
   const [fetchedBill, setFetchedBill] = useState(initialState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
-  const [isloading, setLoading] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -149,8 +148,6 @@ const BillEdit = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-
     if (fetchedBill.branch && fetchedBill.customer) {
       dispatch(
         getLorryReceiptsByConsignor({
@@ -159,8 +156,6 @@ const BillEdit = () => {
         })
       )
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -184,10 +179,7 @@ const BillEdit = () => {
           setHttpError(
             "Something went wrong! Please try later or contact Administrator."
           );
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
   }, [fetchedBill.branch, fetchedBill.customer]);
 
@@ -441,7 +433,7 @@ const BillEdit = () => {
 
   return (
     <>
-      {(isLoading || isloading) && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
         <h1 className="pageHead">Update a bill</h1>
         {httpError !== "" && (

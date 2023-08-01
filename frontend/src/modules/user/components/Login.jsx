@@ -86,7 +86,9 @@ const Login = () => {
             setToken(token);
             dispatch(updateUser(payload?.data));
             setHttpError("");
-            goToHome();
+            if (token) {
+              goToHome();
+            }
           }
         })
         .catch(() => {

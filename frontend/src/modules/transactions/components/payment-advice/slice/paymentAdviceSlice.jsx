@@ -122,7 +122,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.branches = payload?.data?.map((account) => {
           return {
             ...account,
@@ -139,7 +139,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBanks.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.banks = payload?.data?.map((bank) => {
           return {
             ...bank,
@@ -156,7 +156,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBankAccounts.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.bankAccounts = payload?.data;
       })
       .addCase(getBankAccounts.rejected, (state) => {
@@ -167,7 +167,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSupplier.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.suppliers = payload?.data;
       })
       .addCase(getSupplier.rejected, (state) => {
@@ -178,7 +178,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.places = payload?.data;
       })
       .addCase(getPlaces.rejected, (state) => {

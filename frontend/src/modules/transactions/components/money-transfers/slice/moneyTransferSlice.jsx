@@ -73,7 +73,7 @@ export const moneyTransferSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getBranches.pending, (state) => {
-        state.status = "loading";
+        // state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
         state.status = "succeeded";

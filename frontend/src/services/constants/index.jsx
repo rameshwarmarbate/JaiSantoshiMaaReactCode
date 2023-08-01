@@ -1,14 +1,5 @@
-// export const API_BASE_PATH_MASTER = "http://localhost:4800/api/master";
-// export const API_BASE_PATH_TRANSACTIONS =
-//   "http://localhost:4800/api/transactions";
-// export const API_BASE_PATH_USER = "http://localhost:4800/api/user";
-// export const BILLS_PATH = "http://localhost:4800/bills/lorryReceipts/";
-// export const LOADING_SLIPS_PATH = "http://localhost:4800/bills/loadingSlips/";
-// export const CUSTOMER_BILLS_PATH = "http://localhost:4800/bills/bills/";
-// export const QUOTATIONS_PATH = "http://localhost:4800/bills/quotations/";
-// export const VOUCHERS_PATH = "http://localhost:4800/bills/vouchers/";
-export const API_BASE_PATH = "http://localhost:4800/";
-// export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
+// export const API_BASE_PATH = "http://localhost:4800/";
+export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
 
 export const DELIVERY_TYPES = [
   { label: "Door", value: "Door" },

@@ -51,15 +51,17 @@ const initialState = {
   consignor: null,
   consignorAddress: "",
   consignorPhone: "",
+  consignorEmail: "",
   consignee: null,
   consigneeAddress: "",
   consigneePhone: "",
+  consigneeEmail: "",
   from: "",
   to: "",
   totalFreight: "",
   hamali: "",
   deliveryCharges: "",
-  lrCharges: "",
+  lrCharges: 10,
   total: "",
   materialCost: "",
   deliveryType: null,
@@ -441,14 +443,14 @@ const LorryReceiptEdit = () => {
       };
     }
     if (
-      formData.consigneeEmail?.trim?.() !== "" &&
+      formData.consigneeEmail?.trim?.() &&
       !emailRegEx.test(formData.consigneeEmail)
     ) {
       errors.consigneeEmail = { invalid: true, message: "Email is invalid" };
     }
 
     if (
-      formData.consignorEmail?.trim?.() !== "" &&
+      formData.consignorEmail?.trim?.() &&
       !emailRegEx.test(formData.consignorEmail)
     ) {
       errors.consignorEmail = { invalid: true, message: "Email is invalid" };
@@ -826,10 +828,11 @@ const LorryReceiptEdit = () => {
                   error={formErrors.consignorEmail.invalid}
                 >
                   <TextField
+                    type="text"
                     size="small"
                     variant="outlined"
                     label="Consignor email"
-                    value={lorryReceipt.consignorEmail}
+                    value={lorryReceipt.consignorEmail || ""}
                     error={formErrors.consignorEmail.invalid}
                     onChange={inputChangeHandler}
                     name="consignorEmail"
@@ -943,10 +946,11 @@ const LorryReceiptEdit = () => {
                   error={formErrors.consigneeEmail.invalid}
                 >
                   <TextField
+                    type="text"
                     size="small"
                     variant="outlined"
                     label="Consignee email"
-                    value={lorryReceipt.consigneeEmail}
+                    value={lorryReceipt.consigneeEmail || ""}
                     error={formErrors.consigneeEmail.invalid}
                     onChange={inputChangeHandler}
                     name="consigneeEmail"

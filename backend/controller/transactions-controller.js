@@ -8,6 +8,21 @@ const options = {
   height: "10.5in",
   width: "8in",
 };
+
+const options2 = {
+  format: "Letter",
+  orientation: "portrait",
+  height: "10.5in",
+  width: "8in",
+  paginationOffset: 1,
+  footer: {
+    height: "15mm",
+    contents: {
+      default:
+        '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
+    },
+  },
+};
 const numWords = require("num-words");
 var fs = require("fs");
 const path = require("path");
@@ -642,20 +657,12 @@ const viewLorryReceipt = (req, res, next) => {
         if (consigneeError) {
           return res.status(200).json({ message: consigneeError.message });
         }
-        fetchedConsignee = {
-          ...consignee,
-          telephone: consignee?.telephone || "-",
-          email: consignee?.email || "-",
-        };
+        fetchedConsignee = consignee;
         Customer.findById(LRData.consignor, (consignorError, consignor) => {
           if (consignorError) {
             return res.status(200).json({ message: consignorError.message });
           }
-          fetchedConsignor = {
-            ...consignor,
-            telephone: consignor?.telephone || "-",
-            email: consignor?.email || "-",
-          };
+          fetchedConsignor = consignor;
           let totalArticles = 0;
           let totalWeight = 0;
           let totalChargeWeight = 0;
@@ -1390,8 +1397,7 @@ const printLoadingSlip = (req, res) => {
         );
         const blankRows = [];
         const length =
-          30 -
-          (isTwoRowsOccupied ? (lrList.length + 1) * 2 : lrList.length + 1);
+          27 - (isTwoRowsOccupied ? lrList.length * 2 : lrList.length);
         for (let i = 0; i < length; i = i + 1) {
           blankRows.push({ sr: "-" });
         }
@@ -1427,7 +1433,7 @@ const printLoadingSlip = (req, res) => {
           },
           (err, HTML) => {
             const fileName = lsData.lsNo;
-            pdf.create(HTML, options).toBuffer((buffErr, buffer) => {
+            pdf.create(HTML, options2).toBuffer((buffErr, buffer) => {
               if (buffErr) {
                 return res.status(200).json({ message: buffErr.message });
               }
@@ -1771,20 +1777,35 @@ const getBills = (req, res, next) => {
   const start = (req.body.pagination.page - 1) * limit;
   const end = req.body.pagination.page * limit;
 
-  Bill.find({ branch: req.body.branch, active: true })
-    .sort("-createdAt")
-    .exec((error, bills) => {
-      if (error) {
-        return res.status(200).json({
-          message: "Error fetching bills!",
-        });
-      } else {
-        return res.json({
-          bills: bills.slice(start, end),
-          count: bills?.length,
-        });
-      }
-    });
+  Bill.aggregate([
+    { $match: { branch: req.body.branch, active: true } },
+    {
+      $addFields: {
+        customerId: { $toObjectId: "$customer" },
+      },
+    },
+    {
+      $lookup: {
+        from: "customer",
+        localField: "customerId",
+        foreignField: "_id",
+        as: "customer",
+      },
+    },
+    { $unwind: { path: "$customer", preserveNullAndEmptyArrays: true } },
+    { $sort: { createdAt: -1 } },
+  ]).exec((error, bills) => {
+    if (error) {
+      return res.status(200).json({
+        message: "Error fetching bills!",
+      });
+    } else {
+      return res.json({
+        bills: bills.slice(start, end),
+        count: bills?.length,
+      });
+    }
+  });
 };
 
 const getBillsByCustomer = (req, res, next) => {
@@ -2074,8 +2095,7 @@ const printBill = (req, res) => {
               consigneeName?.length > 15 || article?.length > 15
           );
           const length =
-            27 -
-            (isTwoRowsOccupied ? (lrList.length + 1) * 2 : lrList.length + 1);
+            22 - (isTwoRowsOccupied ? lrList.length * 2 : lrList.length);
           for (let i = 0; i < length; i = i + 1) {
             blankRows.push({ sr: "-" });
           }
@@ -2141,7 +2161,7 @@ const printBill = (req, res) => {
               const finalPath = path.join(__dirname, "../bills/bills/");
               const fileName = data.billNo;
               pdf
-                .create(HTML, options)
+                .create(HTML, options2)
                 // .toFile(
                 //   path.join(finalPath, fileName + ".pdf"),
                 //   (err, result) => {
@@ -2246,7 +2266,7 @@ const getLoadingSlipsBySupplier = (req, res, next) => {
           active: true,
         };
         if (req.body.branch) {
-          query = { ...query, branch: req.params.branch };
+          query = { ...query, branch: req.body.branch };
         }
         LoadingSlip.find(query, (LSErr, LSData) => {
           if (LSErr) {
@@ -2554,11 +2574,11 @@ const viewQuotation = (req, res) => {
       let blankRows3 = [];
 
       blankRows1.length =
-        30 - stations1?.length < 0 ? 0 : 30 - stations1?.length;
+        28 - stations1?.length < 0 ? 0 : 28 - stations1?.length;
       blankRows2.length =
-        30 - stations2?.length < 0 ? 0 : 30 - stations2?.length;
+        28 - stations2?.length < 0 ? 0 : 28 - stations2?.length;
       blankRows3.length =
-        30 - stations3?.length < 0 ? 0 : 30 - stations3?.length;
+        28 - stations3?.length < 0 ? 0 : 28 - stations3?.length;
 
       const logo = base64_encode(
         path.join(__dirname, "../public/images/logo.png")
@@ -2589,7 +2609,7 @@ const viewQuotation = (req, res) => {
           const finalPath = path.join(__dirname, "../bills/quotations/");
           const fileName = data.quotationNo;
           pdf
-            .create(HTML, options)
+            .create(HTML, options2)
             // .toFile(path.join(finalPath, fileName + ".pdf"), (err, result) => {
             //   if (err) {
             //     return res.status(200).send({
@@ -2691,7 +2711,7 @@ const viewPaymentCollection = (req, res) => {
           (err, HTML) => {
             const finalPath = path.join(__dirname, "../bills/vouchers/");
             const fileName = voucherNumber;
-            pdf.create(HTML, options).toBuffer((buffErr, buffer) => {
+            pdf.create(HTML, options2).toBuffer((buffErr, buffer) => {
               if (buffErr) {
                 return res.status(200).json({ message: buffErr.message });
               }
@@ -2885,7 +2905,7 @@ const getAllLRAck = (req, res) => {
     $or: [{ deliveryDate: null }, { deliveryDate: "" }],
   };
   if (req.body.branch) {
-    query = { ...query, branch: req.params.branch };
+    query = { ...query, branch: req.body.branch };
   }
   LorryReceipt.find(query).exec((lrError, lorryReceipts) => {
     if (lrError) {

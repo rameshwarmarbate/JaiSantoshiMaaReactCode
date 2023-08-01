@@ -99,7 +99,7 @@ const LorryReceiptRegister = () => {
     data: [],
     total: 0,
   });
-  const [isloading, setLoading] = useState([]);
+  const [isloading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getCustomers())

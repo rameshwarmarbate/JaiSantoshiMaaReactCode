@@ -150,7 +150,7 @@ const LorryReceipts = () => {
   const [sendEmail, setSendEmail] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const [selectedLR, setSelectedLR] = useState(null);
-  const [isloading, setLoading] = useState([]);
+  const [isloading, setLoading] = useState(false);
   const { search: searchData } = useSelector(
     ({ lorryreceipt }) => lorryreceipt
   );
@@ -196,7 +196,6 @@ const LorryReceipts = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     if (selectedBranch?._id) {
       const requestObject = {
         branch: selectedBranch._id,
@@ -207,8 +206,6 @@ const LorryReceipts = () => {
       };
       dispatch(getLorryReceiptsWithCount(requestObject))
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -225,10 +222,7 @@ const LorryReceipts = () => {
         })
         .catch((error) => {
           setHttpError(error.message);
-          setLoading(false);
         });
-    } else {
-      setLoading(false);
     }
   }, [selectedBranch, paginationModel.page, paginationModel.pageSize]);
 

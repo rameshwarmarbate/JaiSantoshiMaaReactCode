@@ -35,7 +35,7 @@ import {
 } from "../../../../services/utils";
 import {
   getQuotations,
-  downloadQuotation as removeQuotation,
+  deleteQuotation as removeQuotation,
   downloadQuotation,
   selectIsLoading,
   getPlaces,

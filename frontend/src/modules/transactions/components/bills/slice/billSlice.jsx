@@ -98,7 +98,7 @@ export const billSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.branches = payload?.data;
       })
       .addCase(getBranches.rejected, (state) => {
@@ -109,7 +109,7 @@ export const billSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
         state.customers = payload?.data;
       })
       .addCase(getCustomers.rejected, (state) => {
@@ -150,7 +150,7 @@ export const billSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBill.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBill.rejected, (state) => {
         state.status = "failed";

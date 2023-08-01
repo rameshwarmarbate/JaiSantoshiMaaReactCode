@@ -81,7 +81,7 @@ export const paymentCollectionSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -111,7 +111,7 @@ export const paymentCollectionSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBanks.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBanks.rejected, (state) => {
         state.status = "failed";
@@ -121,7 +121,7 @@ export const paymentCollectionSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBankAccounts.fulfilled, (state) => {
-        state.status = "succeeded";
+        // state.status = "succeeded";
       })
       .addCase(getBankAccounts.rejected, (state) => {
         state.status = "failed";
