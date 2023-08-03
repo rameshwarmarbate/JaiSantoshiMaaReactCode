@@ -7,6 +7,7 @@ import Routing from "./router";
 import { Layout } from "./components";
 import "./style/index.css";
 import "./style/responsive.css";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   const theme = createTheme({
@@ -34,9 +35,11 @@ function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <Layout>
-            <Routing />
-          </Layout>
+          <BrowserRouter>
+            <Layout>
+              <Routing />
+            </Layout>
+          </BrowserRouter>
         </ThemeProvider>
       </PersistGate>
     </Provider>

@@ -20,7 +20,7 @@ const SendEmail = ({ isOpen, setIsOpen, handleSendEmail, contentBody }) => {
 
   const validateAndSend = () => {
     setFormErrors(initialErrorState);
-    if (email.trim() === "" || !emailRegEx.test(email)) {
+    if (email?.trim?.() === "" || !emailRegEx.test(email)) {
       setFormErrors((currState) => {
         return {
           ...currState,

@@ -122,7 +122,7 @@ const MoneyTransferAdd = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data.length) {
-            const filteredBranch = payload?.data.filter((branch) => {
+            const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
             if (filteredBranch.length) {
@@ -296,7 +296,7 @@ const MoneyTransferAdd = () => {
 
   const resetButtonHandler = () => {
     let branch;
-    const filteredBranch = branches.filter((branch) => {
+    const filteredBranch = branches.filter?.((branch) => {
       return branch._id === user.branch;
     });
     if (filteredBranch.length) {
@@ -336,13 +336,13 @@ const MoneyTransferAdd = () => {
     }
     if (name === "bank") {
       setFilteredBankAccounts(
-        bankAccounts.filter((bankAccount) => {
+        bankAccounts.filter?.((bankAccount) => {
           return bankAccount.bank === value;
         })
       );
     }
     if (name === "lsNo") {
-      const selectedLs = loadingSlips.filter((ls) => ls.lsNo === value)[0];
+      const selectedLs = loadingSlips.filter?.((ls) => ls.lsNo === value)[0];
       setTransaction((currState) => {
         return {
           ...currState,
@@ -397,7 +397,7 @@ const MoneyTransferAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (isNaN(formData.amount) || formData.amount <= 0) {
@@ -409,18 +409,18 @@ const MoneyTransferAdd = () => {
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.description.trim() === "") {
+    if (formData.description?.trim?.() === "") {
       errors.description = {
         invalid: true,
         message: "Description is required",
       };
     }
-    if (formData.type.trim() === "") {
+    if (formData.type?.trim?.() === "") {
       errors.type = { invalid: true, message: "Debit / Credit is required" };
     }
     if (
       selectedTab === "transaction" &&
-      formData.transactionType.trim() === ""
+      formData.transactionType?.trim?.() === ""
     ) {
       errors.transactionType = {
         invalid: true,
@@ -429,19 +429,19 @@ const MoneyTransferAdd = () => {
     }
     if (
       selectedTab === "transaction" &&
-      formData.transactionName.trim() === ""
+      formData.transactionName?.trim?.() === ""
     ) {
       errors.transactionName = {
         invalid: true,
         message: "Transaction name is required",
       };
     }
-    if (selectedTab === "transfer" && formData.bank.trim() === "") {
+    if (selectedTab === "transfer" && formData.bank?.trim?.() === "") {
       errors.bank = { invalid: true, message: "Bank is required" };
     }
     if (
       selectedTab === "transfer" &&
-      formData.bankAccountNumber.trim() === ""
+      formData.bankAccountNumber?.trim?.() === ""
     ) {
       errors.bankAccountNumber = {
         invalid: true,
@@ -503,7 +503,7 @@ const MoneyTransferAdd = () => {
                   onChange={inputChangeHandler}
                 >
                   {branches.length > 0 &&
-                    branches.map((branch) => (
+                    branches.map?.((branch) => (
                       <MenuItem
                         key={branch._id}
                         value={branch._id}
@@ -602,7 +602,7 @@ const MoneyTransferAdd = () => {
                     onChange={inputChangeHandler}
                   >
                     {loadingSlips.length > 0 &&
-                      loadingSlips.map((ls) => (
+                      loadingSlips.map?.((ls) => (
                         <MenuItem
                           key={ls._id}
                           value={ls.lsNo}
@@ -706,7 +706,7 @@ const MoneyTransferAdd = () => {
                       onChange={inputChangeHandler}
                     >
                       {transaction.transactionType === "customer" &&
-                        customers.map((customer) => (
+                        customers.map?.((customer) => (
                           <MenuItem
                             key={customer._id}
                             value={customer.name}
@@ -716,7 +716,7 @@ const MoneyTransferAdd = () => {
                           </MenuItem>
                         ))}
                       {transaction.transactionType === "driver" &&
-                        drivers.map((driver) => (
+                        drivers.map?.((driver) => (
                           <MenuItem
                             key={driver._id}
                             value={driver.name}
@@ -726,7 +726,7 @@ const MoneyTransferAdd = () => {
                           </MenuItem>
                         ))}
                       {transaction.transactionType === "employee" &&
-                        employees.map((employee) => (
+                        employees.map?.((employee) => (
                           <MenuItem
                             key={employee._id}
                             value={employee.name}
@@ -736,7 +736,7 @@ const MoneyTransferAdd = () => {
                           </MenuItem>
                         ))}
                       {transaction.transactionType === "supplier" &&
-                        suppliers.map((supplier) => (
+                        suppliers.map?.((supplier) => (
                           <MenuItem
                             key={supplier._id}
                             value={supplier.name}
@@ -772,7 +772,7 @@ const MoneyTransferAdd = () => {
                       value={transaction.bank}
                       onChange={inputChangeHandler}
                     >
-                      {banks.map((bank) => (
+                      {banks.map?.((bank) => (
                         <MenuItem
                           key={bank._id}
                           value={bank._id}
@@ -801,7 +801,7 @@ const MoneyTransferAdd = () => {
                       value={transaction.bankAccountNumber}
                       onChange={inputChangeHandler}
                     >
-                      {filteredBankAccounts.map((bankAccount) => (
+                      {filteredBankAccounts.map?.((bankAccount) => (
                         <MenuItem
                           key={bankAccount._id}
                           value={bankAccount.accountNo}

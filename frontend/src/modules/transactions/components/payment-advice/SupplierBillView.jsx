@@ -85,13 +85,13 @@ const SupplierBillView = () => {
               <TableCell>{supplierBill.invoiceNo}</TableCell>
               <TableCell>{supplierBill.supplyContent}</TableCell>
               <TableCell align="right">
-                ₹ {supplierBill.amount.toFixed(2)}
+                ₹ {supplierBill.amount?.toFixed?.(2)}
               </TableCell>
               <TableCell align="right">
-                ₹ {supplierBill.paid.toFixed(2)}
+                ₹ {supplierBill.paid?.toFixed?.(2)}
               </TableCell>
               <TableCell align="right">
-                ₹ {supplierBill.balance.toFixed(2)}
+                ₹ {supplierBill.balance?.toFixed?.(2)}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -120,7 +120,7 @@ const SupplierBillView = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {supplierBill.payments.map((row) => (
+                {supplierBill.payments.map?.((row) => (
                   <TableRow
                     key={row.date}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

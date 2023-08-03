@@ -144,7 +144,7 @@ const LocalMemoList = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data.length) {
-            const filteredBranch = payload?.data.filter((branch) => {
+            const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
             if (filteredBranch.length) {
@@ -183,16 +183,16 @@ const LocalMemoList = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedResponse = payload?.data.map((ls) => {
-            const from = places.filter((place) => place._id === ls.from)[0];
-            const to = places.filter((place) => place._id === ls.to)[0];
+          const updatedResponse = payload?.data.map?.((ls) => {
+            const from = places.filter?.((place) => place._id === ls.from)[0];
+            const to = places.filter?.((place) => place._id === ls.to)[0];
             return {
               ...ls,
               from: from || "",
               to: to || "",
             };
           });
-          const updatedLS = updatedResponse.filter((ls) => ls.isLocalMemo);
+          const updatedLS = updatedResponse.filter?.((ls) => ls.isLocalMemo);
           setLoadingSlips(updatedLS);
         }
       })
@@ -208,7 +208,7 @@ const LocalMemoList = () => {
   }, [selectedBranch, places]);
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter(
+    const filteredBranch = branches.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);
@@ -280,7 +280,7 @@ const LocalMemoList = () => {
                 onChange={branchChangeHandler}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

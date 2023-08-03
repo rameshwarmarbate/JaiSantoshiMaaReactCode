@@ -12,7 +12,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
   };
 
   const getArticleOrWeight = (lr) => {
-    return lr.transactions.reduce((total, current) => {
+    return lr.transactions.reduce?.((total, current) => {
       return total + +current.articleNo;
     }, 0);
   };
@@ -59,7 +59,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
       headerName: "Amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {Number(params.row.total)?.toFixed(2)}</strong>;
+        return <strong>₹ {Number(params.row.total)?.toFixed?.(2)}</strong>;
       },
     },
   ];
@@ -80,38 +80,38 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
   const inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.checked;
-    const updatedLR = lorryReceipts.map((lr) => {
+    const updatedLR = lorryReceipts.map?.((lr) => {
       if (lr._id === name) {
         lr.checked = value;
       }
       return lr;
     });
-    setSelectedLR(updatedLR.filter((lr) => lr.checked));
+    setSelectedLR(updatedLR.filter?.((lr) => lr.checked));
     setSelectAll(updatedLR.every((lr) => lr.checked));
   };
 
   const selectAllChangeHandler = (e) => {
     setSelectAll(e.target.checked);
-    const updatedLR = lorryReceipts.map((lr) => {
+    const updatedLR = lorryReceipts.map?.((lr) => {
       lr.checked = e.target.checked;
       return lr;
     });
-    setSelectedLR(updatedLR.filter((lr) => lr.checked));
+    setSelectedLR(updatedLR.filter?.((lr) => lr.checked));
   };
 
   // useEffect(() => {
   //   if (selectAll) {
-  //     const updatedLR = lorryReceipts.map((lr) => {
+  //     const updatedLR = lorryReceipts.map?.((lr) => {
   //       lr.checked = true;
   //       return lr;
   //     });
-  //     setSelectedLR(updatedLR.filter((lr) => lr.checked));
+  //     setSelectedLR(updatedLR.filter?.((lr) => lr.checked));
   //   } else {
-  //     const updatedLR = lorryReceipts.map((lr) => {
+  //     const updatedLR = lorryReceipts.map?.((lr) => {
   //       lr.checked = false;
   //       return lr;
   //     });
-  //     setSelectedLR(updatedLR.filter((lr) => lr.checked));
+  //     setSelectedLR(updatedLR.filter?.((lr) => lr.checked));
   //   }
   // }, [selectAll]);
 
@@ -157,7 +157,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
         <div className="bl_lrCheckboxes">
           <FormGroup className="checkboxGroup">
             {lorryReceipts.length > 0 &&
-              lorryReceipts.map((lr) => (
+              lorryReceipts.map?.((lr) => (
                 <FormControlLabel
                   className="groupCheckbox"
                   key={lr.lrNo}
@@ -193,7 +193,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
             form="lrSelectionForm"
             className="ml6"
           >
-            Update
+            Add
           </Button>
         </div>
       </form>

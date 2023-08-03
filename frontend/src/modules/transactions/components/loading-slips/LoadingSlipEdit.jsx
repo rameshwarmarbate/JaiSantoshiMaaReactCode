@@ -171,13 +171,13 @@ const LoadingSlipEdit = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const lrList = payload?.data.map((lr) => {
+            const lrList = payload?.data.map?.((lr) => {
               return {
                 ...lr,
                 checked: false,
               };
             });
-            const filteredLorryReceipts = lrList.filter((lr) => {
+            const filteredLorryReceipts = lrList.filter?.((lr) => {
               return !lr.associatedLS || lr.associatedLS === lsId;
             });
             setLorryReceipts(filteredLorryReceipts);
@@ -228,19 +228,19 @@ const LoadingSlipEdit = () => {
             setFormErrors(initialErrorState);
             let response = { ...(payload?.data || {}) };
             const vehicleIndex = vehicles
-              .map((vehicle) => vehicle.vehicleNo)
+              .map?.((vehicle) => vehicle.vehicleNo)
               .indexOf(vehicleNo);
             response.vehicle = vehicles[vehicleIndex];
             const driverIndex = drivers
-              .map((driver) => driver.licenseNo)
+              .map?.((driver) => driver.licenseNo)
               .indexOf(licenseNo);
             response.driver = drivers[driverIndex];
-            const fromIndex = places.map((place) => place._id).indexOf(from);
+            const fromIndex = places.map?.((place) => place._id).indexOf(from);
             response.from = places[fromIndex];
-            const toIndex = places.map((place) => place._id).indexOf(to);
+            const toIndex = places.map?.((place) => place._id).indexOf(to);
             response.to = places[toIndex];
             const paybleIndex = branches
-              .map((branch) => branch._id)
+              .map?.((branch) => branch._id)
               .indexOf(paybleAt);
             response.paybleAt = branches[paybleIndex];
             setLoadingSlip(response);
@@ -254,10 +254,10 @@ const LoadingSlipEdit = () => {
 
   useEffect(() => {
     if (lorryReceipts.length && loadingSlip.lrList.length) {
-      const selectedLRList = lorryReceipts.map((lorryReceipt) => {
+      const selectedLRList = lorryReceipts.map?.((lorryReceipt) => {
         return {
           ...lorryReceipt,
-          checked: loadingSlip.lrList.some((lr) => {
+          checked: loadingSlip.lrList.some?.((lr) => {
             return lr._id === lorryReceipt._id;
           }),
         };
@@ -295,7 +295,7 @@ const LoadingSlipEdit = () => {
     e.preventDefault();
     if (!validateForm(loadingSlip)) {
       const updatedLoadingSlip = { ...loadingSlip };
-      updatedLoadingSlip.lrList = lsLrList.filter((lr) => lr.checked);
+      updatedLoadingSlip.lrList = lsLrList.filter?.((lr) => lr.checked);
       dispatch(updateLoadingSlip(updatedLoadingSlip))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
@@ -359,7 +359,7 @@ const LoadingSlipEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.date) {
@@ -368,19 +368,19 @@ const LoadingSlipEdit = () => {
     if (!formData.vehicle) {
       errors.vehicle = { invalid: true, message: "Vehicle is required" };
     }
-    if (formData.vehicleOwner.trim() === "") {
+    if (formData.vehicleOwner?.trim?.() === "") {
       errors.vehicleOwner = {
         invalid: true,
         message: "Vehicle owner is required",
       };
     }
-    if (formData.vehicleOwnerAddress.trim() === "") {
+    if (formData.vehicleOwnerAddress?.trim?.() === "") {
       errors.vehicleOwnerAddress = {
         invalid: true,
         message: "Vehicle owner address is required",
       };
     }
-    if (formData.vehicleOwnerPhone.trim() === "") {
+    if (formData.vehicleOwnerPhone?.trim?.() === "") {
       errors.vehicleOwnerPhone = {
         invalid: true,
         message: "Owner phone no is required",
@@ -389,10 +389,10 @@ const LoadingSlipEdit = () => {
     if (!formData.driver) {
       errors.driver = { invalid: true, message: "Driver name is required" };
     }
-    if (formData.licenseNo.trim() === "") {
+    if (formData.licenseNo?.trim?.() === "") {
       errors.licenseNo = { invalid: true, message: "License no is required" };
     }
-    if (formData.phone.trim() === "") {
+    if (formData.phone?.trim?.() === "") {
       errors.phone = {
         invalid: true,
         message: "Driver's phone no is required",
@@ -400,7 +400,7 @@ const LoadingSlipEdit = () => {
     }
     if (
       formData.phone &&
-      formData.phone.trim() !== "" &&
+      formData.phone?.trim?.() !== "" &&
       !mobileNoRegEx.test(formData.phone)
     ) {
       errors.phone = {
@@ -475,10 +475,10 @@ const LoadingSlipEdit = () => {
     });
     if (name === "vehicle") {
       if (option && option._id) {
-        const selectedVehicle = vehicles.find(
+        const selectedVehicle = vehicles.find?.(
           (vehicle) => vehicle._id === option._id
         );
-        const selectedSupplier = suppliers.find(
+        const selectedSupplier = suppliers.find?.(
           (supplier) => supplier._id === selectedVehicle.owner
         );
         setLoadingSlip((currState) => {
@@ -505,7 +505,7 @@ const LoadingSlipEdit = () => {
 
     if (name === "driver") {
       if (option && option._id) {
-        const driver = drivers.find((driver) => driver._id === option._id);
+        const driver = drivers.find?.((driver) => driver._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -527,7 +527,7 @@ const LoadingSlipEdit = () => {
     }
     if (name === "from") {
       if (option && option._id) {
-        const from = places.find((place) => place._id === option._id);
+        const from = places.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -546,7 +546,7 @@ const LoadingSlipEdit = () => {
 
     if (name === "to") {
       if (option && option._id) {
-        const to = places.find((place) => place._id === option._id);
+        const to = places.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -615,7 +615,7 @@ const LoadingSlipEdit = () => {
                     onChange={inputChangeHandler}
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}

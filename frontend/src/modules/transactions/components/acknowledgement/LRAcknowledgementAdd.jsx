@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -51,6 +51,8 @@ const LRAcknowledgementAdd = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const ref = useRef(null);
+
   const goToLRAcknowledgement = useCallback(() => {
     navigate("/transactions/lrAcknowledgement");
   }, [navigate]);
@@ -67,7 +69,7 @@ const LRAcknowledgementAdd = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedList = payload?.data.map((lr) => {
+            const updatedList = payload?.data.map?.((lr) => {
               return {
                 ...lr,
                 label: lr.lrNo,
@@ -104,12 +106,42 @@ const LRAcknowledgementAdd = () => {
             setHttpError("");
             setFormErrors(initialErrorState);
             setLorryReceipt(initialState);
+            setChallanNo("");
             setGetUpdatedLR(true);
           }
         })
         .catch((error) => {
           setHttpError(error.message);
         });
+    }
+  };
+
+  const onSelect = (e, value) => {
+    const option = lorryReceipts.find?.(
+      ({ label }) =>
+        value?.toLowerCase?.()?.trim?.() === label?.toLowerCase?.()?.trim?.()
+    );
+    if (option) {
+      if (!lorryReceipt.isPrevented) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setLorryReceipt((currState) => {
+        return {
+          ...currState,
+          lrNo: option,
+          isPrevented: true,
+        };
+      });
+      if (option._id) {
+        dispatch(getChallanAck(option._id))
+          .then(({ payload = {} }) => {
+            setChallanNo(payload?.data?.lsNo || "");
+          })
+          .catch((error) => {
+            setHttpError(error.message);
+          });
+      }
     }
   };
 
@@ -160,6 +192,7 @@ const LRAcknowledgementAdd = () => {
   };
 
   const autocompleteChangeListener = (e, option, name) => {
+    e.preventDefault();
     setLorryReceipt((currState) => {
       return {
         ...currState,
@@ -213,10 +246,21 @@ const LRAcknowledgementAdd = () => {
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "lrNo")
                     }
+                    ref={ref}
                     openOnFocus
+                    disableClearable
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          onKeyDown: (e) => {
+                            if (e.key === "Enter") {
+                              onSelect(e, e.target.value);
+                              e.stopPropagation();
+                            }
+                          },
+                        }}
                         label="Lorry receipt no"
                         error={formErrors.lrNo.invalid}
                         fullWidth

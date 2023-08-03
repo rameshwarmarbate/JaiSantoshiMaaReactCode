@@ -89,7 +89,7 @@ const LorryReceiptRegister = () => {
   const [httpError, setHttpError] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [search, setSearch] = useState(initialState);
-  const [isSubmitted, setIsSubmitted] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 100,
@@ -109,7 +109,7 @@ const LorryReceiptRegister = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedCustomers = payload?.data.map((customer) => {
+          const updatedCustomers = payload?.data.map?.((customer) => {
             return {
               ...customer,
               label: customer.name,
@@ -131,7 +131,7 @@ const LorryReceiptRegister = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -144,8 +144,8 @@ const LorryReceiptRegister = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     if (isSubmitted && ((user.branch && selectedBranch) || !user.branch)) {
+      setLoading(true);
       const query = {};
       if (selectedBranch && selectedBranch._id) {
         query.branch = selectedBranch._id;
@@ -180,16 +180,16 @@ const LorryReceiptRegister = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLR = payload?.data.lorryReceipts.map((lr) => {
+            const updatedLR = payload?.data.lorryReceipts.map?.((lr) => {
               return {
                 ...lr,
                 date: getFormattedDate(new Date(lr.date)),
                 totalWeight: lr.transactions
-                  .reduce((acc, lr) => acc + lr.chargeWeight, 0)
-                  .toFixed(2),
+                  .reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
+                  ?.toFixed?.(2),
                 totalArticles: lr.transactions
-                  .reduce((acc, lr) => acc + lr.articleNo, 0)
-                  .toFixed(2),
+                  .reduce?.((acc, lr) => acc + lr.articleNo, 0)
+                  ?.toFixed?.(2),
               };
             });
             setPageState((currState) => {
@@ -208,8 +208,6 @@ const LorryReceiptRegister = () => {
           setHttpError(error.message);
           setLoading(false);
         });
-    } else if (!isSubmitted) {
-      setLoading(false);
     }
   }, [
     paginationModel.page,
@@ -219,11 +217,11 @@ const LorryReceiptRegister = () => {
   ]);
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find(
+    const filteredBranch = branches.find?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch);
-    setIsSubmitted(true);
+    setIsSubmitted(false);
     setSearch(initialState);
   };
 
@@ -274,6 +272,9 @@ const LorryReceiptRegister = () => {
     if (search.to) {
       query.to = search.to;
     }
+    if (search.payType) {
+      query.payType = search.payType;
+    }
     dispatch(downloadLRReport(query))
       .then(({ payload = {} }) => {
         const { message } = payload?.data || {};
@@ -321,7 +322,7 @@ const LorryReceiptRegister = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

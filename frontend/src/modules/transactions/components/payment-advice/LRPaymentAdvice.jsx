@@ -229,14 +229,16 @@ const LRPaymentAdvice = ({
             if (places?.length) {
               let outstanding = 0;
               let paid = 0;
-              const updatedResponse = payload?.data?.map((ls) => {
-                const from = places.filter((place) => place._id === ls.from)[0];
-                const to = places.filter((place) => place._id === ls.to)[0];
+              const updatedResponse = payload?.data?.map?.((ls) => {
+                const from = places.filter?.(
+                  (place) => place._id === ls.from
+                )[0];
+                const to = places.filter?.((place) => place._id === ls.to)[0];
                 ls.from = from?.name;
                 ls.to = to?.name;
                 ls.suppPay = 0;
                 ls.paid = false;
-                ls.paidToSupp = ls.supplierPayments?.reduce(
+                ls.paidToSupp = ls.supplierPayments?.reduce?.(
                   (total, payment) => {
                     return total + payment.paid;
                   },
@@ -274,7 +276,7 @@ const LRPaymentAdvice = ({
   useEffect(() => {
     if (payments.jsmBank && payments.jsmBank._id) {
       setAccountsByBank(() => {
-        return bankAccounts.filter((acc) => {
+        return bankAccounts.filter?.((acc) => {
           return acc.bank === payments.jsmBank._id;
         });
       });
@@ -300,7 +302,7 @@ const LRPaymentAdvice = ({
     const value = e.target.value;
     setSupplierLS((currState) => {
       const updatedState = [...currState];
-      updatedState.forEach((ls) => {
+      updatedState.forEach?.((ls) => {
         if (ls._id === name) {
           if (value === "0" || value === "") {
             ls.suppPay = +value;
@@ -313,7 +315,7 @@ const LRPaymentAdvice = ({
       });
       return updatedState;
     });
-    const paidToday = supplierLS.reduce(
+    const paidToday = supplierLS.reduce?.(
       (acc, ls) => (ls.suppPay ? +acc + +ls.suppPay : +acc),
       0
     );
@@ -327,9 +329,9 @@ const LRPaymentAdvice = ({
 
   const submitHandler = (e) => {
     e.preventDefault();
-    const LSForPay = supplierLS.filter((ls) => ls.paid);
+    const LSForPay = supplierLS.filter?.((ls) => ls.paid);
     if (!validateForm(payments) && LSForPay?.length) {
-      const updatedLS = LSForPay.map((ls) => {
+      const updatedLS = LSForPay.map?.((ls) => {
         return {
           ls_id: ls._id,
           payment: {
@@ -380,7 +382,7 @@ const LRPaymentAdvice = ({
       errors.payMode = { invalid: true, message: "Payment mode is required" };
     }
     if (formData.payMode?.value === "Cheque") {
-      if (formData.chequeNo.trim() === "") {
+      if (formData.chequeNo?.trim?.() === "") {
         errors.chequeNo = { invalid: true, message: "Cheque no is required" };
       }
       if (!formData.chequeDate) {
@@ -394,7 +396,7 @@ const LRPaymentAdvice = ({
       formData.payMode?.value === "NEFT/RTGS" ||
       formData.payMode?.value === "Online banking"
     ) {
-      if (formData.transactionNo.trim() === "") {
+      if (formData.transactionNo?.trim?.() === "") {
         errors.transactionNo = {
           invalid: true,
           message: "Transaction no is required",

@@ -10,11 +10,11 @@ const Navigation = () => {
   return (
     <nav className={classes.nav}>
       <ul>
-        {navItems.map((navItem) => {
+        {navItems.map?.((navItem) => {
           if (
             user &&
             user.type &&
-            user.type.toLowerCase() === "user" &&
+            user.type?.toLowerCase?.() === "user" &&
             (navItem.to === "/users" || navItem.to === "/master")
           ) {
             return null;
@@ -50,7 +50,7 @@ const CustomLink = ({ to, children, ...props }) => {
   const resolvedPath = useResolvedPath(to);
   const location = useLocation();
   // const isActive = useMatch({ path: resolvedPath.pathname });
-  const isActive = location.pathname.includes(resolvedPath.pathname);
+  const isActive = location.pathname.includes?.(resolvedPath.pathname);
   let isChildActive = false;
   if (!isChildActive && location.pathname.startsWith(to)) {
     isChildActive = true;
@@ -70,7 +70,7 @@ const CustomLink = ({ to, children, ...props }) => {
       </Link>
       {props.subnav && props.subnav.length > 0 && (
         <ul>
-          {props.subnav.map((subnavItem) => (
+          {props.subnav.map?.((subnavItem) => (
             <CustomSubLink key={subnavItem.to} subto={subnavItem.to}>
               {subnavItem.label}
             </CustomSubLink>
@@ -88,7 +88,7 @@ const CustomSubLink = ({ subto, children, ...props }) => {
   const resolvedPath = useResolvedPath(subto);
   // const isActive = useMatch({ path: resolvedPath.pathname, startsWith: true });
   const location = useLocation();
-  const isActive = location.pathname.includes(resolvedPath.pathname);
+  const isActive = location.pathname.includes?.(resolvedPath.pathname);
   let isChildActive = false;
   if (!isChildActive && location.pathname.startsWith(subto)) {
     isChildActive = true;

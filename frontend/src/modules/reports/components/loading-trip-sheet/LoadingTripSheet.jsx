@@ -10,7 +10,7 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-
+import DownloadIcon from "@mui/icons-material/Download";
 import Select from "@mui/material/Select";
 import Grid from "@material-ui/core/Grid";
 import { DataGrid } from "@mui/x-data-grid";
@@ -24,10 +24,12 @@ import {
 } from "../../../../services/utils";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
+  downloadChallanReport,
   getBranches,
   getLoadingSlipForReport,
   selectIsLoading,
 } from "./slice/tripSheetSlice";
+import FileSaver from "file-saver";
 
 const initialState = {
   from: null,
@@ -88,7 +90,7 @@ const LoadingTripSheet = () => {
   const [httpError, setHttpError] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [search, setSearch] = useState(initialState);
-  const [isSubmitted, setIsSubmitted] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 100,
@@ -109,7 +111,7 @@ const LoadingTripSheet = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -151,7 +153,7 @@ const LoadingTripSheet = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLS = payload?.data.loadingSlips.map((ls) => {
+            const updatedLS = payload?.data.loadingSlips.map?.((ls) => {
               return {
                 ...ls,
                 date: getFormattedDate(new Date(ls.date)),
@@ -185,12 +187,51 @@ const LoadingTripSheet = () => {
     search.to,
   ]);
 
+  const triggerDownload = (e) => {
+    e.preventDefault();
+    const query = { isPrint: true };
+    if (selectedBranch && selectedBranch._id) {
+      query.branch = selectedBranch._id;
+    }
+    if (search.from) {
+      query.from = search.from;
+    }
+    if (search.to) {
+      query.to = search.to;
+    }
+    if (search.lrNo) {
+      query.lrNo = search.lrNo;
+    }
+    const requestObject = {
+      pagination: {
+        limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
+        page: paginationModel.page + 1,
+      },
+      query: query,
+    };
+    dispatch(downloadChallanReport(requestObject))
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          var blob = new Blob([payload?.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          FileSaver.saveAs(blob, "ChallanStatus.xlsx");
+        }
+      })
+      .catch((error) => {
+        setHttpError(error.message);
+      });
+  };
+
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find(
+    const filteredBranch = branches.find?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch);
-    setIsSubmitted(true);
+    setIsSubmitted(false);
     setSearch(initialState);
   };
 
@@ -246,7 +287,7 @@ const LoadingTripSheet = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}
@@ -346,6 +387,17 @@ const LoadingTripSheet = () => {
         </Paper>
 
         <Paper sx={{ width: "100%" }}>
+          {pageState.data.length > 0 ? (
+            <div className="tbl_header">
+              <Button
+                variant="contained"
+                endIcon={<DownloadIcon />}
+                onClick={triggerDownload}
+              >
+                Download
+              </Button>
+            </div>
+          ) : null}
           <DataGrid
             autoHeight
             density="compact"

@@ -34,7 +34,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
       type: "number",
       renderCell: (params) => {
         return params.row.amount ? (
-          <strong>₹ {params.row.amount.toFixed(2)}</strong>
+          <strong>₹ {params.row.amount?.toFixed?.(2)}</strong>
         ) : null;
       },
     },
@@ -45,7 +45,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
       type: "number",
       renderCell: (params) => {
         return params.row.paid ? (
-          <strong>₹ {params.row.paid.toFixed(2)}</strong>
+          <strong>₹ {params.row.paid?.toFixed?.(2)}</strong>
         ) : null;
       },
     },
@@ -93,7 +93,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -116,9 +116,9 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
     if (supplierBills.length) {
       const historyList = [];
       let indexes = 0;
-      supplierBills.forEach((bill, index) => {
+      supplierBills.forEach?.((bill, index) => {
         indexes = indexes + 1;
-        historyList.push({
+        historyList.push?.({
           // _id: "payment_" + 0,
           _id: indexes,
           date: bill.createdAt,
@@ -133,7 +133,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
           //   totalHire: ls.hire + ls.hamali - ls.commission - ls.stacking,
         });
         if (bill.payments.length) {
-          bill.payments.forEach((payment, idx) => {
+          bill.payments.forEach?.((payment, idx) => {
             indexes = indexes + 1;
             const history = {};
             // history._id = "payment_" + (index + 1);
@@ -155,7 +155,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
             history.transactionDate = payment.transactionDate
               ? getFormattedDate(payment.transactionDate)
               : "-";
-            historyList.push(history);
+            historyList.push?.(history);
           });
         }
       });

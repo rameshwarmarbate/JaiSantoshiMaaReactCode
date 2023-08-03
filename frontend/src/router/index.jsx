@@ -245,10 +245,42 @@ const Routing = () => {
         <Route path="/users">
           <Route index element={<Navigate to="/users/usersList" />} />
           <Route>
-            <Route path="usersList" element={<UserList />} />
-            <Route path="userRegistration" element={<UserRegistration />} />
-            <Route path="userEdit" element={<UserEdit />} />
-            <Route path="userPermissions" element={<UserPermissions />} />
+            <Route
+              path="usersList"
+              element={
+                <RequireAuth
+                  parent="User"
+                  path="UserActivation"
+                  process="write"
+                >
+                  <UserList />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="userRegistration"
+              element={
+                <RequireAuth parent="User" path="UserRegister" process="write">
+                  <UserRegistration />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="userEdit"
+              element={
+                <RequireAuth parent="User" path="UserRegister" process="write">
+                  <UserEdit />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="userPermissions"
+              element={
+                <RequireAuth parent="User" path="RoleMaster" process="write">
+                  <UserPermissions />
+                </RequireAuth>
+              }
+            />
           </Route>
         </Route>
         <Route path="/master">
@@ -623,7 +655,7 @@ const Routing = () => {
               index
               element={
                 <RequireAuth
-                  parent="Accounts"
+                  parent="Sales/Purchase"
                   path="LorryReceipt"
                   process="write"
                 >
@@ -635,8 +667,8 @@ const Routing = () => {
               path="addLorryReceipt"
               element={
                 <RequireAuth
-                  parent="Accounts"
-                  path="LorryReceipt"
+                  parent="Sales/Purchase"
+                  path="LorryReceiptReg"
                   process="write"
                 >
                   <LorryReceiptAdd />
@@ -647,8 +679,8 @@ const Routing = () => {
               path="editLorryReceipt"
               element={
                 <RequireAuth
-                  parent="Accounts"
-                  path="LorryReceipt"
+                  parent="Sales/Purchase"
+                  path="LorryReceiptReg"
                   process="write"
                 >
                   <LorryReceiptEdit />
@@ -660,8 +692,8 @@ const Routing = () => {
             path="addFONum"
             element={
               <RequireAuth
-                parent="Accounts"
-                path="LorryReceipt"
+                parent="Sales/Purchase"
+                path="Add_FO_No"
                 process="write"
               >
                 <FONumAdd />
@@ -669,19 +701,79 @@ const Routing = () => {
             }
           />
           <Route path="loadingSlips">
-            <Route index element={<LoadingSlips />} />
-            <Route path="addLoadingSlip" element={<LoadingSlipAdd />} />
-            <Route path="editLoadingSlip" element={<LoadingSlipEdit />} />
+            <Route
+              index
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LoadingSlip"
+                  process="write"
+                >
+                  <LoadingSlips />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="addLoadingSlip"
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LoadingSlipRegister"
+                  process="write"
+                >
+                  <LoadingSlipAdd />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="editLoadingSlip"
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LoadingSlipRegister"
+                  process="write"
+                >
+                  <LoadingSlipEdit />
+                </RequireAuth>
+              }
+            />
           </Route>
           <Route path="lrAcknowledgement">
-            <Route index element={<LRAcknowledgement />} />
+            <Route
+              index
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LRAcknowledge"
+                  process="write"
+                >
+                  <LRAcknowledgement />
+                </RequireAuth>
+              }
+            />
             <Route
               path="editLRAcknowledgement"
-              element={<LRAcknowledgementEdit />}
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LRAcknowledge"
+                  process="write"
+                >
+                  <LRAcknowledgementEdit />
+                </RequireAuth>
+              }
             />
             <Route
               path="addLRAcknowledgement"
-              element={<LRAcknowledgementAdd />}
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="LRAcknowledge"
+                  process="write"
+                >
+                  <LRAcknowledgementAdd />
+                </RequireAuth>
+              }
             />
           </Route>
 
@@ -692,25 +784,106 @@ const Routing = () => {
           </Route>
 
           <Route path="billList">
-            <Route index element={<BillList />} />
-            <Route path="addBill" element={<BillAdd />} />
-            <Route path="editBill" element={<BillEdit />} />
+            <Route
+              index
+              element={
+                <RequireAuth parent="Accounts" path="RouteBill" process="write">
+                  <BillList />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="addBill"
+              element={
+                <RequireAuth
+                  parent="Accounts"
+                  path="BillRegister"
+                  process="write"
+                >
+                  <BillAdd />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="editBill"
+              element={
+                <RequireAuth
+                  parent="Accounts"
+                  path="BillRegister"
+                  process="write"
+                >
+                  <BillEdit />
+                </RequireAuth>
+              }
+            />
           </Route>
 
           <Route path="/transactions/cashMemoList" element={<CashMemoList />} />
           <Route
             path="/transactions/paymentCollection"
-            element={<PaymentCollection />}
+            element={
+              <RequireAuth
+                parent="Accounts"
+                path="PaymentCollection"
+                process="write"
+              >
+                <PaymentCollection />
+              </RequireAuth>
+            }
           />
           <Route path="/transactions/paymentAdvice">
-            <Route index element={<PaymentAdvice />} />
+            <Route
+              index
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="PaymentAdvice"
+                  process="write"
+                >
+                  <PaymentAdvice />
+                </RequireAuth>
+              }
+            />
             <Route path="viewSupplierBill" element={<SupplierBillView />} />
           </Route>
 
           <Route path="moneyTransfers">
-            <Route index element={<MoneyTransfers />} />
-            <Route path="addMoneyTransfer" element={<MoneyTransferAdd />} />
-            <Route path="editMoneyTransfer" element={<MoneyTransferEdit />} />
+            <Route
+              index
+              element={
+                <RequireAuth
+                  parent="Admin"
+                  path="MoneyTransfer"
+                  process="write"
+                >
+                  <MoneyTransfers />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="addMoneyTransfer"
+              element={
+                <RequireAuth
+                  parent="Admin"
+                  path="MoneyTransfer"
+                  process="write"
+                >
+                  <MoneyTransferAdd />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="editMoneyTransfer"
+              element={
+                <RequireAuth
+                  parent="Admin"
+                  path="MoneyTransfer"
+                  process="write"
+                >
+                  <MoneyTransferEdit />
+                </RequireAuth>
+              }
+            />
           </Route>
           <Route path="pettyCashHistory">
             <Route index element={<PettyCashHistory />} />
@@ -720,9 +893,42 @@ const Routing = () => {
             />
           </Route>
           <Route path="quotations">
-            <Route index element={<QuotationList />} />
-            <Route path="addQuotation" element={<QuotationAdd />} />
-            <Route path="editQuotation" element={<QuotationEdit />} />
+            <Route
+              index
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="TripSheet"
+                  process="write"
+                >
+                  <QuotationList />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="addQuotation"
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="TripSheet"
+                  process="write"
+                >
+                  <QuotationAdd />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="editQuotation"
+              element={
+                <RequireAuth
+                  parent="Sales/Purchase"
+                  path="TripSheet"
+                  process="write"
+                >
+                  <QuotationEdit />
+                </RequireAuth>
+              }
+            />
           </Route>
         </Route>
         <Route path="/reports">
@@ -732,11 +938,23 @@ const Routing = () => {
           />
           <Route
             path="/reports/lorryReceiptRegister"
-            element={<LorryReceiptRegister />}
+            element={
+              <RequireAuth
+                parent="Accounts"
+                path="BilledLRStatus"
+                process="write"
+              >
+                <LorryReceiptRegister />
+              </RequireAuth>
+            }
           />
           <Route
             path="/reports/loadingTripSheet"
-            element={<LoadingTripSheet />}
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <LoadingTripSheet />
+              </RequireAuth>
+            }
           />
           <Route path="/reports/billRegister" element={<BillRegister />} />
           <Route path="/reports/billedLRStatus" element={<BilledLRStatus />} />

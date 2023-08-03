@@ -58,10 +58,10 @@ const PaymentCollectionHistory = ({ bills }) => {
       renderCell: (params) => {
         const triggerView = (e) => {
           e.stopPropagation();
-          const bill = bills.find((bill) => {
+          const bill = bills.find?.((bill) => {
             return bill._id === params.row.bill_id;
           });
-          const paymentIndex = bill.paymentCollection.findIndex(
+          const paymentIndex = bill.paymentCollection.findIndex?.(
             (pay) => pay._id === params.row._id
           );
           triggerViewPayment({
@@ -73,10 +73,10 @@ const PaymentCollectionHistory = ({ bills }) => {
 
         const triggerDownload = (e) => {
           e.stopPropagation();
-          const bill = bills.find((bill) => {
+          const bill = bills.find?.((bill) => {
             return bill._id === params.row.bill_id;
           });
-          const paymentIndex = bill.paymentCollection.findIndex(
+          const paymentIndex = bill.paymentCollection.findIndex?.(
             (pay) => pay._id === params.row._id
           );
           triggerViewPayment({
@@ -135,7 +135,7 @@ const PaymentCollectionHistory = ({ bills }) => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -220,19 +220,19 @@ const PaymentCollectionHistory = ({ bills }) => {
   const getUpdatedBills = (bills) => {
     const updatedBills = [];
     if (bills?.length) {
-      bills.forEach((bill) => {
+      bills.forEach?.((bill) => {
         if (bill.paymentCollection.length) {
-          bill.paymentCollection.forEach((collection) => {
+          bill.paymentCollection.forEach?.((collection) => {
             const history = {};
             history._id = collection._id;
             history.bill_id = bill._id;
             history.billNo = getFormattedLSNumber(bill.billNo);
             history.billDate = getFormattedDate(bill.date);
-            history.billAmount = bill.total.toFixed(2);
+            history.billAmount = bill.total?.toFixed?.(2);
             history.receivingDate = getFormattedDate(collection.receivingDate);
-            history.receivedAmout = collection.receive.toFixed(2);
+            history.receivedAmout = collection.receive?.toFixed?.(2);
             history.payMode = collection.payMode;
-            updatedBills.push(history);
+            updatedBills.push?.(history);
           });
         }
       });

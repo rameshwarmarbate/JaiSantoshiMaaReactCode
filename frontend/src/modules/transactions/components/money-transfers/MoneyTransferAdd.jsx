@@ -144,10 +144,10 @@ const MoneyTransferAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.transferToBranch.trim() === "") {
+    if (formData.transferToBranch?.trim?.() === "") {
       errors.transferToBranch = {
         invalid: true,
         message: "Branch is required",
@@ -156,7 +156,7 @@ const MoneyTransferAdd = () => {
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.amount.trim() === "" || formData.amount.trim() === "0") {
+    if (formData.amount?.trim?.() === "" || formData.amount?.trim?.() === "0") {
       errors.amount = {
         invalid: true,
         message: "Amount is required and should be greater than 0",
@@ -215,12 +215,12 @@ const MoneyTransferAdd = () => {
                     disabled={
                       user &&
                       user.type &&
-                      user.type.toLowerCase() !== "superadmin" &&
-                      user.type.toLowerCase() !== "admin"
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
                     }
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}
@@ -252,7 +252,7 @@ const MoneyTransferAdd = () => {
                     onChange={inputChangeHandler}
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}

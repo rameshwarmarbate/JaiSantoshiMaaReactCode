@@ -141,25 +141,25 @@ const BankEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name.trim() === "") {
+    if (formData.name?.trim?.() === "") {
       errors.name = { invalid: true, message: "Bank name is required" };
     }
-    if (formData.branchName.trim() === "") {
+    if (formData.branchName?.trim?.() === "") {
       errors.branchName = { invalid: true, message: "Branch name is required" };
     }
-    if (formData.branchCode.trim() === "") {
+    if (formData.branchCode?.trim?.() === "") {
       errors.branchCode = { invalid: true, message: "Branch code is required" };
     }
-    if (formData.address.trim() === "") {
+    if (formData.address?.trim?.() === "") {
       errors.address = { invalid: true, message: "Address is required" };
     }
-    if (formData.ifsc.trim() === "") {
+    if (formData.ifsc?.trim?.() === "") {
       errors.ifsc = { invalid: true, message: "IFSC code is required" };
     }
-    if (formData.micr.trim() === "") {
+    if (formData.micr?.trim?.() === "") {
       errors.micr = { invalid: true, message: "MICR code is required" };
     }
-    if (formData.phone.trim() === "") {
+    if (formData.phone?.trim?.() === "") {
       errors.phone = {
         invalid: true,
         message: "Phone is required",
@@ -167,7 +167,7 @@ const BankEdit = () => {
     }
     if (
       formData.phone &&
-      formData.phone.trim() !== "" &&
+      formData.phone?.trim?.() !== "" &&
       !mobileNoRegEx.test(formData.phone)
     ) {
       errors.phone = {
@@ -175,12 +175,12 @@ const BankEdit = () => {
         message: "Phone should be 10 digits number",
       };
     }
-    if (formData.email.trim() === "") {
+    if (formData.email?.trim?.() === "") {
       errors.email = { invalid: true, message: "Email is required" };
     }
     if (
       formData.email &&
-      formData.email.trim() !== "" &&
+      formData.email?.trim?.() !== "" &&
       !emailRegEx.test(formData.email)
     ) {
       errors.email = { invalid: true, message: "Email is invalid" };

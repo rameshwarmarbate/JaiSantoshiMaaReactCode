@@ -137,7 +137,7 @@ const PaymentAdvice = () => {
                   onChange={supplierTypeChangeHandler}
                 >
                   {supplierTypes.length > 0 &&
-                    supplierTypes.map((supplierType) => (
+                    supplierTypes.map?.((supplierType) => (
                       <MenuItem
                         key={supplierType}
                         value={supplierType}
@@ -160,7 +160,7 @@ const PaymentAdvice = () => {
                   onChange={supplierChangeHandler}
                 >
                   {suppliers.length > 0 &&
-                    suppliers.map((supplier) => (
+                    suppliers.map?.((supplier) => (
                       <MenuItem
                         key={supplier._id}
                         value={supplier._id}

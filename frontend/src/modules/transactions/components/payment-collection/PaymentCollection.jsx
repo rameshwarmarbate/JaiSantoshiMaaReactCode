@@ -88,10 +88,10 @@ const initialErrorState = {
 };
 
 const getUpdatedBills = (bills, paymentCollection) => {
-  const filteredBills = bills.filter((bill) => {
+  const filteredBills = bills.filter?.((bill) => {
     return bill.receive;
   });
-  const udpatedBills = filteredBills.map((bill) => {
+  const udpatedBills = filteredBills.map?.((bill) => {
     if (bill.receive) {
       bill.payment = {
         bankName: paymentCollection.bankName,
@@ -209,7 +209,7 @@ const PaymentCollection = () => {
           setHttpError(message);
         } else {
           setBranches(payload?.data);
-          const filteredBranch = payload?.data.find(
+          const filteredBranch = payload?.data.find?.(
             (branch) => branch._id === user.branch
           );
           setSelectedBranch(filteredBranch);
@@ -227,7 +227,7 @@ const PaymentCollection = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedBanks = payload?.data.map((bank) => {
+          const updatedBanks = payload?.data.map?.((bank) => {
             return {
               ...bank,
               label: bank.name,
@@ -249,7 +249,7 @@ const PaymentCollection = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedAccounts = payload?.data.map((account) => {
+          const updatedAccounts = payload?.data.map?.((account) => {
             return {
               ...account,
               label: account.accountNo,
@@ -324,8 +324,8 @@ const PaymentCollection = () => {
             setHttpError(message);
           } else {
             setHttpError("");
-            const bills = payload?.data.map((bill) => {
-              const received = bill.paymentCollection.reduce(
+            const bills = payload?.data.map?.((bill) => {
+              const received = bill.paymentCollection.reduce?.(
                 (total, payment) => {
                   return total + payment.receive;
                 },
@@ -344,7 +344,7 @@ const PaymentCollection = () => {
             let totalReceivable = 0;
             let totalReceived = 0;
 
-            bills.forEach((bill) => {
+            bills.forEach?.((bill) => {
               totalReceivable += +bill.total;
               totalReceived += +bill.received;
             });
@@ -368,7 +368,7 @@ const PaymentCollection = () => {
 
   useEffect(() => {
     let receivedToday = 0;
-    bills.forEach((bill) => {
+    bills.forEach?.((bill) => {
       receivedToday += +bill.receive;
     });
     setPaymentCollection((currState) => {
@@ -382,7 +382,7 @@ const PaymentCollection = () => {
   useEffect(() => {
     if (paymentCollection.jsmBank && paymentCollection.jsmBank._id) {
       setAccountsByBank(() => {
-        return bankAccounts.filter((acc) => {
+        return bankAccounts.filter?.((acc) => {
           return acc.bank === paymentCollection.jsmBank._id;
         });
       });
@@ -390,7 +390,7 @@ const PaymentCollection = () => {
   }, [paymentCollection.jsmBank]);
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find(
+    const filteredBranch = branches.find?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch);
@@ -405,7 +405,7 @@ const PaymentCollection = () => {
     const value = e.target.value;
     setBills((currState) => {
       const updatedState = [...currState];
-      updatedState.forEach((bill) => {
+      updatedState.forEach?.((bill) => {
         if (bill._id === name) {
           if (type === "amount") {
             bill.receive = value;
@@ -497,13 +497,13 @@ const PaymentCollection = () => {
     }
     if (
       formData.payMode?.value === "Cheque" &&
-      formData.bankName.trim() === ""
+      formData.bankName?.trim?.() === ""
     ) {
       errors.bankName = { invalid: true, message: "Bank name is required" };
     }
     if (
       formData.payMode?.value === "Cheque" &&
-      formData.chequeNo.trim() === ""
+      formData.chequeNo?.trim?.() === ""
     ) {
       errors.chequeNo = { invalid: true, message: "Cheque number is required" };
     }
@@ -601,7 +601,7 @@ const PaymentCollection = () => {
                   onChange={branchChangeHandler}
                 >
                   {branches.length > 0 &&
-                    branches.map((branch) => (
+                    branches.map?.((branch) => (
                       <MenuItem
                         key={branch._id}
                         value={branch._id}
@@ -625,7 +625,7 @@ const PaymentCollection = () => {
                     onChange={customerChangeHandler}
                   >
                     {customers.length > 0 &&
-                      customers.map((customer) => (
+                      customers.map?.((customer) => (
                         <MenuItem
                           key={customer._id}
                           value={customer._id}

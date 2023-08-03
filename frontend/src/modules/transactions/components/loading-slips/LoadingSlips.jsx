@@ -190,7 +190,7 @@ const LoadingSlips = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data.length) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -223,7 +223,7 @@ const LoadingSlips = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedLS = payload?.data.loadingSlips.filter(
+          const updatedLS = payload?.data.loadingSlips.filter?.(
             (ls) => !ls.isLocalMemo
           );
           setLoadingSlips(updatedLS);
@@ -297,7 +297,7 @@ const LoadingSlips = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -323,7 +323,7 @@ const LoadingSlips = () => {
   };
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter(
+    const filteredBranch = branches.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);
@@ -381,7 +381,7 @@ const LoadingSlips = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

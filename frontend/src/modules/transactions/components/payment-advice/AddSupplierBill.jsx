@@ -101,7 +101,7 @@ const AddSupplierBill = ({
 
   const inputChangeHandler = (e) => {
     if (e.target.name === "amount") {
-      e.target.value = e.target.value.replace(/[^0-9.-]/g, "");
+      e.target.value = e.target.value?.replace?.(/[^0-9.-]/g, "");
     }
     const name = e.target.name;
     const value = e.target.value;
@@ -145,10 +145,10 @@ const AddSupplierBill = ({
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
 
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (!formData.invoiceNo.trim()) {
+    if (!formData.invoiceNo?.trim?.()) {
       errors.invoiceNo = { invalid: true, message: "Invoice no is required" };
     }
     if (!formData.invoiceDate) {
@@ -157,7 +157,7 @@ const AddSupplierBill = ({
         message: "Invoice date is required",
       };
     }
-    if (formData.quantity.trim() === "") {
+    if (formData.quantity?.trim?.() === "") {
       errors.quantity = { invalid: true, message: "Quantity is required" };
     }
     if (formData.amount <= 0) {
@@ -212,7 +212,7 @@ const AddSupplierBill = ({
                 onChange={inputChangeHandler}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

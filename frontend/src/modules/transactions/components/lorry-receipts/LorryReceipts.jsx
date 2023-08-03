@@ -177,7 +177,7 @@ const LorryReceipts = () => {
           setHttpError("");
           setbranches(payload?.data);
           if (payload?.data.length) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -241,7 +241,7 @@ const LorryReceipts = () => {
             setHttpError(message);
           } else {
             const fileURL = base64ToObjectURL(payload?.data.file);
-            const selectedLR = pageState.data.find(
+            const selectedLR = pageState.data.find?.(
               (lr) => lr._id === viewLRId._id
             );
             if (fileURL) {
@@ -288,7 +288,7 @@ const LorryReceipts = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -338,7 +338,7 @@ const LorryReceipts = () => {
   };
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter(
+    const filteredBranch = branches.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);
@@ -379,7 +379,7 @@ const LorryReceipts = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

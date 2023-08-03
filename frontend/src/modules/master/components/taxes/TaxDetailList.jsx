@@ -32,7 +32,7 @@ const TaxDetailList = ({
 
   let content =
     taxDetails && taxDetails.length > 0 ? (
-      taxDetails.map((detail, index) => {
+      taxDetails.map?.((detail, index) => {
         return (
           <Accordion
             key={`panel${index}`}

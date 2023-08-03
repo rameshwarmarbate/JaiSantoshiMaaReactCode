@@ -185,19 +185,19 @@ const VehicleAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.owner.trim() === "") {
+    if (formData.owner?.trim?.() === "") {
       errors.owner = { invalid: true, message: "Supplier is required" };
     }
     if (
       !formData.vehicleType ||
-      (formData.vehicleType && formData.vehicleType.trim() === "")
+      (formData.vehicleType && formData.vehicleType?.trim?.() === "")
     ) {
       errors.vehicleType = {
         invalid: true,
         message: "Vehicle type is required",
       };
     }
-    if (formData.vehicleNo.trim() === "") {
+    if (formData.vehicleNo?.trim?.() === "") {
       errors.vehicleNo = {
         invalid: true,
         message: "Vehicle number is required",
@@ -220,7 +220,7 @@ const VehicleAdd = () => {
     if (!editTax) {
       setVehicle((currentState) => {
         const currentVehicle = { ...currentState };
-        currentVehicle.taxDetails.push(receivedTaxDetail);
+        currentVehicle.taxDetails.push?.(receivedTaxDetail);
         return currentVehicle;
       });
     } else {
@@ -247,7 +247,7 @@ const VehicleAdd = () => {
   const handleTriggerDelete = (contactIndex) => {
     setVehicle((currentState) => {
       const currentVehicle = { ...currentState };
-      currentVehicle.taxDetails = currentVehicle.taxDetails.filter(
+      currentVehicle.taxDetails = currentVehicle.taxDetails.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentVehicle;
@@ -292,7 +292,7 @@ const VehicleAdd = () => {
                       label="Vehicle supplier"
                       onChange={inputChangeHandler}
                     >
-                      {suppliers.map((supplier) => (
+                      {suppliers.map?.((supplier) => (
                         <MenuItem
                           key={supplier._id}
                           value={supplier._id}
@@ -342,7 +342,7 @@ const VehicleAdd = () => {
                       label="Vehicle type"
                       onChange={inputChangeHandler}
                     >
-                      {vehicleTypes.map((vehicleType) => (
+                      {vehicleTypes.map?.((vehicleType) => (
                         <MenuItem
                           key={vehicleType._id}
                           value={vehicleType._id}

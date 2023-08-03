@@ -123,7 +123,7 @@ const LRAcknowledgement = () => {
       minWidth: 150,
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total?.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -185,7 +185,7 @@ const LRAcknowledgement = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -242,8 +242,8 @@ const LRAcknowledgement = () => {
   useEffect(() => {
     setLoading(true);
     if (acknowledgements.length) {
-      const filteredLSList = acknowledgements.filter((lr) => lr.associatedLS);
-      const lsList = filteredLSList.map((lr) => lr.associatedLS);
+      const filteredLSList = acknowledgements.filter?.((lr) => lr.associatedLS);
+      const lsList = filteredLSList.map?.((lr) => lr.associatedLS);
       const uniqueLSList = [...new Set(lsList)];
 
       dispatch(getLoadingSlipsById(uniqueLSList))
@@ -255,8 +255,8 @@ const LRAcknowledgement = () => {
             setHttpError(message);
           } else {
             const updatedLR = acknowledgements;
-            updatedLR.forEach((lr) => {
-              const assoLS = payload?.data.find(
+            updatedLR.forEach?.((lr) => {
+              const assoLS = payload?.data.find?.(
                 (ls) => ls._id === lr.associatedLS
               );
               lr.associatedLS = assoLS;
@@ -278,7 +278,7 @@ const LRAcknowledgement = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -305,7 +305,7 @@ const LRAcknowledgement = () => {
   };
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find(
+    const filteredBranch = branches.find?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch);
@@ -395,7 +395,7 @@ const LRAcknowledgement = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

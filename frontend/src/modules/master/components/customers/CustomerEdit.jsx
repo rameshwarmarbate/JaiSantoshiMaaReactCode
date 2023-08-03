@@ -155,14 +155,14 @@ const CustomerEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name.trim() === "") {
+    if (formData.name?.trim?.() === "") {
       errors.name = { invalid: true, message: "Customer name is required" };
     }
-    if (formData.address.trim() === "") {
+    if (formData.address?.trim?.() === "") {
       errors.address = { invalid: true, message: "Address is required" };
     }
     if (
-      formData.telephone.trim() !== "" &&
+      formData.telephone?.trim?.() !== "" &&
       !mobileNoRegEx.test(formData.telephone)
     ) {
       errors.telephone = {
@@ -227,7 +227,7 @@ const CustomerEdit = () => {
   const handleTriggerDelete = (contactIndex) => {
     setCustomer((currentState) => {
       const currentCustomer = { ...currentState };
-      currentCustomer.contactPerson = currentCustomer.contactPerson.filter(
+      currentCustomer.contactPerson = currentCustomer.contactPerson.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentCustomer;
@@ -367,7 +367,7 @@ const CustomerEdit = () => {
                         MenuProps={{ classes: { paper: classes.menuPaper } }}
                         onChange={inputChangeHandler}
                       >
-                        {states.map((state) => (
+                        {states.map?.((state) => (
                           <MenuItem
                             key={state}
                             value={state}

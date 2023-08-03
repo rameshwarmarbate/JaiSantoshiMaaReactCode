@@ -28,7 +28,7 @@ const monthNames = [
 export const getFormattedDate = (receivedDate) => {
   const date = new Date(receivedDate);
   const day = date.getDate();
-  const formattedDay = ("0" + day).slice(-2);
+  const formattedDay = ("0" + day).slice?.(-2);
   const month = date.getMonth();
   const year = date.getFullYear();
 
@@ -53,7 +53,7 @@ export const getEmpId = () => {
   const loggedInUser = getUserData();
   return loggedInUser &&
     loggedInUser.type &&
-    loggedInUser.type.toLowerCase() === "superadmin"
+    loggedInUser.type?.toLowerCase?.() === "superadmin"
     ? loggedInUser?._id
     : loggedInUser?.employee?._id;
 };
@@ -103,7 +103,7 @@ export const emailRegEx =
 export const mobileNoRegEx = /^[0-9]{10}$/;
 
 export const getFormattedLRNumber = (lrNo) => {
-  lrNo = lrNo.toString();
+  lrNo = lrNo.toString?.();
   while (lrNo.length < 6) lrNo = "0" + lrNo;
   return lrNo;
 };
@@ -115,7 +115,7 @@ export const getLRNoByBranch = (lrNo, selectedBranch) => {
   const branchInitial = selectedBranch.name[0];
   let newNum = pad(1, 6);
   if (lrNo) {
-    const nums = lrNo.replace(/\D/g, "");
+    const nums = lrNo?.replace?.(/\D/g, "");
     newNum = pad(+nums, 6);
     return branchInitial + "-" + newNum;
   }
@@ -129,7 +129,7 @@ export const getNextLRNumber = (lr, selectedBranch) => {
   const branchInitial = selectedBranch.name[0];
   let newNum = pad(1, 6);
   if (lr && lr.lrNo) {
-    const lrNo = lr.lrNo.replace(/\D/g, "");
+    const lrNo = lr.lrNo?.replace?.(/\D/g, "");
     newNum = pad(+lrNo + 1, 6);
     return branchInitial + "-" + newNum;
   }
@@ -137,19 +137,19 @@ export const getNextLRNumber = (lr, selectedBranch) => {
 };
 
 export const getFormattedLSNumber = (lsNo) => {
-  lsNo = lsNo.toString();
+  lsNo = lsNo.toString?.();
   while (lsNo.length < 6) lsNo = "0" + lsNo;
   return lsNo;
 };
 
 export const getFormattedPettyCashNo = (pcNo) => {
-  pcNo = pcNo.toString();
+  pcNo = pcNo.toString?.();
   while (pcNo.length < 5) pcNo = "0" + pcNo;
   return pcNo;
 };
 
 export const getFormattedTransactionNo = (ptNo) => {
-  ptNo = ptNo.toString();
+  ptNo = ptNo.toString?.();
   while (ptNo.length < 5) ptNo = "0" + ptNo;
   return ptNo;
 };
@@ -157,8 +157,8 @@ export const getFormattedTransactionNo = (ptNo) => {
 export const getNextEmpNo = (emp) => {
   //DTP/2023/EMP-1
   if (emp && emp.code) {
-    const parts = emp.code.split("/");
-    const num = +parts[2].replace("EMP-", "");
+    const parts = emp.code.split?.("/");
+    const num = +parts[2]?.replace?.("EMP-", "");
     return `DTP/${new Date().getFullYear()}/EMP-${num + 1}`;
   }
   if (!emp || !emp.code) {
@@ -169,8 +169,8 @@ export const getNextEmpNo = (emp) => {
 export const getNextDriverNo = (driver) => {
   //DTP/2023/DRV-13
   if (driver && driver.code) {
-    const parts = driver.code.split("/");
-    const num = +parts[2].replace("DRV-", "");
+    const parts = driver.code.split?.("/");
+    const num = +parts[2]?.replace?.("DRV-", "");
     return `DTP/${new Date().getFullYear()}/DRV-${num + 1}`;
   }
   if (!driver || !driver.code) {
@@ -180,7 +180,7 @@ export const getNextDriverNo = (driver) => {
 
 export const isSuperAdmin = () => {
   const user = getUserData();
-  return user && user.type && user.type.toLowerCase() === "superadmin";
+  return user && user.type && user.type?.toLowerCase?.() === "superadmin";
 };
 
 export const isSuperAdminOrAdmin = () => {
@@ -188,13 +188,13 @@ export const isSuperAdminOrAdmin = () => {
   return (
     user &&
     user.type &&
-    (user.type.toLowerCase() === "superadmin" ||
-      user.type.toLowerCase() === "admin")
+    (user.type?.toLowerCase?.() === "superadmin" ||
+      user.type?.toLowerCase?.() === "admin")
   );
 };
 
 export const pad = (num, size) => {
-  num = num.toString();
+  num = num.toString?.();
   while (num.length < size) num = "0" + num;
   return num;
 };
@@ -204,7 +204,7 @@ export const base64ToObjectURL = (base64) => {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+      byteNumbers[i] = byteCharacters.charCodeAt?.(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
     const file = new Blob([byteArray], {
@@ -228,10 +228,10 @@ export const downloadFile = (fileURL, fileName) => {
 
 export const validateNumber = (e) => {
   const value = e.target.value
-    .replace(/[^0-9.]/g, "")
-    .replace(/(\..*?)\..*/g, "$1");
+    ?.replace?.(/[^0-9.]/g, "")
+    ?.replace?.(/(\..*?)\..*/g, "$1");
   e.target.value =
-    (value + "")?.includes?.(".") && !parseInt((value + "").split(".")[1])
+    (value + "")?.includes?.(".") && !parseInt((value + "").split?.(".")[1])
       ? value
       : value !== ""
       ? parseFloat(value || 0)
@@ -239,6 +239,6 @@ export const validateNumber = (e) => {
 };
 
 export const validatePhoneNumber = (e) => {
-  const value = e.target.value.slice(0, 10).replace(/[^0-9]/g, "");
+  const value = e.target.value.slice?.(0, 10)?.replace?.(/[^0-9]/g, "");
   e.target.value = value;
 };

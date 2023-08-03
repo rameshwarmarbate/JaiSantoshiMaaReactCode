@@ -14,7 +14,7 @@ const Welcome = () => {
             : ""}{" "}
           to
         </span>{" "}
-        <br /> {import.meta.env.VITE_TITLE.toUpperCase()}
+        <br /> {import.meta.env.VITE_TITLE?.toLowerCase?.()}
       </h1>
       {user.username === "" && <Login />}
     </>

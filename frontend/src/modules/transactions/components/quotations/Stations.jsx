@@ -75,7 +75,7 @@ const Stations = ({ places, quotation, setQuotation }) => {
     if (!formData.station) {
       errors.station = { invalid: true, message: "Station is required" };
     }
-    if (formData.amount.trim() === "") {
+    if (formData.amount?.trim?.() === "") {
       errors.amount = { invalid: true, message: "Amount is required" };
     }
 

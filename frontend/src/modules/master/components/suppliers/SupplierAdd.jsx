@@ -134,13 +134,16 @@ const SupplierAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name.trim() === "") {
+    if (formData.name?.trim?.() === "") {
       errors.name = { invalid: true, message: "Customer name is required" };
     }
-    if (formData.address.trim() === "") {
+    if (formData.address?.trim?.() === "") {
       errors.address = { invalid: true, message: "Address is required" };
     }
-    if (formData.phone.trim() !== "" && !mobileNoRegEx.test(formData.phone)) {
+    if (
+      formData.phone?.trim?.() !== "" &&
+      !mobileNoRegEx.test(formData.phone)
+    ) {
       errors.phone = {
         invalid: true,
         message: "Phone number should be 10 digits number",
@@ -171,7 +174,7 @@ const SupplierAdd = () => {
     if (!editContact) {
       setSupplier((currentState) => {
         const currentSupplier = { ...currentState };
-        currentSupplier.contactPerson.push(receivedPerson);
+        currentSupplier.contactPerson.push?.(receivedPerson);
         return currentSupplier;
       });
     } else {
@@ -198,7 +201,7 @@ const SupplierAdd = () => {
   const handleTriggerDelete = (contactIndex) => {
     setSupplier((currentState) => {
       const currentSupplier = { ...currentState };
-      currentSupplier.contactPerson = currentSupplier.contactPerson.filter(
+      currentSupplier.contactPerson = currentSupplier.contactPerson.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentSupplier;
@@ -314,7 +317,7 @@ const SupplierAdd = () => {
                       MenuProps={{ classes: { paper: classes.menuPaper } }}
                       onChange={inputChangeHandler}
                     >
-                      {states.map((state) => (
+                      {states.map?.((state) => (
                         <MenuItem
                           key={state}
                           value={state}

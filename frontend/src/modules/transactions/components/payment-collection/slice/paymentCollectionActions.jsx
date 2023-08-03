@@ -21,7 +21,7 @@ export function fetchBillsByCustomer({ customer, branch }) {
 }
 
 export function modifyBills(requestObject) {
-  requestObject.forEach((bill) => {
+  requestObject.forEach?.((bill) => {
     if (bill.payment) {
       bill.payment.createdBy = getEmpId();
     }

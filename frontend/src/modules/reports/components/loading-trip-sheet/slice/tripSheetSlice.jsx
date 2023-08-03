@@ -3,6 +3,7 @@ import {
   fetchBranches,
   fetchCustomers,
   fetchLoadingSlipForReport,
+  fetchLRChallanReport,
 } from "./tripSheetActions";
 
 const initialState = {
@@ -31,6 +32,15 @@ export const getLoadingSlipForReport = createAsyncThunk(
     return { data, status };
   }
 );
+
+export const downloadChallanReport = createAsyncThunk(
+  "GET_LR_FOR_CHALLAN_REPORT",
+  async (requestObject) => {
+    const { data, status } = await fetchLRChallanReport(requestObject);
+
+    return { data, status };
+  }
+);
 export const tripSheetSlice = createSlice({
   name: "tripsheet",
   initialState,
@@ -41,7 +51,7 @@ export const tripSheetSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        // state.status = "succeeded";
+        state.status = "succeeded";
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -64,6 +74,16 @@ export const tripSheetSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(getLoadingSlipForReport.rejected, (state) => {
+        state.status = "failed";
+      })
+
+      .addCase(downloadChallanReport.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(downloadChallanReport.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(downloadChallanReport.rejected, (state) => {
         state.status = "failed";
       });
   },

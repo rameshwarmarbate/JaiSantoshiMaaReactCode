@@ -14,3 +14,8 @@ export function fetchLoadingSlipForReport(requestObject) {
   const url = `api/transactions/getLoadingSlipForReport`;
   return fetchFromApiServer("POST", url, requestObject);
 }
+
+export function fetchLRChallanReport(requestObject) {
+  const url = `api/transactions/getLoadingSlipForReport`;
+  return fetchFromApiServer("BLOB", url, requestObject);
+}

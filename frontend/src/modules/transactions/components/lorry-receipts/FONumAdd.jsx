@@ -56,7 +56,7 @@ const LorryReceiptAdd = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedLR = payload?.data.map((lr) => {
+          const updatedLR = payload?.data.map?.((lr) => {
             return { ...lr, label: lr.lrNo, value: lr.lrNo };
           });
           setLorryReceipts(updatedLR);
@@ -110,7 +110,7 @@ const LorryReceiptAdd = () => {
     if (!formData.lr) {
       errors.lr = { invalid: true, message: "Lorry receipt is required" };
     }
-    if (formData.foNum.trim() === "") {
+    if (formData.foNum?.trim?.() === "") {
       errors.foNum = { invalid: true, message: "FO no is required" };
     }
 

@@ -80,7 +80,7 @@ const BillList = () => {
       headerName: "Bill amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.grandTotal?.toFixed(2)}</strong>;
+        return <strong>₹ {params.row.grandTotal?.toFixed?.(2)}</strong>;
       },
     },
     {
@@ -175,7 +175,7 @@ const BillList = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find(
+            const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
             if (payload?.data.length) {
@@ -254,7 +254,7 @@ const BillList = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -275,7 +275,7 @@ const BillList = () => {
   };
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter(
+    const filteredBranch = branches.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);
@@ -367,7 +367,7 @@ const BillList = () => {
                 disabled={!isSuperAdminOrAdmin()}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

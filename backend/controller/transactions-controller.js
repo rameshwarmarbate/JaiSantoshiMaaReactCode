@@ -3015,10 +3015,31 @@ const getLoadingSlipForReport = (req, res) => {
           message: "Error fetching lorry receipt challans!",
         });
       } else {
-        res.json({
-          loadingSlips: loadingSlips.slice(start, end),
-          count: loadingSlips?.length,
-        });
+        if (req.body.query.isPrint) {
+          const updatedLS = loadingSlips.map((ls, index) => {
+            ls.date = getFormattedDate(new Date(ls.date));
+            ls.formattedLSNo = (ls.lsNo + "").padStart?.(6, "0");
+            ls.index = index + 1;
+            return ls;
+          });
+          const workbook = exportLRChallanDataToXlsx(updatedLS);
+          res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          );
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + "data.xlsx"
+          );
+          return workbook.xlsx.write(res).then(() => {
+            res.status(200).end();
+          });
+        } else {
+          res.json({
+            loadingSlips: loadingSlips.slice(start, end),
+            count: loadingSlips?.length,
+          });
+        }
       }
     });
 };
@@ -3105,6 +3126,30 @@ const exportLRDataToXlsx = (data) => {
     { header: "Total weight", key: "totalWeight" },
     { header: "Total charge weight", key: "totalChargeWeight" },
     { header: "Total freight", key: "totalFreight" },
+  ];
+  worksheet.addRows(data);
+  return workbook;
+};
+
+const exportLRChallanDataToXlsx = (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("LR Challan");
+  const columns = data.reduce(
+    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
+    []
+  );
+
+  worksheet.columns = [
+    { header: "Sr. no", key: "index" },
+    { header: "LS no.", key: "date" },
+    { header: "Date", key: "formattedDate" },
+    { header: "Vehicle no", key: "vehicleNo" },
+    { header: "Driver", key: "driverName" },
+    { header: "Driver phone", key: "phone" },
+    { header: "From", key: "fromName" },
+    { header: "To", key: "toName" },
+    { header: "Hire amount", key: "totalFreight" },
+    { header: "Balance", key: "totalPayable" },
   ];
   worksheet.addRows(data);
   return workbook;

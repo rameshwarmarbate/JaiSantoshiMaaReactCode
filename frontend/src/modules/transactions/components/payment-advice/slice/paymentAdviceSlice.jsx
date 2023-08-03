@@ -123,7 +123,7 @@ export const paymentAdviceSlice = createSlice({
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.branches = payload?.data?.map((account) => {
+        state.branches = payload?.data?.map?.((account) => {
           return {
             ...account,
             label: account.accountNo,
@@ -140,7 +140,7 @@ export const paymentAdviceSlice = createSlice({
       })
       .addCase(getBanks.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.banks = payload?.data?.map((bank) => {
+        state.banks = payload?.data?.map?.((bank) => {
           return {
             ...bank,
             label: bank.name,

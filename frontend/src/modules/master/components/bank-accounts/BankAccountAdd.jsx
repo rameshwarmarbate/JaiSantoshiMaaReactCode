@@ -8,6 +8,7 @@ import {
   Paper,
   InputLabel,
   MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
@@ -110,7 +111,7 @@ const BankAccountAdd = () => {
       };
     });
     if (name === "bank") {
-      const selectedBank = banks.filter((bank) => bank._id === value);
+      const selectedBank = banks.filter?.((bank) => bank._id === value);
       if (selectedBank.length) {
         setBankAccount((currState) => {
           return {
@@ -120,6 +121,25 @@ const BankAccountAdd = () => {
         });
       }
     }
+  };
+
+  const autocompleteChangeListener = (e, value) => {
+    setBankAccount((currState) => {
+      return {
+        ...currState,
+        bank: value?._id || "",
+        ifsc: value?.ifsc || "",
+      };
+    });
+  };
+
+  const autocompleteType = (e, value) => {
+    setBankAccount((currState) => {
+      return {
+        ...currState,
+        accountType: value,
+      };
+    });
   };
 
   const submitHandler = (e) => {
@@ -148,41 +168,41 @@ const BankAccountAdd = () => {
     if (!formData.bank) {
       errors.bank = { invalid: true, message: "Bank is required" };
     }
-    if (formData.ifsc.trim() === "") {
+    if (formData.ifsc?.trim?.() === "") {
       errors.ifsc = { invalid: true, message: "IFSC code is required" };
     }
-    if (formData.accountHolder.trim() === "") {
+    if (formData.accountHolder?.trim?.() === "") {
       errors.accountHolder = {
         invalid: true,
         message: "Account holder name is required",
       };
     }
-    if (formData.accountType.trim() === "") {
+    if (formData.accountType?.trim?.() === "") {
       errors.accountType = {
         invalid: true,
         message: "Account type is required",
       };
     }
-    if (formData.customerId.trim() === "") {
+    if (formData.customerId?.trim?.() === "") {
       errors.customerId = {
         invalid: true,
         message: "Customer ID is required",
       };
     }
-    if (formData.accountNo.trim() === "") {
+    if (formData.accountNo?.trim?.() === "") {
       errors.accountNo = {
         invalid: true,
         message: "Account number is required",
       };
     }
-    if (formData.openingBalance.trim() === "") {
+    if (formData.openingBalance?.trim?.() === "") {
       errors.openingBalance = {
         invalid: true,
         message: "Opening balance is required",
       };
     }
     if (
-      formData.openingBalance.trim() !== "" &&
+      formData.openingBalance?.trim?.() !== "" &&
       isNaN(formData.openingBalance) &&
       isNaN(parseFloat(formData.openingBalance))
     ) {
@@ -231,25 +251,26 @@ const BankAccountAdd = () => {
                   size="small"
                   error={formErrors.bank.invalid}
                 >
-                  <InputLabel id="bank">Bank</InputLabel>
-                  <Select
-                    labelId="bank"
+                  <Autocomplete
+                    autoSelect
+                    size="small"
                     name="bank"
-                    value={bankAccount.bank}
-                    label="Bank"
-                    onChange={inputChangeHandler}
-                  >
-                    {banks.length > 0 &&
-                      banks.map((bank) => (
-                        <MenuItem
-                          key={bank._id}
-                          value={bank._id}
-                          className="menuItem"
-                        >
-                          {bank.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={banks}
+                    value={bankAccount.bank || undefined}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(e, value)
+                    }
+                    openOnFocus
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Bank"
+                        error={formErrors.bank.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.bank.invalid && (
                     <FormHelperText>{formErrors.bank.message}</FormHelperText>
                   )}
@@ -281,43 +302,29 @@ const BankAccountAdd = () => {
                   size="small"
                   error={formErrors.accountType.invalid}
                 >
-                  <InputLabel id="accountType">Account type</InputLabel>
-                  <Select
-                    labelId="accountType"
+                  <Autocomplete
+                    autoSelect
+                    size="small"
                     name="accountType"
-                    value={bankAccount.accountType}
-                    label="Account type"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem
-                      key="Current account"
-                      value="Current account"
-                      className="menuItem"
-                    >
-                      Current account
-                    </MenuItem>
-                    <MenuItem
-                      key="Saving account"
-                      value="Saving account"
-                      className="menuItem"
-                    >
-                      Saving account
-                    </MenuItem>
-                    <MenuItem
-                      key="Recurring account"
-                      value="Recurring account"
-                      className="menuItem"
-                    >
-                      Recurring account
-                    </MenuItem>
-                    <MenuItem
-                      key="Fixed Deposit / Account"
-                      value="Fixed Deposit / Account"
-                      className="menuItem"
-                    >
-                      Fixed Deposit / Account
-                    </MenuItem>
-                  </Select>
+                    options={[
+                      "Current account",
+                      "Saving account",
+                      "Recurring account",
+                      "Fixed Deposit / Account",
+                    ]}
+                    value={bankAccount.accountType || undefined}
+                    onChange={(e, value) => autocompleteType(e, value)}
+                    openOnFocus
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Account type"
+                        error={formErrors.accountType.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.accountType.invalid && (
                     <FormHelperText>
                       {formErrors.accountType.message}

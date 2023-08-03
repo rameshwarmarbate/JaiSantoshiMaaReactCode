@@ -8,6 +8,7 @@ import {
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
@@ -95,7 +96,23 @@ const BranchAdd = () => {
       };
     });
   };
+  const autocompleteChangeListener = (e, value) => {
+    setBranch((currState) => {
+      return {
+        ...currState,
+        place: value._id,
+      };
+    });
+  };
 
+  const autocompleteType = (e, value) => {
+    setBranch((currState) => {
+      return {
+        ...currState,
+        printer: value,
+      };
+    });
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(branch)) {
@@ -118,22 +135,22 @@ const BranchAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branchCode.trim() === "") {
+    if (formData.branchCode?.trim?.() === "") {
       errors.branchCode = { invalid: true, message: "Branch code is required" };
     }
-    if (formData.abbreviation.trim() === "") {
+    if (formData.abbreviation?.trim?.() === "") {
       errors.abbreviation = {
         invalid: true,
         message: "Abbreviation is required",
       };
     }
-    if (formData.name.trim() === "") {
+    if (formData.name?.trim?.() === "") {
       errors.name = { invalid: true, message: "Branch name is required" };
     }
-    if (formData.place.trim() === "") {
+    if (formData.place?.trim?.() === "") {
       errors.place = { invalid: true, message: "Place is required" };
     }
-    if (formData.printer.trim() === "") {
+    if (formData.printer?.trim?.() === "") {
       errors.printer = { invalid: true, message: "Printer is required" };
     }
     let validationErrors = false;
@@ -243,25 +260,26 @@ const BranchAdd = () => {
                   size="small"
                   error={formErrors.place.invalid}
                 >
-                  <InputLabel id="place">Place</InputLabel>
-                  <Select
-                    labelId="place"
+                  <Autocomplete
+                    autoSelect
+                    size="small"
                     name="place"
-                    value={branch.place}
-                    label="Place"
-                    onChange={inputChangeHandler}
-                  >
-                    {places.length > 0 &&
-                      places.map((place) => (
-                        <MenuItem
-                          key={place._id}
-                          value={place._id}
-                          className="menuItem"
-                        >
-                          {place.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={places}
+                    value={branch.place || undefined}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(e, value)
+                    }
+                    openOnFocus
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Place"
+                        error={formErrors.place.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.place.invalid && (
                     <FormHelperText>{formErrors.place.message}</FormHelperText>
                   )}
@@ -273,45 +291,33 @@ const BranchAdd = () => {
                   size="small"
                   error={formErrors.printer.invalid}
                 >
-                  <InputLabel id="printer">Printer</InputLabel>
-                  <Select
-                    labelId="printer"
-                    name="printer"
-                    value={branch.printer}
-                    label="Printer"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem
-                      key="Epson LQ-300+"
-                      value="Epson LQ-300+"
-                      className="menuItem"
-                    >
-                      Epson LQ-300+
-                    </MenuItem>
-                    <MenuItem
-                      key="Epson LX-300+"
-                      value="Epson LX-300+"
-                      className="menuItem"
-                    >
-                      Epson LX-300+
-                    </MenuItem>
-                    <MenuItem
-                      key="Epson LX-300+II"
-                      value="Epson LX-300+II"
-                      className="menuItem"
-                    >
-                      Epson LX-300+II
-                    </MenuItem>
-                    <MenuItem
-                      key="TVS MPS 250 Champion"
-                      value="TVS MPS 250 Champion"
-                      className="menuItem"
-                    >
-                      TVS MPS 250 Champion
-                    </MenuItem>
-                  </Select>
-                  {formErrors.place.invalid && (
-                    <FormHelperText>{formErrors.place.message}</FormHelperText>
+                  <Autocomplete
+                    autoSelect
+                    size="small"
+                    name="accountType"
+                    options={[
+                      "Epson LQ-300+",
+                      "Epson LX-300+",
+                      "Epson LX-300+II",
+                      "TVS MPS 250 Champion",
+                    ]}
+                    value={branch.printer || undefined}
+                    onChange={(e, value) => autocompleteType(e, value)}
+                    openOnFocus
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Printer"
+                        error={formErrors.printer.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
+                  {formErrors.printer.invalid && (
+                    <FormHelperText>
+                      {formErrors.printer.message}
+                    </FormHelperText>
                   )}
                 </FormControl>
               </div>

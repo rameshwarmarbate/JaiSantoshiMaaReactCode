@@ -185,7 +185,7 @@ const LorryReceiptAdd = () => {
 
   // useEffect(() => {
   //   const branch =
-  //     branches.find(({ _id }) => _id === lorryReceipt.branch) || branches[0];
+  //     branches.find?.(({ _id }) => _id === lorryReceipt.branch) || branches[0];
   //   if (branch) {
   //     dispatch(getLRNumber(branch?.abbreviation || "BRN")).then(
   //       ({ payload }) => {
@@ -228,7 +228,7 @@ const LorryReceiptAdd = () => {
   useEffect(() => {
     let totalFreight = 0;
     if (lorryReceipt.transactions.length) {
-      lorryReceipt.transactions.forEach((transaction) => {
+      lorryReceipt.transactions.forEach?.((transaction) => {
         totalFreight += +transaction.freight;
       });
     }
@@ -622,12 +622,12 @@ const LorryReceiptAdd = () => {
                       readOnly:
                         user &&
                         user.type &&
-                        user.type.toLowerCase() !== "superadmin" &&
-                        user.type.toLowerCase() !== "admin",
+                        user.type?.toLowerCase?.() !== "superadmin" &&
+                        user.type?.toLowerCase?.() !== "admin",
                     }}
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}

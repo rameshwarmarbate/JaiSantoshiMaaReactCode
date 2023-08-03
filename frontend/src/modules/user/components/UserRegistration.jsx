@@ -111,42 +111,46 @@ const UserRegistration = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.type.trim() === "") {
+    if (formData.type?.trim?.() === "") {
       errors.type = { invalid: true, message: "User type is required" };
     }
-    if (formData.employee.trim() === "") {
+    if (formData.employee?.trim?.() === "") {
       errors.employee = { invalid: true, message: "Employee is required" };
     }
-    if (formData.username.trim() === "") {
+    if (formData.username?.trim?.() === "") {
       errors.username = { invalid: true, message: "Username is required" };
     }
-    if (formData.password.trim() === "") {
+    if (formData.password?.trim?.() === "") {
       errors.password = { invalid: true, message: "Password is required" };
-    } else if (formData.password.trim().length < 5) {
+    } else if (formData.password?.trim?.().length < 5) {
       errors.password = {
         invalid: true,
         message: "Password length should be 5 or more characters",
       };
-    } else if (formData.password.trim() !== formData.confirmPassword.trim()) {
+    } else if (
+      formData.password?.trim?.() !== formData.confirmPassword?.trim?.()
+    ) {
       errors.password = {
         invalid: true,
         message: "Password and Confirm password does not match",
       };
     }
-    if (formData.confirmPassword.trim() === "") {
+    if (formData.confirmPassword?.trim?.() === "") {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password is required",
       };
-    } else if (formData.password.trim().length < 5) {
+    } else if (formData.password?.trim?.().length < 5) {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password length should be 5 or more characters",
       };
-    } else if (formData.password.trim() !== formData.confirmPassword.trim()) {
+    } else if (
+      formData.password?.trim?.() !== formData.confirmPassword?.trim?.()
+    ) {
       errors.confirmPassword = {
         invalid: true,
         message: "Password and Confirm password does not match",
@@ -231,7 +235,7 @@ const UserRegistration = () => {
                     label="Branch"
                     onChange={inputChangeHandler}
                   >
-                    {branches.map((branch) => (
+                    {branches.map?.((branch) => (
                       <MenuItem
                         key={branch._id}
                         value={branch._id}
@@ -287,7 +291,7 @@ const UserRegistration = () => {
                     onChange={inputChangeHandler}
                   >
                     {employees.length > 0 &&
-                      employees.map((employee) => (
+                      employees.map?.((employee) => (
                         <MenuItem
                           key={employee._id}
                           value={employee._id}

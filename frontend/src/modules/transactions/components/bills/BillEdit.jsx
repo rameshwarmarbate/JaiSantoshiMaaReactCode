@@ -133,7 +133,7 @@ const BillEdit = () => {
 
   useEffect(() => {
     if (user && user.branch) {
-      const filteredBranch = branches?.find(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === user.branch
       );
       if (filteredBranch?._id) {
@@ -161,14 +161,14 @@ const BillEdit = () => {
             setHttpError(message);
           } else {
             const updatedLR = [...(payload?.data || [])];
-            updatedLR.forEach((lr) => {
+            updatedLR.forEach?.((lr) => {
               lr.checked = false;
               lr.consignor =
-                customers.filter(
+                customers.filter?.(
                   (customer) => customer._id === lr.consignor
                 )[0] || "";
               lr.consignee =
-                customers.filter(
+                customers.filter?.(
                   (customer) => customer._id === lr.consignee
                 )[0] || "";
             });
@@ -205,8 +205,8 @@ const BillEdit = () => {
   useEffect(() => {
     if (fetchedBill._id && fetchedLorryReceipts.length && customers.length) {
       const updatedBill = { ...fetchedBill };
-      const updatedLorryReceipts = fetchedLorryReceipts.map((fetchedLR) => {
-        const isInBill = fetchedBill.lrList.filter(
+      const updatedLorryReceipts = fetchedLorryReceipts.map?.((fetchedLR) => {
+        const isInBill = fetchedBill.lrList.filter?.(
           (lr) => lr._id === fetchedLR._id
         );
         return {
@@ -216,16 +216,16 @@ const BillEdit = () => {
       });
       let updatedFilteredLorryReceipts;
       if (billId) {
-        updatedFilteredLorryReceipts = updatedLorryReceipts.filter((lr) => {
+        updatedFilteredLorryReceipts = updatedLorryReceipts.filter?.((lr) => {
           return (
             !lr.billGenerated || (lr.billGenerated && lr.assoBill === billId)
           );
         });
       }
 
-      updatedBill.lrList = updatedBill.lrList.map((billLr) => {
+      updatedBill.lrList = updatedBill.lrList.map?.((billLr) => {
         return (
-          updatedLorryReceipts.filter((lr) => lr._id === billLr._id)[0] || ""
+          updatedLorryReceipts.filter?.((lr) => lr._id === billLr._id)[0] || ""
         );
       });
       setBill(updatedBill);
@@ -271,7 +271,10 @@ const BillEdit = () => {
   ]);
 
   useEffect(() => {
-    const totalFreight = bill.lrList.reduce((acc, item) => acc + item.total, 0);
+    const totalFreight = bill.lrList.reduce?.(
+      (acc, item) => acc + item.total,
+      0
+    );
     setBill((currState) => {
       return {
         ...currState,
@@ -354,13 +357,13 @@ const BillEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.customer.trim() === "") {
+    if (formData.customer?.trim?.() === "") {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
     if (!formData.lrList.length) {
@@ -422,7 +425,7 @@ const BillEdit = () => {
   };
 
   const setLRForBill = () => {
-    const selectedLR = lorryReceipts.filter((lr) => lr.checked);
+    const selectedLR = lorryReceipts.filter?.((lr) => lr.checked);
     setBill((currState) => {
       return {
         ...currState,
@@ -470,12 +473,12 @@ const BillEdit = () => {
                     disabled={
                       user &&
                       user.type &&
-                      user.type.toLowerCase() !== "superadmin" &&
-                      user.type.toLowerCase() !== "admin"
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
                     }
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}
@@ -534,7 +537,7 @@ const BillEdit = () => {
                     onChange={inputChangeHandler}
                   >
                     {customers.length > 0 &&
-                      customers.map((customer) => (
+                      customers.map?.((customer) => (
                         <MenuItem
                           key={customer._id}
                           value={customer._id}

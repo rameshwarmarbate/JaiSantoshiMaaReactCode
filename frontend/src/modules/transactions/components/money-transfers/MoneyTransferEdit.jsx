@@ -165,10 +165,10 @@ const MoneyTransferEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch.trim() === "") {
+    if (formData.branch?.trim?.() === "") {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.transferToBranch.trim() === "") {
+    if (formData.transferToBranch?.trim?.() === "") {
       errors.transferToBranch = {
         invalid: true,
         message: "Branch is required",
@@ -179,7 +179,7 @@ const MoneyTransferEdit = () => {
     }
     if (
       isNaN(formData.amount) &&
-      (formData.amount.trim() === "" || formData.amount.trim() === "0")
+      (formData.amount?.trim?.() === "" || formData.amount?.trim?.() === "0")
     ) {
       errors.amount = {
         invalid: true,
@@ -239,12 +239,12 @@ const MoneyTransferEdit = () => {
                     disabled={
                       user &&
                       user.type &&
-                      user.type.toLowerCase() !== "superadmin" &&
-                      user.type.toLowerCase() !== "admin"
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
                     }
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}
@@ -276,7 +276,7 @@ const MoneyTransferEdit = () => {
                     onChange={inputChangeHandler}
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}

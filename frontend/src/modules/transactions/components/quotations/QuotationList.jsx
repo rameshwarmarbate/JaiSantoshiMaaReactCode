@@ -169,7 +169,7 @@ const QuotationList = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split(" ").filter((word) => word !== "")
+        newValue.split?.(" ").filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -198,7 +198,7 @@ const QuotationList = () => {
             setHttpError(message);
           } else {
             if (payload?.data.file) {
-              const selectedQuotation = quotations.find(
+              const selectedQuotation = quotations.find?.(
                 (quotation) => quotation._id === viewQuotation._id
               );
               const name = pad(selectedQuotation.quotationNo, 6) + ".pdf";

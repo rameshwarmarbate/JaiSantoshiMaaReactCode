@@ -165,7 +165,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
             ...transactionDetail,
             id: Math.random(),
           };
-          const selectedArticle = articles.filter(
+          const selectedArticle = articles.filter?.(
             (article) => article._id === updatedTransactionDetail.article
           );
           if (selectedArticle.length) {
@@ -178,15 +178,15 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
         } else {
           let filteredDetails;
           if (!updatedState.transactions[0]._id) {
-            filteredDetails = updatedState.transactions.filter(
+            filteredDetails = updatedState.transactions.filter?.(
               (detail) => detail.id !== transactionDetail.id
             );
           } else {
-            filteredDetails = updatedState.transactions.filter(
+            filteredDetails = updatedState.transactions.filter?.(
               (detail) => detail._id !== transactionDetail._id
             );
           }
-          const selectedArticle = articles.filter(
+          const selectedArticle = articles.filter?.(
             (article) =>
               article._id === transactionDetail.article ||
               article.name === transactionDetail.article
@@ -285,10 +285,10 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
       transactionDetail.article &&
       transactionDetail.article.name
     ) {
-      const selectedRate = rateMaster.rates.find(
+      const selectedRate = rateMaster.rates.find?.(
         (rate) =>
-          rate.article.toUpperCase() ===
-          transactionDetail.article.name.toUpperCase()
+          rate.article?.toLowerCase?.() ===
+          transactionDetail.article.name?.toLowerCase?.()
       );
       if (selectedRate) {
         setTransactionDetail((currState) => {
@@ -334,23 +334,24 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
     let editedTransactionDetail;
     if (!has_Id) {
       editedTransactionDetail = {
-        ...(lorryReceipt.transactions.filter((detail) => detail.id === id)[0] ||
-          {}),
+        ...(lorryReceipt.transactions.filter?.(
+          (detail) => detail.id === id
+        )[0] || {}),
       };
     } else {
       editedTransactionDetail = {
-        ...(lorryReceipt.transactions.filter(
+        ...(lorryReceipt.transactions.filter?.(
           (detail) => detail._id === id
         )[0] || {}),
       };
     }
-    const editedArticle = articles.findIndex((article) => {
+    const editedArticle = articles.findIndex?.((article) => {
       return article.name === editedTransactionDetail.article;
     });
     if (editedArticle >= 0) {
       editedTransactionDetail.article = articles[editedArticle];
     }
-    const editedRateType = RATE_TYPES.findIndex(
+    const editedRateType = RATE_TYPES.findIndex?.(
       (rateType) => rateType.label === editedTransactionDetail.rateType
     );
     if (editedRateType >= 0) {
@@ -363,11 +364,11 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
   const deleteTransactionDetail = (selectedId, has_Id) => {
     let updatedTransactions;
     if (!has_Id) {
-      updatedTransactions = lorryReceipt.transactions.filter(
+      updatedTransactions = lorryReceipt.transactions.filter?.(
         (detail) => detail.id !== selectedId
       );
     } else {
-      updatedTransactions = lorryReceipt.transactions.filter(
+      updatedTransactions = lorryReceipt.transactions.filter?.(
         (detail) => detail._id !== selectedId
       );
     }
@@ -386,7 +387,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
     }
     if (
       (typeof formData.articleNo === "string" &&
-        formData.articleNo.trim() === "") ||
+        formData.articleNo?.trim?.() === "") ||
       (typeof formData.articleNo === "number" && formData.articleNo <= 0)
     ) {
       errors.articleNo = {

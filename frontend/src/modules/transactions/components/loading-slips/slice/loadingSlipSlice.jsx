@@ -153,7 +153,7 @@ export const loadingSlipSlice = createSlice({
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.branches = payload?.data.map((branch) => {
+        state.branches = payload?.data.map?.((branch) => {
           return { ...branch, label: branch.name, value: branch._id };
         });
       })
@@ -177,7 +177,7 @@ export const loadingSlipSlice = createSlice({
       })
       .addCase(getVehicles.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.vehicles = payload?.data?.map((vehicle) => {
+        state.vehicles = payload?.data?.map?.((vehicle) => {
           return {
             ...vehicle,
             label: vehicle.vehicleNo,
@@ -205,7 +205,7 @@ export const loadingSlipSlice = createSlice({
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.places = payload?.data?.map((place) => {
+        state.places = payload?.data?.map?.((place) => {
           return { ...place, label: place.name, value: place.name };
         });
       })
@@ -218,7 +218,7 @@ export const loadingSlipSlice = createSlice({
       })
       .addCase(getDrivers.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.drivers = payload?.data?.map((driver) => {
+        state.drivers = payload?.data?.map?.((driver) => {
           return { ...driver, label: driver.name, value: driver.name };
         });
       })

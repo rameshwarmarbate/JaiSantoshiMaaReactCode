@@ -81,7 +81,7 @@ const PettyCashHistory = () => {
       flex: 1,
       renderCell: (params) => {
         if (params.row.credit !== "-") {
-          return `₹ ${params.row.credit.toFixed(2)}`;
+          return `₹ ${params.row.credit?.toFixed?.(2)}`;
         } else {
           return params.row.credit;
         }
@@ -94,7 +94,7 @@ const PettyCashHistory = () => {
       flex: 1,
       renderCell: (params) => {
         if (params.row.debit !== "-") {
-          return `₹ ${params.row.debit.toFixed(2)}`;
+          return `₹ ${params.row.debit?.toFixed?.(2)}`;
         } else {
           return params.row.debit;
         }
@@ -106,7 +106,7 @@ const PettyCashHistory = () => {
       flex: 1,
       minWidth: 300,
       renderCell: (params) => {
-        const selectedBank = banks.filter(
+        const selectedBank = banks.filter?.(
           (bank) => bank._id === params.row.bank
         );
         return `${
@@ -129,7 +129,7 @@ const PettyCashHistory = () => {
       flex: 1,
       renderCell: (params) => {
         return params.row.availableBal
-          ? `₹ ${params.row.availableBal.toFixed(2)}`
+          ? `₹ ${params.row.availableBal?.toFixed?.(2)}`
           : `₹ 0.00`;
       },
     },
@@ -157,7 +157,7 @@ const PettyCashHistory = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data.length) {
-            const filteredBranch = payload?.data.filter((branch) => {
+            const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
             if (filteredBranch.length) {
@@ -211,7 +211,7 @@ const PettyCashHistory = () => {
 
   useEffect(() => {
     if (pettyTransactions.length) {
-      const updatedTransactions = pettyTransactions.map((pt) => {
+      const updatedTransactions = pettyTransactions.map?.((pt) => {
         return {
           ...pt,
           credit: pt.type === "credit" ? pt.amount : "-",
@@ -230,7 +230,7 @@ const PettyCashHistory = () => {
   }, []);
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter(
+    const filteredBranch = branches.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);
@@ -314,7 +314,7 @@ const PettyCashHistory = () => {
                 onChange={branchChangeHandler}
               >
                 {branches.length > 0 &&
-                  branches.map((branch) => (
+                  branches.map?.((branch) => (
                     <MenuItem
                       key={branch._id}
                       value={branch._id}

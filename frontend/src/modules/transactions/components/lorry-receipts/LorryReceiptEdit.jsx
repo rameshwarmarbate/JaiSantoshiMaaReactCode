@@ -211,7 +211,7 @@ const LorryReceiptEdit = () => {
           } else {
             setHttpError("");
             const updatedResponse = { ...payload?.data };
-            const customerIdsMap = customers.map((customer) => customer._id);
+            const customerIdsMap = customers.map?.((customer) => customer._id);
             const consignorIndex = customerIdsMap.indexOf(
               payload?.data.consignor
             );
@@ -221,38 +221,38 @@ const LorryReceiptEdit = () => {
             );
             const consignee = customers[consigneeIndex];
             if (payload?.data.deliveryType) {
-              const deliveryTypeIndex = DELIVERY_TYPES.map(
+              const deliveryTypeIndex = DELIVERY_TYPES.map?.(
                 (type) => type.label
               ).indexOf(payload?.data.deliveryType);
               const deliveryType = DELIVERY_TYPES[deliveryTypeIndex];
               updatedResponse.deliveryType = deliveryType;
             }
             if (payload?.data.payType) {
-              const payTypeIndex = PAY_TYPES.map((type) => type.label).indexOf(
-                payload?.data.payType
-              );
+              const payTypeIndex = PAY_TYPES.map?.(
+                (type) => type.label
+              ).indexOf(payload?.data.payType);
               const payType = PAY_TYPES[payTypeIndex];
               updatedResponse.payType = payType;
             }
 
             if (payload?.data.toBilled) {
-              const toBilledType = TO_BILLED.map((type) => type.label).indexOf(
-                payload?.data.toBilled
-              );
+              const toBilledType = TO_BILLED.map?.(
+                (type) => type.label
+              ).indexOf(payload?.data.toBilled);
               const toBilled = TO_BILLED[toBilledType];
               updatedResponse.toBilled = toBilled;
             }
 
             if (payload?.data.collectAt) {
               const collectAtIndex = places
-                .map((place) => place.name)
+                .map?.((place) => place.name)
                 .indexOf(payload?.data.collectAt);
               const collectAt = places[collectAtIndex];
               updatedResponse.collectAt = collectAt;
             }
 
             if (payload?.data.serviceTaxBy) {
-              const serviceTaxByIndex = SERVICE_TAX_BY.map(
+              const serviceTaxByIndex = SERVICE_TAX_BY.map?.(
                 (client) => client.label
               ).indexOf(payload?.data.serviceTaxBy);
               const serviceTaxBy = SERVICE_TAX_BY[serviceTaxByIndex];
@@ -263,7 +263,7 @@ const LorryReceiptEdit = () => {
             updatedResponse.consignee = consignee;
 
             if (updatedResponse.payMode) {
-              const payModeIndex = PAY_MODE.map((mode) => mode.value).indexOf(
+              const payModeIndex = PAY_MODE.map?.((mode) => mode.value).indexOf(
                 payload?.data.payMode
               );
               updatedResponse.payMode = PAY_MODE[payModeIndex];
@@ -285,7 +285,7 @@ const LorryReceiptEdit = () => {
   useEffect(() => {
     let totalFreight = 0;
     if (lorryReceipt.transactions.length) {
-      lorryReceipt.transactions.forEach((transaction) => {
+      lorryReceipt.transactions.forEach?.((transaction) => {
         totalFreight += +transaction.freight;
       });
     }
@@ -354,7 +354,7 @@ const LorryReceiptEdit = () => {
       if (updatedLR.serviceTaxBy?.value) {
         updatedLR.serviceTaxBy = updatedLR.serviceTaxBy?.value;
       }
-      updatedLR.transactions.forEach((transaction) => {
+      updatedLR.transactions.forEach?.((transaction) => {
         transaction.article = transaction.article.label
           ? transaction.article.label
           : transaction.article;
@@ -655,11 +655,11 @@ const LorryReceiptEdit = () => {
                       readOnly:
                         user &&
                         user.type &&
-                        user.type.toLowerCase() !== "superadmin",
+                        user.type?.toLowerCase?.() !== "superadmin",
                     }}
                   >
                     {branches.length > 0 &&
-                      branches.map((branch) => (
+                      branches.map?.((branch) => (
                         <MenuItem
                           key={branch._id}
                           value={branch._id}
