@@ -269,7 +269,7 @@ const SupplierBillList = ({
           },
         };
       });
-      if (filteredBills.length) {
+      if (filteredBills?.length) {
         dispatch(updateSupplierBills(filteredBills))
           .then(({ payload = {} }) => {
             const { message } = payload?.data || {};

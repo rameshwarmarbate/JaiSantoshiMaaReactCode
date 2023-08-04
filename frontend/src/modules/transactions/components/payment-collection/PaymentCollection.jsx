@@ -268,7 +268,7 @@ const PaymentCollection = () => {
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[1]}]`);
 
       input?.scrollIntoView({
@@ -314,8 +314,8 @@ const PaymentCollection = () => {
     if (selectedCustomer && selectedBranch) {
       dispatch(
         getBillsByCustomer({
-          customer: selectedCustomer,
-          branch: selectedBranch._id,
+          customer: selectedCustomer?._id,
+          branch: selectedBranch?._id,
         })
       )
         .then(({ payload = {} }) => {
@@ -389,15 +389,12 @@ const PaymentCollection = () => {
     }
   }, [paymentCollection.jsmBank]);
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
   };
 
-  const customerChangeHandler = (e) => {
-    setSelectedCustomer(e.target.value);
+  const customerChangeHandler = (e, value) => {
+    setSelectedCustomer(value);
   };
 
   const inputChangeHandler = (type, e) => {
@@ -591,52 +588,38 @@ const PaymentCollection = () => {
           <div className="grid grid-6-col">
             <div className="grid-item">
               <FormControl fullWidth size="small">
-                <InputLabel id="branch">Select branch</InputLabel>
-                <Select
-                  labelId="branch"
+                <Autocomplete
+                  disablePortal
+                  size="small"
                   name="branch"
-                  label="Select branch"
-                  value={selectedBranch?._id || ""}
+                  options={branches}
+                  value={selectedBranch || null}
                   disabled={!isSuperAdminOrAdmin()}
                   onChange={branchChangeHandler}
-                >
-                  {branches.length > 0 &&
-                    branches.map?.((branch) => (
-                      <MenuItem
-                        key={branch._id}
-                        value={branch._id}
-                        className="menuItem"
-                      >
-                        {branch.name}
-                      </MenuItem>
-                    ))}
-                </Select>
+                  getOptionLabel={(branch) => branch.name || ""}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select branch" fullWidth />
+                  )}
+                />
               </FormControl>
             </div>
             <div className="grid-item">
-              {
-                <FormControl fullWidth size="small">
-                  <InputLabel id="customer">Select customer</InputLabel>
-                  <Select
-                    labelId="customer"
-                    name="customer"
-                    label="Select customer"
-                    value={selectedCustomer}
-                    onChange={customerChangeHandler}
-                  >
-                    {customers.length > 0 &&
-                      customers.map?.((customer) => (
-                        <MenuItem
-                          key={customer._id}
-                          value={customer._id}
-                          className="menuItem"
-                        >
-                          {customer.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              }
+              <FormControl fullWidth size="small">
+                <Autocomplete
+                  disablePortal
+                  size="small"
+                  name="customer"
+                  options={customers}
+                  value={selectedCustomer || null}
+                  onChange={customerChangeHandler}
+                  getOptionLabel={(customer) => customer.name || ""}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select customer" fullWidth />
+                  )}
+                />
+              </FormControl>
             </div>
           </div>
 
@@ -665,7 +648,7 @@ const PaymentCollection = () => {
 
             <Divider sx={{ margin: "20px 0" }} />
 
-            {bills.length > 0 && <Divider sx={{ margin: "20px 0" }} /> && (
+            {bills?.length > 0 && <Divider sx={{ margin: "20px 0" }} /> && (
               <>
                 <div className="grid grid-6-col">
                   <div className="grid-item">

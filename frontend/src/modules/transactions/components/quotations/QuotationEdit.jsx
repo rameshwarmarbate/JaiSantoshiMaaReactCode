@@ -82,7 +82,7 @@ const QuotationEdit = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (places.length && quotationId) {
+    if (places?.length && quotationId) {
       dispatch(getQuotation(quotationId))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
@@ -153,7 +153,7 @@ const QuotationEdit = () => {
     if (formData.ratePer?.trim?.() === "") {
       errors.ratePer = { invalid: true, message: "Rate type is required" };
     }
-    if (!formData.stations.length) {
+    if (!formData.stations?.length) {
       errors.stations = {
         invalid: true,
         message: "At least one entry is required",
@@ -183,7 +183,7 @@ const QuotationEdit = () => {
 
   const stationDeleteHandler = (e, index) => {
     e.preventDefault();
-    if (quotation.stations.length) {
+    if (quotation.stations?.length) {
       const updatedStations = quotation.stations;
       updatedStations?.splice?.(index, 1);
       setQuotation((currState) => {
@@ -364,7 +364,7 @@ const QuotationEdit = () => {
             setQuotation={setQuotation}
           />
 
-          {quotation.stations.length > 0 ? (
+          {quotation.stations?.length > 0 ? (
             <TableContainer>
               <Table sx={{ width: 500 }} className="tbl_jsm">
                 <TableHead>

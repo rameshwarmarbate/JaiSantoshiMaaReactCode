@@ -10,6 +10,7 @@ import {
 const initialState = {
   status: "idle",
   search: "",
+  places: [],
 };
 
 export const createBranch = createAsyncThunk(
@@ -120,8 +121,13 @@ export const branchSlice = createSlice({
       .addCase(getPlaces.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getPlaces.fulfilled, (state) => {
+      .addCase(getPlaces.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
+        state.places = payload.data?.map((place) => ({
+          ...place,
+          label: place.name,
+          value: place._id,
+        }));
       })
       .addCase(getPlaces.rejected, (state) => {
         state.status = "failed";

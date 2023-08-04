@@ -48,7 +48,7 @@ const FreightDetails = ({
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    if (lorryReceipts.length) {
+    if (lorryReceipts?.length) {
       const updatedLorryReceipts = [...lorryReceipts];
 
       updatedLorryReceipts.forEach?.((lr) => {
@@ -133,7 +133,7 @@ const FreightDetails = ({
         <div className="grid-item">
           <h2 className="mb20 text-inline">Lorry receipts</h2>
         </div>
-        {filteredLR.length > 0 && (
+        {filteredLR?.length > 0 && (
           <div className="grid-item">
             <TextField
               size="small"
@@ -150,7 +150,7 @@ const FreightDetails = ({
       <div className="bl_lrCheckboxes">
         <form action="" onSubmit={submitHandler} id="lrSelectionForm">
           <FormGroup className="checkboxGroup">
-            {filteredLR.length > 0 &&
+            {filteredLR?.length > 0 &&
               filteredLR.map?.((lr) =>
                 lr.show ? (
                   <FormControlLabel
@@ -178,7 +178,7 @@ const FreightDetails = ({
                   />
                 ) : null
               )}
-            {filteredLR.length === 0 && <p>No lorry receipts for challan</p>}
+            {filteredLR?.length === 0 && <p>No lorry receipts for challan</p>}
           </FormGroup>
         </form>
       </div>

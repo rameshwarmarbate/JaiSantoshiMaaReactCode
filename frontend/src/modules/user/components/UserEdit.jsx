@@ -3,14 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import {
   getBranches,
@@ -64,13 +62,33 @@ const UserEdit = () => {
   const { userId } = location.state ? location.state : { userId: "" };
   const isLoading = useSelector(selectIsLoading);
 
-  const [branches, setBranches] = useState(false);
+  const [branches, setBranches] = useState([]);
   const [fetchedUser, setFetchedUser] = useState({});
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
   const [employees, setEmployees] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (fetchedUser.branch || fetchedUser.employee) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === fetchedUser.branch
+      );
+      const employee = employees.find?.(
+        (branch) => branch._id === fetchedUser.employee
+      );
+      if (filteredBranch?._id) {
+        setFetchedUser((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+            employee: employee,
+          };
+        });
+      }
+    }
+  }, [branches, fetchedUser, employees]);
 
   useEffect(() => {
     dispatch(getBranches())
@@ -129,17 +147,25 @@ const UserEdit = () => {
       };
     });
   };
+  const autocompleteChangeListener = (option, name) => {
+    setFetchedUser((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
     if (!isSuperAdmin()) {
-      if (formData.branch?.trim?.() === "") {
+      if (!formData.branch) {
         errors.branch = { invalid: true, message: "Branch is required" };
       }
-      if (formData.type?.trim?.() === "") {
+      if (!formData.type) {
         errors.type = { invalid: true, message: "User type is required" };
       }
-      if (formData.employee?.trim?.() === "") {
+      if (!formData.employee) {
         errors.employee = { invalid: true, message: "Employee is required" };
       }
     }
@@ -148,7 +174,7 @@ const UserEdit = () => {
     }
     if (!formData.password || formData.password?.trim?.() === "") {
       errors.password = { invalid: true, message: "Password is required" };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
         invalid: true,
         message: "Password length should be 5 or more characters",
@@ -169,7 +195,7 @@ const UserEdit = () => {
         invalid: true,
         message: "Confirm password is required",
       };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password length should be 5 or more characters",
@@ -197,7 +223,13 @@ const UserEdit = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(fetchedUser)) {
-      dispatch(updateUserDetail(fetchedUser))
+      dispatch(
+        updateUserDetail({
+          ...fetchedUser,
+          place: fetchedUser.branch?._id,
+          employee: fetchedUser.employee?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -259,24 +291,26 @@ const UserEdit = () => {
                         error={formErrors.branch.invalid}
                         size="small"
                       >
-                        <InputLabel id="branch">Branch</InputLabel>
-                        <Select
-                          labelId="branch"
+                        <Autocomplete
+                          disablePortal
+                          size="small"
                           name="branch"
-                          value={fetchedUser.branch}
-                          label="Branch"
-                          onChange={inputChangeHandler}
-                        >
-                          {branches.map?.((branch) => (
-                            <MenuItem
-                              key={branch._id}
-                              value={branch._id}
-                              className="menuItem"
-                            >
-                              {branch.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
+                          options={branches}
+                          value={fetchedUser.branch || null}
+                          onChange={(e, value) =>
+                            autocompleteChangeListener(value, "branch")
+                          }
+                          getOptionLabel={(branch) => branch.name || ""}
+                          openOnFocus
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Branch"
+                              error={formErrors.branch.invalid}
+                              fullWidth
+                            />
+                          )}
+                        />
                         {formErrors.branch.invalid && (
                           <FormHelperText>
                             {formErrors.branch.message}
@@ -290,21 +324,26 @@ const UserEdit = () => {
                         error={formErrors.type.invalid}
                         size="small"
                       >
-                        <InputLabel id="type">User Type</InputLabel>
-                        <Select
-                          labelId="type"
+                        <Autocomplete
+                          disablePortal
+                          size="small"
                           name="type"
-                          value={fetchedUser.type}
-                          label="User Type"
-                          onChange={inputChangeHandler}
-                        >
-                          <MenuItem value={"Admin"} className="menuItem">
-                            Admin
-                          </MenuItem>
-                          <MenuItem value={"User"} className="menuItem">
-                            User
-                          </MenuItem>
-                        </Select>
+                          options={["Admin", "User"]}
+                          value={fetchedUser.type || null}
+                          onChange={(e, value) =>
+                            autocompleteChangeListener(value, "type")
+                          }
+                          getOptionLabel={(type) => type || ""}
+                          openOnFocus
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="User Type"
+                              error={formErrors.type.invalid}
+                              fullWidth
+                            />
+                          )}
+                        />
                         {formErrors.type.invalid && (
                           <FormHelperText>
                             {formErrors.type.message}
@@ -318,24 +357,26 @@ const UserEdit = () => {
                         error={formErrors.employee.invalid}
                         size="small"
                       >
-                        <InputLabel id="employee">Employee</InputLabel>
-                        <Select
-                          labelId="employee"
+                        <Autocomplete
+                          disablePortal
+                          size="small"
                           name="employee"
-                          value={fetchedUser.employee}
-                          label="Employee"
-                          onChange={inputChangeHandler}
-                        >
-                          {employees.map?.((employee) => (
-                            <MenuItem
-                              key={employee._id}
-                              value={employee._id}
-                              className="menuItem"
-                            >
-                              {employee.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
+                          options={employees}
+                          value={fetchedUser.employee || null}
+                          onChange={(e, value) =>
+                            autocompleteChangeListener(value, "employee")
+                          }
+                          getOptionLabel={(employee) => employee.name || ""}
+                          openOnFocus
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="User Type"
+                              error={formErrors.employee.invalid}
+                              fullWidth
+                            />
+                          )}
+                        />
                         {formErrors.employee.invalid && (
                           <FormHelperText>
                             {formErrors.employee.message}

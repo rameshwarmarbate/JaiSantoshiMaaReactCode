@@ -7,6 +7,7 @@ import {
   FormControl,
   FormHelperText,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import Paper from "@mui/material/Paper";
@@ -109,7 +110,14 @@ const SupplierAdd = () => {
       };
     });
   };
-
+  const autocompleteChangeListener = (value, name) => {
+    setSupplier((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(supplier)) {
@@ -152,7 +160,7 @@ const SupplierAdd = () => {
     if (formData.email !== "" && !emailRegEx.test(formData.email)) {
       errors.email = { invalid: true, message: "Email is invalid" };
     }
-    if (!formData.contactPerson.length) {
+    if (!formData.contactPerson?.length) {
       errors.contactPerson = {
         invalid: true,
         message: "At least one contact person is required",
@@ -251,40 +259,20 @@ const SupplierAdd = () => {
                 </div>
                 <div className="grid-item">
                   <FormControl fullWidth size="small">
-                    <InputLabel id="type">Type</InputLabel>
-                    <Select
-                      labelId="type"
+                    <Autocomplete
+                      disablePortal
+                      size="small"
                       name="type"
-                      value={supplier.type}
-                      label="Type"
-                      MenuProps={{ classes: { paper: classes.menuPaper } }}
-                      onChange={inputChangeHandler}
-                    >
-                      <MenuItem
-                        key="Vehicle"
-                        value="Vehicle"
-                        className="menuItem"
-                        title="Vehicle"
-                      >
-                        Vehicle
-                      </MenuItem>
-                      <MenuItem
-                        key="Petrol"
-                        value="Petrol"
-                        className="menuItem"
-                        title="Petrol"
-                      >
-                        Petrol
-                      </MenuItem>
-                      <MenuItem
-                        key="Tyre"
-                        value="Tyre"
-                        className="menuItem"
-                        title="Tyre"
-                      >
-                        Tyre
-                      </MenuItem>
-                    </Select>
+                      options={["Vehicle", "Petrol", "Tyre"]}
+                      value={supplier.type || null}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value, "type")
+                      }
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField {...params} label="Type" fullWidth />
+                      )}
+                    />
                   </FormControl>
                 </div>
                 <div className="grid-item">
@@ -308,26 +296,21 @@ const SupplierAdd = () => {
                 </div>
                 <div className="grid-item">
                   <FormControl fullWidth size="small">
-                    <InputLabel id="branch">State</InputLabel>
-                    <Select
-                      labelId="state"
+                    <Autocomplete
+                      disablePortal
+                      autoSelect
+                      size="small"
                       name="state"
-                      value={supplier.state}
-                      label="State"
-                      MenuProps={{ classes: { paper: classes.menuPaper } }}
-                      onChange={inputChangeHandler}
-                    >
-                      {states.map?.((state) => (
-                        <MenuItem
-                          key={state}
-                          value={state}
-                          className="menuItem"
-                          title={state}
-                        >
-                          {state}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      options={states}
+                      value={supplier.state || null}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value, "state")
+                      }
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField {...params} label="State" fullWidth />
+                      )}
+                    />
                   </FormControl>
                 </div>
                 <div className="grid-item">

@@ -2,13 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import Paper from "@mui/material/Paper";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -116,6 +114,15 @@ const VehicleAdd = () => {
   const inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    setVehicle((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
+
+  const autocompleteChangeListener = (value, name) => {
     setVehicle((currState) => {
       return {
         ...currState,
@@ -254,24 +261,26 @@ const VehicleAdd = () => {
                     size="small"
                     error={formErrors.owner.invalid}
                   >
-                    <InputLabel id="vehicleOwner">Vehicle supplier</InputLabel>
-                    <Select
-                      labelId="vehicleOwner"
+                    <Autocomplete
+                      autoSelect
+                      size="small"
                       name="owner"
-                      value={vehicle.owner}
-                      label="Vehicle supplier"
-                      onChange={inputChangeHandler}
-                    >
-                      {suppliers.map?.((supplier) => (
-                        <MenuItem
-                          key={supplier._id}
-                          value={supplier._id}
-                          className="menuItem"
-                        >
-                          {supplier.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      options={suppliers}
+                      value={vehicle.owner || null}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value?._id, "owner")
+                      }
+                      openOnFocus
+                      getOptionLabel={(option) => option.name}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vehicle supplier"
+                          error={formErrors.owner.invalid}
+                          fullWidth
+                        />
+                      )}
+                    />
                     {formErrors.owner.invalid && (
                       <FormHelperText>
                         {formErrors.owner.message}
@@ -304,24 +313,26 @@ const VehicleAdd = () => {
                     size="small"
                     error={formErrors.vehicleType.invalid}
                   >
-                    <InputLabel id="vehicleType">Vehicle type</InputLabel>
-                    <Select
-                      labelId="vehicleType"
+                    <Autocomplete
+                      autoSelect
+                      size="small"
                       name="vehicleType"
-                      value={vehicle.vehicleType}
-                      label="Vehicle type"
-                      onChange={inputChangeHandler}
-                    >
-                      {vehicleTypes.map?.((vehicleType) => (
-                        <MenuItem
-                          key={vehicleType._id}
-                          value={vehicleType._id}
-                          className="menuItem"
-                        >
-                          {vehicleType.type}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      options={vehicleTypes}
+                      value={vehicle.vehicleType || null}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value?._id, "vehicleType")
+                      }
+                      openOnFocus
+                      getOptionLabel={(option) => option.type}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vehicle type"
+                          error={formErrors.vehicleType.invalid}
+                          fullWidth
+                        />
+                      )}
+                    />
                     {formErrors.vehicleType.invalid && (
                       <FormHelperText>
                         {formErrors.vehicleType.message}

@@ -3,8 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
@@ -12,7 +10,6 @@ import {
   Divider,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -161,6 +158,22 @@ const LoadingSlipAdd = () => {
   }, []);
 
   useEffect(() => {
+    if (user && user.branch) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === user.branch
+      );
+      if (filteredBranch?._id) {
+        setLoadingSlip((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+          };
+        });
+      }
+    }
+  }, [branches]);
+
+  useEffect(() => {
     if (loadingSlip.branch) {
       dispatch(getLorryReceiptsForLS({ branch: loadingSlip.branch, page }))
         .then(({ payload = {} }) => {
@@ -188,7 +201,7 @@ const LoadingSlipAdd = () => {
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[0]}]`);
 
       input?.scrollIntoView({
@@ -242,7 +255,10 @@ const LoadingSlipAdd = () => {
   const submitHandler = (e, isSaveAndPrint) => {
     e.preventDefault();
     if (!validateForm(loadingSlip)) {
-      const updatedLoadingSlip = { ...loadingSlip };
+      const updatedLoadingSlip = {
+        ...loadingSlip,
+        branch: loadingSlip.branch?._id,
+      };
       if (isLocalMemo) {
         updatedLoadingSlip.isLocalMemo = true;
       } else {
@@ -311,7 +327,7 @@ const LoadingSlipAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.date) {
@@ -366,7 +382,7 @@ const LoadingSlipAdd = () => {
     if (!formData.to) {
       errors.to = { invalid: true, message: "To is required" };
     }
-    if (!formData.lrList.length) {
+    if (!formData.lrList?.length) {
       errors.lrList = {
         invalid: true,
         message: "At least one lorry receipt is required",
@@ -555,31 +571,32 @@ const LoadingSlipAdd = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={loadingSlip.branch}
-                    onChange={inputChangeHandler}
+                    options={branches}
+                    value={loadingSlip.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name}
+                    openOnFocus
                     disabled={
                       user &&
-                      user.branch &&
                       user.type &&
-                      user.type?.toLowerCase?.() === "user"
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
                     }
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}

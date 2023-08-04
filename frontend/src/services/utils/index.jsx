@@ -104,7 +104,7 @@ export const mobileNoRegEx = /^[0-9]{10}$/;
 
 export const getFormattedLRNumber = (lrNo) => {
   lrNo = lrNo.toString?.();
-  while (lrNo.length < 6) lrNo = "0" + lrNo;
+  while (lrNo?.length < 6) lrNo = "0" + lrNo;
   return lrNo;
 };
 
@@ -138,19 +138,19 @@ export const getNextLRNumber = (lr, selectedBranch) => {
 
 export const getFormattedLSNumber = (lsNo) => {
   lsNo = lsNo.toString?.();
-  while (lsNo.length < 6) lsNo = "0" + lsNo;
+  while (lsNo?.length < 6) lsNo = "0" + lsNo;
   return lsNo;
 };
 
 export const getFormattedPettyCashNo = (pcNo) => {
   pcNo = pcNo.toString?.();
-  while (pcNo.length < 5) pcNo = "0" + pcNo;
+  while (pcNo?.length < 5) pcNo = "0" + pcNo;
   return pcNo;
 };
 
 export const getFormattedTransactionNo = (ptNo) => {
   ptNo = ptNo.toString?.();
-  while (ptNo.length < 5) ptNo = "0" + ptNo;
+  while (ptNo?.length < 5) ptNo = "0" + ptNo;
   return ptNo;
 };
 
@@ -195,15 +195,15 @@ export const isSuperAdminOrAdmin = () => {
 
 export const pad = (num, size) => {
   num = num.toString?.();
-  while (num.length < size) num = "0" + num;
+  while (num?.length < size) num = "0" + num;
   return num;
 };
 
 export const base64ToObjectURL = (base64) => {
   if (base64) {
     const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
+    const byteNumbers = new Array(byteCharacters?.length);
+    for (let i = 0; i < byteCharacters?.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt?.(i);
     }
     const byteArray = new Uint8Array(byteNumbers);

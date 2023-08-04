@@ -43,7 +43,7 @@ const AdminRegistration = () => {
     }
     if (!formData.password || formData.password?.trim?.() === "") {
       errors.password = { invalid: true, message: "Password is required" };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
         invalid: true,
         message: "Password length should be 5 or more characters",

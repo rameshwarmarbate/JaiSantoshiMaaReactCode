@@ -213,7 +213,7 @@ const AddRateMaster = () => {
     if (!formData.customer) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
-    if (!formData.rates.length) {
+    if (!formData.rates?.length) {
       errors.rates = {
         invalid: true,
         message: "At least one entry is required",

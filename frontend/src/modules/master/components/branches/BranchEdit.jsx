@@ -2,14 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LoadingSpinner } from "../../../../ui-controls";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,10 +49,15 @@ const initialErrorState = {
     message: "",
   },
 };
-
+const printers = [
+  "Epson LQ-300+",
+  "Epson LX-300+",
+  "Epson LX-300+II",
+  "TVS MPS 250 Champion",
+];
 const BranchEdit = () => {
   const [branch, setBranch] = useState(initialBranchState);
-  const [places, setPlaces] = useState([]);
+  const { places } = useSelector(({ branch }) => branch);
   const [fetchedBranch, setFetchedBranch] = useState(initialBranchState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
@@ -71,19 +74,14 @@ const BranchEdit = () => {
   }, [navigate]);
 
   useEffect(() => {
-    dispatch(getPlaces())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          setPlaces(payload?.data);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    setBranch({
+      ...fetchedBranch,
+      place: places?.find?.(({ _id }) => fetchedBranch?.place === _id),
+    });
+  }, [fetchedBranch, places]);
+
+  useEffect(() => {
+    dispatch(getPlaces());
   }, []);
 
   useEffect(() => {
@@ -106,7 +104,8 @@ const BranchEdit = () => {
   }, [branchId]);
 
   const resetButtonHandler = () => {
-    setBranch(fetchedBranch);
+    const place = places?.find?.(({ _id }) => fetchedBranch?.place === _id);
+    setBranch({ ...fetchedBranch, place });
     setHttpError("");
     setFormErrors(initialErrorState);
   };
@@ -121,11 +120,32 @@ const BranchEdit = () => {
       };
     });
   };
+  const autocompleteChangeListener = (e, value) => {
+    setBranch((currState) => {
+      return {
+        ...currState,
+        place: value,
+      };
+    });
+  };
 
+  const autocompleteType = (e, value) => {
+    setBranch((currState) => {
+      return {
+        ...currState,
+        printer: value,
+      };
+    });
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(branch)) {
-      dispatch(updateBranch(branch))
+      dispatch(
+        updateBranch({
+          ...branch,
+          place: branch.place?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -156,10 +176,10 @@ const BranchEdit = () => {
     if (formData.name?.trim?.() === "") {
       errors.name = { invalid: true, message: "Branch name is required" };
     }
-    if (formData.place?.trim?.() === "") {
+    if (!formData.place) {
       errors.place = { invalid: true, message: "Place is required" };
     }
-    if (formData.printer?.trim?.() === "") {
+    if (!formData.printer) {
       errors.printer = { invalid: true, message: "Printer is required" };
     }
     let validationErrors = false;
@@ -273,24 +293,23 @@ const BranchEdit = () => {
                 size="small"
                 error={formErrors.place.invalid}
               >
-                <InputLabel id="place">Place</InputLabel>
-                <Select
-                  labelId="place"
+                <Autocomplete
+                  disablePortal
+                  size="small"
                   name="place"
+                  options={places}
                   value={branch.place}
-                  label="Place"
-                  onChange={inputChangeHandler}
-                >
-                  {places.map?.((place) => (
-                    <MenuItem
-                      key={place._id}
-                      value={place._id}
-                      className="menuItem"
-                    >
-                      {place.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  onChange={(e, value) => autocompleteChangeListener(e, value)}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Place"
+                      error={formErrors.place.invalid}
+                      fullWidth
+                    />
+                  )}
+                />
                 {formErrors.place.invalid && (
                   <FormHelperText>{formErrors.place.message}</FormHelperText>
                 )}
@@ -302,45 +321,26 @@ const BranchEdit = () => {
                 size="small"
                 error={formErrors.printer.invalid}
               >
-                <InputLabel id="printer">Printer</InputLabel>
-                <Select
-                  labelId="printer"
+                <Autocomplete
+                  disablePortal
+                  size="small"
                   name="printer"
+                  options={printers}
                   value={branch.printer}
-                  label="Printer"
-                  onChange={inputChangeHandler}
-                >
-                  <MenuItem
-                    key="Epson LQ-300+"
-                    value="Epson LQ-300+"
-                    className="menuItem"
-                  >
-                    Epson LQ-300+
-                  </MenuItem>
-                  <MenuItem
-                    key="Epson LX-300+"
-                    value="Epson LX-300+"
-                    className="menuItem"
-                  >
-                    Epson LX-300+
-                  </MenuItem>
-                  <MenuItem
-                    key="Epson LX-300+II"
-                    value="Epson LX-300+II"
-                    className="menuItem"
-                  >
-                    Epson LX-300+II
-                  </MenuItem>
-                  <MenuItem
-                    key="TVS MPS 250 Champion"
-                    value="TVS MPS 250 Champion"
-                    className="menuItem"
-                  >
-                    TVS MPS 250 Champion
-                  </MenuItem>
-                </Select>
-                {formErrors.place.invalid && (
-                  <FormHelperText>{formErrors.place.message}</FormHelperText>
+                  onChange={(e, value) => autocompleteType(e, value)}
+                  getOptionLabel={(option) => option}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Printer"
+                      error={formErrors.printer.invalid}
+                      fullWidth
+                    />
+                  )}
+                />
+                {formErrors.printer.invalid && (
+                  <FormHelperText>{formErrors.printer.message}</FormHelperText>
                 )}
               </FormControl>
             </div>

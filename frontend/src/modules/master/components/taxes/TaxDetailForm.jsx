@@ -6,10 +6,8 @@ import {
   FormControl,
   FormHelperText,
   Button,
-  InputLabel,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -62,6 +60,15 @@ const TaxDetailForm = ({ onTaxDetailAdd, editTaxDetail }) => {
   const inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    setTaxDetail((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
+
+  const autocompleteChangeListener = (value, name) => {
     setTaxDetail((currState) => {
       return {
         ...currState,
@@ -130,34 +137,27 @@ const TaxDetailForm = ({ onTaxDetailAdd, editTaxDetail }) => {
               size="small"
               error={formErrors.taxType.invalid}
             >
-              <InputLabel id="taxType">Tax type</InputLabel>
-              <Select
-                labelId="taxType"
+              <Autocomplete
+                disablePortal
+                autoSelect
+                size="small"
                 name="taxType"
+                options={["Insurance", "Road tax", "Fitness", "PUC", "RTO"]}
+                freeSolo
                 value={taxDetail.taxType}
-                label="Tax type"
-                onChange={inputChangeHandler}
-              >
-                <MenuItem
-                  key="Insurance"
-                  value="Insurance"
-                  className="menuItem"
-                >
-                  Insurance
-                </MenuItem>
-                <MenuItem key="Road tax" value="Road tax" className="menuItem">
-                  Road tax
-                </MenuItem>
-                <MenuItem key="Fitness" value="Fitness" className="menuItem">
-                  Fitness
-                </MenuItem>
-                <MenuItem key="PUC" value="PUC" className="menuItem">
-                  PUC
-                </MenuItem>
-                <MenuItem key="RTO" value="RTO" className="menuItem">
-                  RTO
-                </MenuItem>
-              </Select>
+                onChange={(e, value) =>
+                  autocompleteChangeListener(value, "taxType")
+                }
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tax type"
+                    error={formErrors.taxType.invalid}
+                    fullWidth
+                  />
+                )}
+              />
               {formErrors.taxType.invalid && (
                 <FormHelperText>{formErrors.taxType.message}</FormHelperText>
               )}

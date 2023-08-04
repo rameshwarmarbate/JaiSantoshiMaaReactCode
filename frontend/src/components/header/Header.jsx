@@ -32,7 +32,7 @@ const Header = () => {
 
   const handleMenuClick = () => {
     if (
-      document.body.classList.length &&
+      document.body.classList?.length &&
       document.body.classList.contains("show-menu")
     ) {
       document.body.classList.remove("show-menu");

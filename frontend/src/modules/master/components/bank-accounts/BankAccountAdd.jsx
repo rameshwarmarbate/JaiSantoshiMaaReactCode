@@ -63,7 +63,7 @@ const initialErrorState = {
 };
 
 const BankAccountAdd = () => {
-  const [banks, setBanks] = useState(initialState);
+  const [banks, setBanks] = useState([]);
   const [bankAccount, setBankAccount] = useState(initialState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
@@ -112,7 +112,7 @@ const BankAccountAdd = () => {
     });
     if (name === "bank") {
       const selectedBank = banks.filter?.((bank) => bank._id === value);
-      if (selectedBank.length) {
+      if (selectedBank?.length) {
         setBankAccount((currState) => {
           return {
             ...currState,
@@ -256,7 +256,7 @@ const BankAccountAdd = () => {
                     size="small"
                     name="bank"
                     options={banks}
-                    value={bankAccount.bank || undefined}
+                    value={bankAccount.bank || null}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value)
                     }
@@ -312,7 +312,7 @@ const BankAccountAdd = () => {
                       "Recurring account",
                       "Fixed Deposit / Account",
                     ]}
-                    value={bankAccount.accountType || undefined}
+                    value={bankAccount.accountType || null}
                     onChange={(e, value) => autocompleteType(e, value)}
                     openOnFocus
                     getOptionLabel={(option) => option}

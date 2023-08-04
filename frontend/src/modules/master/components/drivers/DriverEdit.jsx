@@ -8,6 +8,7 @@ import {
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -132,7 +133,14 @@ const DriverEdit = () => {
       };
     });
   };
-
+  const autocompleteChangeListener = (value, name) => {
+    setDriver((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(driver)) {
@@ -404,21 +412,21 @@ const DriverEdit = () => {
               </div>
               <div className="grid-item">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="eyeSight">Eyesight</InputLabel>
-                  <Select
-                    labelId="eyeSight"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="eyeSight"
+                    getOptionLabel={(option) => option}
+                    options={["Normal", "Good"]}
                     value={driver.eyeSight}
-                    label="Eyesight"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem key="normal" value="normal" className="menuItem">
-                      Normal
-                    </MenuItem>
-                    <MenuItem key="good" value="good" className="menuItem">
-                      Good
-                    </MenuItem>
-                  </Select>
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "eyeSight")
+                    }
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="Eyesight" fullWidth />
+                    )}
+                  />
                 </FormControl>
               </div>
               <div className="grid-item">
@@ -442,35 +450,21 @@ const DriverEdit = () => {
               </div>
               <div className="grid-item">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="licenseType">License type</InputLabel>
-                  <Select
-                    labelId="licenseType"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="licenseType"
+                    options={["Higher heavy", "Heavy", "Non-heavy", "Normal"]}
                     value={driver.licenseType}
-                    label="License type"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem
-                      key="Higher heavy"
-                      value="Higher heavy"
-                      className="menuItem"
-                    >
-                      Higher heavy
-                    </MenuItem>
-                    <MenuItem key="Heavy" value="Heavy" className="menuItem">
-                      Heavy
-                    </MenuItem>
-                    <MenuItem
-                      key="Non-heavy"
-                      value="Non-heavy"
-                      className="menuItem"
-                    >
-                      Non-heavy
-                    </MenuItem>
-                    <MenuItem key="normal" value="normal" className="menuItem">
-                      Normal
-                    </MenuItem>
-                  </Select>
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "licenseType")
+                    }
+                    getOptionLabel={(option) => option}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="License type" fullWidth />
+                    )}
+                  />
                 </FormControl>
               </div>
               <div className="grid-item">
@@ -543,39 +537,21 @@ const DriverEdit = () => {
               </div>
               <div className="grid-item">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="bloodGroup">Blood group</InputLabel>
-                  <Select
-                    labelId="bloodGroup"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="bloodGroup"
+                    options={["A-", "B-", "AB-", "O-", "A+", "B+", "AB+", "O+"]}
                     value={driver.bloodGroup}
-                    label="bloodGroup"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem key="A-" value="A-" className="menuItem">
-                      A-
-                    </MenuItem>
-                    <MenuItem key="B-" value="B-" className="menuItem">
-                      B-
-                    </MenuItem>
-                    <MenuItem key="AB-" value="AB-" className="menuItem">
-                      AB-
-                    </MenuItem>
-                    <MenuItem key="O-" value="O-" className="menuItem">
-                      O-
-                    </MenuItem>
-                    <MenuItem key="A+" value="A+" className="menuItem">
-                      A+
-                    </MenuItem>
-                    <MenuItem key="B+" value="B+" className="menuItem">
-                      B+
-                    </MenuItem>
-                    <MenuItem key="AB+" value="AB+" className="menuItem">
-                      AB+
-                    </MenuItem>
-                    <MenuItem key="O+" value="O+" className="menuItem">
-                      O+
-                    </MenuItem>
-                  </Select>
+                    getOptionLabel={(option) => option}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "bloodGroup")
+                    }
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="Blood group" fullWidth />
+                    )}
+                  />
                 </FormControl>
               </div>
 

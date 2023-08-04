@@ -221,7 +221,7 @@ const PaymentCollectionHistory = ({ bills }) => {
     const updatedBills = [];
     if (bills?.length) {
       bills.forEach?.((bill) => {
-        if (bill.paymentCollection.length) {
+        if (bill.paymentCollection?.length) {
           bill.paymentCollection.forEach?.((collection) => {
             const history = {};
             history._id = collection._id;

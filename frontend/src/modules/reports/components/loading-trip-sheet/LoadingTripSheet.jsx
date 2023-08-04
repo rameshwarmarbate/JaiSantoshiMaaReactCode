@@ -3,15 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
   Paper,
   TextField,
+  Autocomplete,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import Select from "@mui/material/Select";
 import Grid from "@material-ui/core/Grid";
 import { DataGrid } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -226,11 +224,8 @@ const LoadingTripSheet = () => {
       });
   };
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
     setIsSubmitted(false);
     setSearch(initialState);
   };
@@ -270,33 +265,30 @@ const LoadingTripSheet = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
-        <div className="page_head">
+        <div
+          className="page_head-1"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <h1 className="pageHead">Lorry Receipt Challan Status</h1>
-          <div className="page_actions">
+          <div className="">
             <FormControl
               size="small"
-              sx={{ width: "150px", marginRight: "5px" }}
+              sx={{ width: "150px", marginRight: "5px", marginBottom: "20px" }}
             >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
+                options={branches}
+                value={selectedBranch || null}
                 onChange={branchChangeHandler}
                 disabled={!isSuperAdminOrAdmin()}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                getOptionLabel={(branch) => branch.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField {...params} label="Select branch" fullWidth />
+                )}
+              />
             </FormControl>
           </div>
         </div>
@@ -387,7 +379,7 @@ const LoadingTripSheet = () => {
         </Paper>
 
         <Paper sx={{ width: "100%" }}>
-          {pageState.data.length > 0 ? (
+          {pageState.data?.length > 0 ? (
             <div className="tbl_header">
               <Button
                 variant="contained"

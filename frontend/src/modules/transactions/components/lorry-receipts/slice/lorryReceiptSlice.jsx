@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getUserData } from "../../../../../services/utils";
 
 import {
   fetchPlaces,

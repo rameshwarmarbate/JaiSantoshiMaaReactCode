@@ -19,7 +19,7 @@ const Navigation = () => {
           ) {
             return null;
           }
-          if (navItem.children && navItem.children.length > 0) {
+          if (navItem.children && navItem.children?.length > 0) {
             return (
               <CustomLink
                 key={navItem.to}
@@ -68,7 +68,7 @@ const CustomLink = ({ to, children, ...props }) => {
       <Link to={to} {...props}>
         {children}
       </Link>
-      {props.subnav && props.subnav.length > 0 && (
+      {props.subnav && props.subnav?.length > 0 && (
         <ul>
           {props.subnav.map?.((subnavItem) => (
             <CustomSubLink key={subnavItem.to} subto={subnavItem.to}>

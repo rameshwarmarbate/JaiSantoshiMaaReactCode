@@ -5,14 +5,12 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
@@ -103,7 +101,7 @@ const EmployeeAdd = () => {
   }, []);
 
   const resetButtonHandler = () => {
-    setEmployee(initialEmployeeState);
+    setEmployee((emp) => ({ ...initialEmployeeState, code: emp.code }));
     setHttpError("");
     setFormErrors(initialErrorState);
   };
@@ -122,7 +120,14 @@ const EmployeeAdd = () => {
       };
     });
   };
-
+  const autocompleteChangeListener = (value, name) => {
+    setEmployee((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const dateInputChangeHandler = (name, date) => {
     setEmployee((currState) => {
       return {
@@ -409,39 +414,20 @@ const EmployeeAdd = () => {
               </div>
               <div className="grid-item">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="bloodGroup">Blood group</InputLabel>
-                  <Select
-                    labelId="bloodGroup"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="bloodGroup"
-                    value={employee.bloodGroup}
-                    label="bloodGroup"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem key="A-" value="A-" className="menuItem">
-                      A-
-                    </MenuItem>
-                    <MenuItem key="B-" value="B-" className="menuItem">
-                      B-
-                    </MenuItem>
-                    <MenuItem key="AB-" value="AB-" className="menuItem">
-                      AB-
-                    </MenuItem>
-                    <MenuItem key="O-" value="O-" className="menuItem">
-                      O-
-                    </MenuItem>
-                    <MenuItem key="A+" value="A+" className="menuItem">
-                      A+
-                    </MenuItem>
-                    <MenuItem key="B+" value="B+" className="menuItem">
-                      B+
-                    </MenuItem>
-                    <MenuItem key="AB+" value="AB+" className="menuItem">
-                      AB+
-                    </MenuItem>
-                    <MenuItem key="O+" value="O+" className="menuItem">
-                      O+
-                    </MenuItem>
-                  </Select>
+                    options={["A-", "B-", "AB-", "O-", "A+", "B+", "AB+", "O+"]}
+                    value={employee.bloodGroup || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "bloodGroup")
+                    }
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="Blood group" fullWidth />
+                    )}
+                  />
                 </FormControl>
               </div>
               <div className="grid-item">

@@ -10,6 +10,7 @@ import {
 const initialState = {
   status: "idle",
   search: "",
+  banks: [],
 };
 
 export const createBankAccount = createAsyncThunk(
@@ -117,8 +118,13 @@ export const bankAccountSlice = createSlice({
       .addCase(getBanks.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getBanks.fulfilled, (state) => {
+      .addCase(getBanks.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
+        state.banks = payload.data.map((bank) => ({
+          ...bank,
+          label: bank.name,
+          value: bank._id,
+        }));
       })
       .addCase(getBanks.rejected, (state) => {
         state.status = "failed";

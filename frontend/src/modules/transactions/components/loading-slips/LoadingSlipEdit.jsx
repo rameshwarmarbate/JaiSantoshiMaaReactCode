@@ -128,6 +128,7 @@ const initialErrorState = {
 
 const LoadingSlipEdit = () => {
   const isLoading = useSelector(selectIsLoading);
+  const user = useSelector((state) => state.user);
   const { branches, vehicles, suppliers, places, drivers, customers } =
     useSelector(({ loadingslip }) => loadingslip) || {};
 
@@ -193,7 +194,7 @@ const LoadingSlipEdit = () => {
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[0]}]`);
 
       input?.scrollIntoView({
@@ -216,7 +217,7 @@ const LoadingSlipEdit = () => {
   }, [httpError]);
 
   useEffect(() => {
-    if (lsId && vehicles.length && drivers.length) {
+    if (lsId && vehicles?.length && drivers?.length) {
       dispatch(getLoadingSlip(lsId))
         .then(({ payload = {} }) => {
           const { message, vehicleNo, licenseNo, from, to, paybleAt } =
@@ -243,6 +244,9 @@ const LoadingSlipEdit = () => {
               .map?.((branch) => branch._id)
               .indexOf(paybleAt);
             response.paybleAt = branches[paybleIndex];
+            response.branch = branches?.find?.(
+              ({ _id }) => _id === response.branch
+            );
             setLoadingSlip(response);
           }
         })
@@ -253,7 +257,7 @@ const LoadingSlipEdit = () => {
   }, [lsId, vehicles, drivers, places, branches]);
 
   useEffect(() => {
-    if (lorryReceipts.length && loadingSlip.lrList.length) {
+    if (lorryReceipts?.length && loadingSlip.lrList?.length) {
       const selectedLRList = lorryReceipts.map?.((lorryReceipt) => {
         return {
           ...lorryReceipt,
@@ -414,7 +418,7 @@ const LoadingSlipEdit = () => {
     if (!formData.to) {
       errors.to = { invalid: true, message: "To is required" };
     }
-    if (!formData.lrList.length) {
+    if (!formData.lrList?.length) {
       errors.lrList = {
         invalid: true,
         message: "At least one lorry receipt is required",
@@ -606,25 +610,32 @@ const LoadingSlipEdit = () => {
                   size="small"
                   error={formErrors.branch?.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={loadingSlip.branch}
-                    onChange={inputChangeHandler}
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={branches}
+                    value={loadingSlip.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name}
+                    openOnFocus
+                    disabled={
+                      user &&
+                      user.type &&
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch?.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}

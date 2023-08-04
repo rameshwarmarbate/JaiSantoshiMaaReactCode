@@ -19,6 +19,7 @@ import {
   Button,
   InputAdornment,
   debounce,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -241,7 +242,7 @@ const LRAcknowledgement = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (acknowledgements.length) {
+    if (acknowledgements?.length) {
       const filteredLSList = acknowledgements.filter?.((lr) => lr.associatedLS);
       const lsList = filteredLSList.map?.((lr) => lr.associatedLS);
       const uniqueLSList = [...new Set(lsList)];
@@ -304,11 +305,8 @@ const LRAcknowledgement = () => {
     });
   };
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.find?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
     setIsSubmitted(true);
   };
 
@@ -385,26 +383,21 @@ const LRAcknowledgement = () => {
               size="small"
               sx={{ width: "150px", marginRight: "5px", marginTop: "5px" }}
             >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
+                className="multi-select"
+                options={branches}
+                value={selectedBranch}
                 onChange={branchChangeHandler}
                 disabled={!isSuperAdminOrAdmin()}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                getOptionLabel={(branch) => branch.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField {...params} label="Select branch" fullWidth />
+                )}
+              />
             </FormControl>
             <Button
               style={{ marginTop: "5px" }}

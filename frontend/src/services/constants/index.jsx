@@ -1,5 +1,5 @@
-// export const API_BASE_PATH = "http://localhost:4800/";
-export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
+export const API_BASE_PATH = window.env.API_BASE_PATH;
+// export const API_BASE_PATH = "https://api.jaisantoshimaatransport.com/";
 
 export const DELIVERY_TYPES = [
   { label: "Door", value: "Door" },

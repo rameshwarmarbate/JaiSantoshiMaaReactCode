@@ -108,7 +108,7 @@ const EditRateMaster = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (rateMasterId && places.length) {
+    if (rateMasterId && places?.length) {
       dispatch(getRateMaster(rateMasterId))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
@@ -191,7 +191,7 @@ const EditRateMaster = () => {
         }
       });
       let station;
-      if (filterEdited.length) {
+      if (filterEdited?.length) {
         station = places.find?.(
           (place) => place._id === filterEdited[0].station._id
         );
@@ -258,7 +258,7 @@ const EditRateMaster = () => {
     if (!formData.customer) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
-    if (!formData.rates.length) {
+    if (!formData.rates?.length) {
       errors.rates = {
         invalid: true,
         message: "At least one entry is required",

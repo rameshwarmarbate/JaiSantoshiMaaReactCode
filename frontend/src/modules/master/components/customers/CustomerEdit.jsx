@@ -7,6 +7,7 @@ import {
   FormControl,
   FormHelperText,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import Paper from "@mui/material/Paper";
@@ -113,7 +114,7 @@ const CustomerEdit = () => {
   }, [customerId]);
 
   const resetButtonHandler = () => {
-    setCustomer(fetchedCustomer);
+    setCustomer({ ...fetchedCustomer });
     setHttpError("");
     setFormErrors(initialErrorState);
   };
@@ -173,7 +174,7 @@ const CustomerEdit = () => {
     if (formData.email !== "" && !emailRegEx.test(formData.email)) {
       errors.email = { invalid: true, message: "Email is invalid" };
     }
-    if (!formData.contactPerson.length) {
+    if (!formData.contactPerson?.length) {
       errors.contactPerson = {
         invalid: true,
         message: "At least one contact person is required",
@@ -189,6 +190,15 @@ const CustomerEdit = () => {
       setFormErrors(errors);
     }
     return validationErrors;
+  };
+
+  const autocompleteChangeListener = (e, value) => {
+    setCustomer((currState) => {
+      return {
+        ...currState,
+        state: value,
+      };
+    });
   };
 
   const handleOnContactPersonAdd = (receivedPerson) => {
@@ -358,26 +368,21 @@ const CustomerEdit = () => {
                   </div>
                   <div className="grid-item">
                     <FormControl fullWidth size="small">
-                      <InputLabel id="branch">State</InputLabel>
-                      <Select
-                        labelId="state"
+                      <Autocomplete
+                        disablePortal
+                        size="small"
                         name="state"
+                        options={states}
                         value={customer.state}
-                        label="State"
-                        MenuProps={{ classes: { paper: classes.menuPaper } }}
-                        onChange={inputChangeHandler}
-                      >
-                        {states.map?.((state) => (
-                          <MenuItem
-                            key={state}
-                            value={state}
-                            className="menuItem"
-                            title={state}
-                          >
-                            {state}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                        onChange={(e, value) =>
+                          autocompleteChangeListener(e, value)
+                        }
+                        getOptionLabel={(option) => option}
+                        openOnFocus
+                        renderInput={(params) => (
+                          <TextField {...params} label="State" fullWidth />
+                        )}
+                      />
                     </FormControl>
                   </div>
                   <div className="grid-item">

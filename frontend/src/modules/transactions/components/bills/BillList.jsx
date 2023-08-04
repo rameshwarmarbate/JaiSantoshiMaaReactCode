@@ -17,6 +17,7 @@ import {
   debounce,
   TextField,
   InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -178,7 +179,7 @@ const BillList = () => {
             const filteredBranch = payload?.data.find?.(
               (branch) => branch._id === user.branch
             );
-            if (payload?.data.length) {
+            if (payload?.data?.length) {
               setSelectedBranch(filteredBranch);
             }
           }
@@ -274,11 +275,8 @@ const BillList = () => {
     dispatch(onSearch(e.target.value));
   };
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch[0]);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
   };
 
   const deleteBill = (id) => {
@@ -357,26 +355,21 @@ const BillList = () => {
               size="small"
               sx={{ width: "150px", marginRight: "5px" }}
             >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
+                className="multi-select"
+                options={branches}
+                value={selectedBranch}
                 onChange={branchChangeHandler}
                 disabled={!isSuperAdminOrAdmin()}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                getOptionLabel={(branch) => branch.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField {...params} label="Select branch" fullWidth />
+                )}
+              />
             </FormControl>
             <Button
               variant="contained"

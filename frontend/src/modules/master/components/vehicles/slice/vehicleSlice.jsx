@@ -11,6 +11,8 @@ import {
 const initialState = {
   status: "idle",
   search: "",
+  vehicleTypes: [],
+  suppliers: [],
 };
 
 export const createVehicle = createAsyncThunk(
@@ -119,8 +121,13 @@ export const vehicleSlice = createSlice({
       .addCase(getVehicleTypes.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getVehicleTypes.fulfilled, (state) => {
+      .addCase(getVehicleTypes.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
+        state.vehicleTypes = payload.data?.map((type) => ({
+          ...type,
+          label: type.type,
+          value: type._id,
+        }));
       })
       .addCase(getVehicleTypes.rejected, (state) => {
         state.status = "failed";
@@ -139,8 +146,13 @@ export const vehicleSlice = createSlice({
       .addCase(getSuppliers.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getSuppliers.fulfilled, (state) => {
+      .addCase(getSuppliers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
+        state.suppliers = payload.data?.map((supplier) => ({
+          ...supplier,
+          label: supplier.name,
+          value: supplier._id,
+        }));
       })
       .addCase(getSuppliers.rejected, (state) => {
         state.status = "failed";

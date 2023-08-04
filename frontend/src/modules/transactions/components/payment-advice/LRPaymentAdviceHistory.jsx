@@ -96,7 +96,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
     dispatch(setSearch(e.target.value));
   };
   useEffect(() => {
-    if (supplierLS.length) {
+    if (supplierLS?.length) {
       const historyList = [];
       let indexes = 0;
       supplierLS.forEach?.((ls, index) => {
@@ -113,7 +113,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
           stacking: ls.stacking,
           totalHire: ls.hire + ls.hamali - ls.commission - ls.stacking,
         });
-        if (ls.supplierPayments.length) {
+        if (ls.supplierPayments?.length) {
           ls.supplierPayments.forEach?.((payment) => {
             indexes = indexes + 1;
             const history = {};

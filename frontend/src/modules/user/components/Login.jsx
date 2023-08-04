@@ -55,7 +55,7 @@ const Login = () => {
     }
     if (!formData.password || formData.password?.trim?.() === "") {
       errors.password = { invalid: true, message: "Password is required" };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
         invalid: true,
         message: "Password length should be 5 or more characters",
@@ -80,7 +80,7 @@ const Login = () => {
       dispatch(validateUser(loginData))
         .then(({ payload = {} }) => {
           if (payload?.data?.message) {
-            setHttpError(payload.message);
+            setHttpError(payload.data.message);
           } else {
             const { token } = payload?.data || {};
             setToken(token);
@@ -130,10 +130,7 @@ const Login = () => {
         )}
         <div className="login-wrap">
           <div className="login-logo-pnl">
-            <div>
-              <img src={logo} alt="" />
-              <img src={logo} alt="" />
-            </div>
+            <img src={logo} alt="" />
           </div>
           <div className="login-card">
             <h2 className="pageHead">Login</h2>

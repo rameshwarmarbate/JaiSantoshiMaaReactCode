@@ -3,18 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   TextField,
   InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Select from "@mui/material/Select";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   createSupplierBill,
@@ -81,22 +79,31 @@ const AddSupplierBill = ({
   const { branches } = useSelector(({ paymentadvice }) => paymentadvice) || {};
 
   const cancelButtonHandler = useCallback(() => {
-    const branch = user.branch;
+    const filteredBranch = branches.find?.(
+      (branch) => branch._id === user.branch
+    );
     setBill(() => {
       return {
         ...initialState,
-        branch: branch,
+        branch: filteredBranch,
       };
     });
   }, [initialState, user.branch]);
 
   useEffect(() => {
-    setBill((currState) => {
-      return {
-        ...currState,
-        branch: user.branch,
-      };
-    });
+    if (user && user.branch) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === user.branch
+      );
+      if (filteredBranch?._id) {
+        setBill((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+          };
+        });
+      }
+    }
   }, [user]);
 
   const inputChangeHandler = (e) => {
@@ -112,7 +119,14 @@ const AddSupplierBill = ({
       };
     });
   };
-
+  const autocompleteChangeListener = (option, name) => {
+    setBill((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
   const dateInputChangeHandler = (name, date) => {
     setBill((currState) => {
       return {
@@ -125,7 +139,7 @@ const AddSupplierBill = ({
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(bill)) {
-      dispatch(createSupplierBill(bill))
+      dispatch(createSupplierBill({ ...bill, branch: bill.branch?._id }))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -145,7 +159,7 @@ const AddSupplierBill = ({
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
 
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.invoiceNo?.trim?.()) {
@@ -157,7 +171,7 @@ const AddSupplierBill = ({
         message: "Invoice date is required",
       };
     }
-    if (formData.quantity?.trim?.() === "") {
+    if (!formData.quantity?.trim?.()) {
       errors.quantity = { invalid: true, message: "Quantity is required" };
     }
     if (formData.amount <= 0) {
@@ -203,25 +217,32 @@ const AddSupplierBill = ({
               size="small"
               error={formErrors.branch.invalid}
             >
-              <InputLabel id="branch">Branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Branch"
-                value={bill.branch}
-                onChange={inputChangeHandler}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                options={branches}
+                value={bill.branch || null}
+                onChange={(e, value) =>
+                  autocompleteChangeListener(value, "branch")
+                }
+                disabled={
+                  user &&
+                  user.type &&
+                  user.type?.toLowerCase?.() !== "superadmin" &&
+                  user.type?.toLowerCase?.() !== "admin"
+                }
+                getOptionLabel={(branch) => branch.name || ""}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Branch"
+                    error={formErrors.branch.invalid}
+                    fullWidth
+                  />
+                )}
+              />
               {formErrors.branch.invalid && (
                 <FormHelperText>{formErrors.branch.message}</FormHelperText>
               )}

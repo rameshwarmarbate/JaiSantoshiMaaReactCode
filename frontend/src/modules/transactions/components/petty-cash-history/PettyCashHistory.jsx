@@ -12,6 +12,7 @@ import {
   Paper,
   FormHelperText,
   TextField,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import SearchIcon from "@mui/icons-material/Search";
@@ -110,7 +111,7 @@ const PettyCashHistory = () => {
           (bank) => bank._id === params.row.bank
         );
         return `${
-          selectedBank.length ? selectedBank[0].name : params.row.bank
+          selectedBank?.length ? selectedBank[0].name : params.row.bank
         } - ${params.row.bankAccountNumber}`;
       },
     },
@@ -156,11 +157,11 @@ const PettyCashHistory = () => {
         } else {
           setHttpError("");
           setBranches(payload?.data);
-          if (payload?.data.length) {
+          if (payload?.data?.length) {
             const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
-            if (filteredBranch.length) {
+            if (filteredBranch?.length) {
               setSelectedBranch(filteredBranch[0]);
             }
           }
@@ -210,7 +211,7 @@ const PettyCashHistory = () => {
   }, [selectedBranch]);
 
   useEffect(() => {
-    if (pettyTransactions.length) {
+    if (pettyTransactions?.length) {
       const updatedTransactions = pettyTransactions.map?.((pt) => {
         return {
           ...pt,
@@ -300,32 +301,28 @@ const PettyCashHistory = () => {
       <div className="page_head">
         <h1 className="pageHead">Petty cash transactions</h1>
         <div className="page_actions">
-          {
-            <FormControl
+          <FormControl size="small" sx={{ width: "150px", marginRight: "5px" }}>
+            <Autocomplete
+              disablePortal
               size="small"
-              sx={{ width: "150px", marginRight: "5px" }}
-            >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
-                name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
-                onChange={branchChangeHandler}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          }
+              name="branch"
+              options={branches}
+              value={selectedBranch || null}
+              onChange={branchChangeHandler}
+              disabled={
+                user &&
+                user.type &&
+                user.type?.toLowerCase?.() !== "superadmin" &&
+                user.type?.toLowerCase?.() !== "admin"
+              }
+              getOptionLabel={(branch) => branch.name || ""}
+              openOnFocus
+              renderInput={(params) => (
+                <TextField {...params} label="Select branch" fullWidth />
+              )}
+            />
+          </FormControl>
+
           <Button
             variant="contained"
             size="small"

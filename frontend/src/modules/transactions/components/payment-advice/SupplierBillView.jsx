@@ -106,7 +106,7 @@ const SupplierBillView = () => {
 
       <Paper sx={{ padding: "20px", marginBottom: "20px" }}>
         <h2>Payment history</h2>
-        {supplierBill.payments.length > 0 && (
+        {supplierBill.payments?.length > 0 && (
           <TableContainer>
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
@@ -135,7 +135,7 @@ const SupplierBillView = () => {
             </Table>
           </TableContainer>
         )}
-        {supplierBill.payments.length === 0 && (
+        {supplierBill.payments?.length === 0 && (
           <p style={{ marginTop: "20px" }}>No payment history for this bill</p>
         )}
       </Paper>

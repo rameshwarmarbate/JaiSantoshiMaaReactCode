@@ -6,11 +6,8 @@ import {
   FormHelperText,
   Button,
   Paper,
-  InputLabel,
-  MenuItem,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -63,10 +60,17 @@ const initialErrorState = {
   },
 };
 
+const accountTypes = [
+  { label: "Current account", value: "Current account" },
+  { label: "Saving account", value: "Saving account" },
+
+  { label: "Recurring account", value: "Recurring account" },
+  { label: "Fixed Deposit / Account", value: "Fixed Deposit / Account" },
+];
+
 const BankAccountEdit = () => {
   const isLoading = useSelector(selectIsLoading);
-
-  const [banks, setBanks] = useState(initialState);
+  const { banks } = useSelector(({ bankaccount }) => bankaccount);
   const [bankAccount, setBankAccount] = useState(initialState);
   const [fetchedBankAccount, setFetchedBankAccount] = useState(initialState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
@@ -82,18 +86,18 @@ const BankAccountEdit = () => {
   }, [navigate]);
 
   useEffect(() => {
-    dispatch(getBanks())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setBanks(payload?.data);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    setBankAccount({
+      ...fetchedBankAccount,
+      bank: banks?.find?.(({ _id }) => fetchedBankAccount?.bank === _id),
+      accountType: {
+        label: fetchedBankAccount.accountType,
+        value: fetchedBankAccount.accountType,
+      },
+    });
+  }, [fetchedBankAccount, banks]);
+
+  useEffect(() => {
+    dispatch(getBanks());
   }, []);
 
   useEffect(() => {
@@ -139,7 +143,7 @@ const BankAccountEdit = () => {
     setBankAccount((currState) => {
       return {
         ...currState,
-        bank: value?._id || "",
+        bank: value,
         ifsc: value?.ifsc || "",
       };
     });
@@ -157,7 +161,13 @@ const BankAccountEdit = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(bankAccount)) {
-      dispatch(updateBankAccount(bankAccount))
+      dispatch(
+        updateBankAccount({
+          ...bankAccount,
+          bank: bankAccount.bank?._id,
+          accountType: bankAccount.accountType?.value,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -177,7 +187,7 @@ const BankAccountEdit = () => {
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
 
-    if (!formData.bank) {
+    if (!formData.bank?._id) {
       errors.bank = { invalid: true, message: "Bank is required" };
     }
     if (formData.ifsc?.trim?.() === "") {
@@ -189,7 +199,7 @@ const BankAccountEdit = () => {
         message: "Account holder name is required",
       };
     }
-    if (formData.accountType?.trim?.() === "") {
+    if (!formData.accountType?.value?.trim?.()) {
       errors.accountType = {
         invalid: true,
         message: "Account type is required",
@@ -262,16 +272,15 @@ const BankAccountEdit = () => {
                 size="small"
                 error={formErrors.bank.invalid}
               >
-                <InputLabel id="bank">Bank</InputLabel>
                 <Autocomplete
+                  disablePortal
                   autoSelect
                   size="small"
                   name="bank"
                   options={banks}
-                  value={bankAccount.bank || undefined}
+                  value={bankAccount.bank}
                   onChange={(e, value) => autocompleteChangeListener(e, value)}
                   openOnFocus
-                  getOptionLabel={(option) => option.name}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -312,21 +321,15 @@ const BankAccountEdit = () => {
                 size="small"
                 error={formErrors.accountType.invalid}
               >
-                <InputLabel id="accountType">Account type</InputLabel>
                 <Autocomplete
+                  disablePortal
                   autoSelect
                   size="small"
                   name="accountType"
-                  options={[
-                    "Current account",
-                    "Saving account",
-                    "Recurring account",
-                    "Fixed Deposit / Account",
-                  ]}
-                  value={bankAccount.accountType || undefined}
+                  options={accountTypes}
+                  value={bankAccount.accountType}
                   onChange={(e, value) => autocompleteType(e, value)}
                   openOnFocus
-                  getOptionLabel={(option) => option}
                   renderInput={(params) => (
                     <TextField
                       {...params}

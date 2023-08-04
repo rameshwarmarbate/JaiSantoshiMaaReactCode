@@ -2,14 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LoadingSpinner } from "../../../ui-controls";
 import {
@@ -109,23 +107,32 @@ const UserRegistration = () => {
     });
   };
 
+  const autocompleteChangeListener = (option, name) => {
+    setUserRegistration((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
+
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.type?.trim?.() === "") {
+    if (!formData.type) {
       errors.type = { invalid: true, message: "User type is required" };
     }
-    if (formData.employee?.trim?.() === "") {
+    if (!formData.employee) {
       errors.employee = { invalid: true, message: "Employee is required" };
     }
-    if (formData.username?.trim?.() === "") {
+    if (!formData.username?.trim?.()) {
       errors.username = { invalid: true, message: "Username is required" };
     }
     if (formData.password?.trim?.() === "") {
       errors.password = { invalid: true, message: "Password is required" };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
         invalid: true,
         message: "Password length should be 5 or more characters",
@@ -143,7 +150,7 @@ const UserRegistration = () => {
         invalid: true,
         message: "Confirm password is required",
       };
-    } else if (formData.password?.trim?.().length < 5) {
+    } else if (formData.password?.trim?.()?.length < 5) {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password length should be 5 or more characters",
@@ -171,7 +178,13 @@ const UserRegistration = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(userRegistration)) {
-      dispatch(registerUser(userRegistration))
+      dispatch(
+        registerUser({
+          ...userRegistration,
+          place: userRegistration.branch?._id,
+          employee: userRegistration.employee?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -227,24 +240,26 @@ const UserRegistration = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    value={userRegistration.branch}
-                    label="Branch"
-                    onChange={inputChangeHandler}
-                  >
-                    {branches.map?.((branch) => (
-                      <MenuItem
-                        key={branch._id}
-                        value={branch._id}
-                        className="menuItem"
-                      >
-                        {branch.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                    options={branches}
+                    value={userRegistration.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}
@@ -256,21 +271,26 @@ const UserRegistration = () => {
                   size="small"
                   error={formErrors.type.invalid}
                 >
-                  <InputLabel id="type">User Type</InputLabel>
-                  <Select
-                    labelId="type"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="type"
-                    value={userRegistration.type}
-                    label="User Type"
-                    onChange={inputChangeHandler}
-                  >
-                    <MenuItem value={"Admin"} className="menuItem">
-                      Admin
-                    </MenuItem>
-                    <MenuItem value={"User"} className="menuItem">
-                      User
-                    </MenuItem>
-                  </Select>
+                    options={["Admin", "User"]}
+                    value={userRegistration.type || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "type")
+                    }
+                    getOptionLabel={(type) => type || ""}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="User Type"
+                        error={formErrors.type.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.type.invalid && (
                     <FormHelperText>{formErrors.type.message}</FormHelperText>
                   )}
@@ -282,25 +302,26 @@ const UserRegistration = () => {
                   size="small"
                   error={formErrors.employee.invalid}
                 >
-                  <InputLabel id="employee">Employee</InputLabel>
-                  <Select
-                    labelId="employee"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="employee"
-                    value={userRegistration.employee}
-                    label="Employee"
-                    onChange={inputChangeHandler}
-                  >
-                    {employees.length > 0 &&
-                      employees.map?.((employee) => (
-                        <MenuItem
-                          key={employee._id}
-                          value={employee._id}
-                          className="menuItem"
-                        >
-                          {employee.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={employees}
+                    value={userRegistration.employee || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "employee")
+                    }
+                    getOptionLabel={(employee) => employee.name || ""}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Employee"
+                        error={formErrors.employee.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.employee.invalid && (
                     <FormHelperText>
                       {formErrors.employee.message}

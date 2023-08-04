@@ -99,7 +99,11 @@ export const billSlice = createSlice({
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.branches = payload?.data;
+        state.branches = payload?.data?.map((branch) => ({
+          ...branch,
+          label: branch.name,
+          value: branch?._id,
+        }));
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";

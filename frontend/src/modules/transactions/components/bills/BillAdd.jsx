@@ -3,16 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
   Divider,
   InputAdornment,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -102,7 +100,7 @@ const BillAdd = () => {
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[0]}]`);
 
       input?.scrollIntoView({
@@ -133,12 +131,12 @@ const BillAdd = () => {
         setBill((currState) => {
           return {
             ...currState,
-            branch: filteredBranch._id,
+            branch: filteredBranch,
           };
         });
       }
     }
-  }, []);
+  }, [branches]);
 
   useEffect(() => {
     if (bill.branch && bill.customer) {
@@ -266,11 +264,18 @@ const BillAdd = () => {
       };
     });
   };
-
+  const autocompleteChangeListener = (value, name) => {
+    setBill((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const submitHandler = (e, isSaveAndPrint) => {
     e.preventDefault();
     if (!validateForm(bill)) {
-      dispatch(createBill(bill))
+      dispatch(createBill({ ...bill, branch: bill.branch?._id }))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -321,16 +326,16 @@ const BillAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.customer?.trim?.() === "") {
+    if (!formData.customer) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
-    if (!formData.lrList.length) {
+    if (!formData.lrList?.length) {
       errors.lrList = {
         invalid: true,
         message: "At least one lorry receipt is required",
@@ -427,31 +432,32 @@ const BillAdd = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
+                    options={branches}
                     value={bill.branch}
-                    onChange={inputChangeHandler}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name}
+                    openOnFocus
                     disabled={
                       user &&
                       user.type &&
                       user.type?.toLowerCase?.() !== "superadmin" &&
                       user.type?.toLowerCase?.() !== "admin"
                     }
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}
@@ -491,25 +497,27 @@ const BillAdd = () => {
                   size="small"
                   error={formErrors.customer.invalid}
                 >
-                  <InputLabel id="customer">Customer</InputLabel>
-                  <Select
-                    labelId="customer"
+                  <Autocomplete
+                    disablePortal
+                    autoSelect
+                    size="small"
                     name="customer"
-                    label="Customer"
-                    value={bill.customer}
-                    onChange={inputChangeHandler}
-                  >
-                    {customers.length > 0 &&
-                      customers.map?.((customer) => (
-                        <MenuItem
-                          key={customer._id}
-                          value={customer._id}
-                          className="menuItem"
-                        >
-                          {customer.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={customers}
+                    value={bill.customer || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value?._id, "customer")
+                    }
+                    getOptionLabel={(customer) => customer.name}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Customer"
+                        error={formErrors.customer.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.customer.invalid && (
                     <FormHelperText>
                       {formErrors.customer.message}

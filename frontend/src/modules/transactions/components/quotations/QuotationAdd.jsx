@@ -137,7 +137,7 @@ const QuotationAdd = () => {
     if (formData.ratePer?.trim?.() === "") {
       errors.ratePer = { invalid: true, message: "Rate type is required" };
     }
-    if (!formData.stations.length) {
+    if (!formData.stations?.length) {
       errors.stations = {
         invalid: true,
         message: "At least one entry is required",
@@ -167,7 +167,7 @@ const QuotationAdd = () => {
 
   const stationDeleteHandler = (e, index) => {
     e.preventDefault();
-    if (quotation.stations.length) {
+    if (quotation.stations?.length) {
       const updatedStations = quotation.stations;
       updatedStations?.splice?.(index, 1);
       setQuotation((currState) => {
@@ -348,7 +348,7 @@ const QuotationAdd = () => {
             setQuotation={setQuotation}
           />
 
-          {quotation.stations.length > 0 ? (
+          {quotation.stations?.length > 0 ? (
             <TableContainer>
               <Table sx={{ width: 500 }} className="tbl_jsm">
                 <TableHead>

@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
@@ -12,7 +10,6 @@ import {
   InputAdornment,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -183,27 +180,25 @@ const LorryReceiptAdd = () => {
     navigate("/transactions/lorryReceipts");
   }, [navigate]);
 
-  // useEffect(() => {
-  //   const branch =
-  //     branches.find?.(({ _id }) => _id === lorryReceipt.branch) || branches[0];
-  //   if (branch) {
-  //     dispatch(getLRNumber(branch?.abbreviation || "BRN")).then(
-  //       ({ payload }) => {
-  //
-  //           setLorryReceipt((currState) => {
-  //             return {
-  //               ...currState,
-  //               lrNo: payload?.data,
-  //             };
-  //           });
-  //         }
-  //       }
-  //     );
-  // }, [lorryReceipt.branch]);
+  useEffect(() => {
+    if (user && user.branch) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === user.branch
+      );
+      if (filteredBranch?._id) {
+        setLorryReceipt((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+          };
+        });
+      }
+    }
+  }, [branches]);
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[0]}]`);
 
       input?.scrollIntoView({
@@ -227,7 +222,7 @@ const LorryReceiptAdd = () => {
 
   useEffect(() => {
     let totalFreight = 0;
-    if (lorryReceipt.transactions.length) {
+    if (lorryReceipt.transactions?.length) {
       lorryReceipt.transactions.forEach?.((transaction) => {
         totalFreight += +transaction.freight;
       });
@@ -316,11 +311,11 @@ const LorryReceiptAdd = () => {
         updatedLR.payMode = updatedLR.payMode.value;
       }
       if (updatedLR.branch) {
-        updatedLR.branchCode =
-          branches.find?.(({ _id }) => updatedLR.branch === _id)
-            ?.abbreviation || "BRN";
+        updatedLR.branchCode = updatedLR.branch?.abbreviation || "BRN";
       }
-      dispatch(createLorryReceipt(updatedLR))
+      dispatch(
+        createLorryReceipt({ ...updatedLR, branch: updatedLR?.branch?._id })
+      )
         .then(({ payload = {} }) => {
           const { message, lrNo } = payload?.data || {};
           if (message) {
@@ -373,7 +368,7 @@ const LorryReceiptAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.consignor && !formData.consignorName?.trim?.()) {
@@ -400,7 +395,7 @@ const LorryReceiptAdd = () => {
     if (!formData.to?.trim?.()) {
       errors.to = { invalid: true, message: "To is required" };
     }
-    if (!formData.transactions.length) {
+    if (!formData.transactions?.length) {
       errors.transactionDetails = {
         invalid: true,
         message: "At lease 1 transaction is required",
@@ -611,32 +606,32 @@ const LorryReceiptAdd = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={lorryReceipt.branch}
-                    onChange={inputChangeHandler}
-                    inputProps={{
-                      readOnly:
-                        user &&
-                        user.type &&
-                        user.type?.toLowerCase?.() !== "superadmin" &&
-                        user.type?.toLowerCase?.() !== "admin",
-                    }}
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={branches}
+                    value={lorryReceipt.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(e, value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
+                    disabled={
+                      user &&
+                      user.type &&
+                      user.type?.toLowerCase?.() !== "superadmin" &&
+                      user.type?.toLowerCase?.() !== "admin"
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}

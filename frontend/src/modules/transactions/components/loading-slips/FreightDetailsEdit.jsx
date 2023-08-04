@@ -51,7 +51,7 @@ const FreightDetailsEdit = ({
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    if (lorryReceipts.length) {
+    if (lorryReceipts?.length) {
       const updatedLorryReceipts = [...lorryReceipts];
       updatedLorryReceipts.forEach?.((lr) => {
         let weight = 0;
@@ -67,7 +67,7 @@ const FreightDetailsEdit = ({
   }, [lorryReceipts, customers]);
 
   useEffect(() => {
-    if (updatedLR.length && initial) {
+    if (updatedLR?.length && initial) {
       let _total = 0;
       setSelectedLR(
         updatedLR.filter?.((lr) => {
@@ -162,7 +162,7 @@ const FreightDetailsEdit = ({
       </div>
       <form action="" onSubmit={submitHandler} id="lrSelectionForm">
         <FormGroup className="checkboxGroup">
-          {updatedLR.length > 0 &&
+          {updatedLR?.length > 0 &&
             updatedLR.map?.((lr) =>
               lr.show ? (
                 <FormControlLabel

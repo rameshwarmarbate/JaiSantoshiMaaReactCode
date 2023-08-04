@@ -2,14 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -59,10 +57,7 @@ const MoneyTransferAdd = () => {
   const user = useSelector((state) => state.user);
 
   const [branches, setBranches] = useState([]);
-  const [moneyTransfer, setMoneyTransfer] = useState({
-    ...initialState,
-    branch: user.branch,
-  });
+  const [moneyTransfer, setMoneyTransfer] = useState(initialState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
   const navigate = useNavigate();
@@ -72,6 +67,21 @@ const MoneyTransferAdd = () => {
     navigate("/transactions/moneyTransfers");
   }, [navigate]);
 
+  useEffect(() => {
+    if (user && user.branch) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === user.branch
+      );
+      if (filteredBranch?._id) {
+        setMoneyTransfer((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+          };
+        });
+      }
+    }
+  }, [branches]);
   useEffect(() => {
     dispatch(getBranches())
       .then(({ payload = {} }) => {
@@ -112,6 +122,15 @@ const MoneyTransferAdd = () => {
     });
   };
 
+  const autocompleteChangeListener = (option, name) => {
+    setMoneyTransfer((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
+
   const dateInputChangeHandler = (name, date) => {
     setMoneyTransfer((currState) => {
       return {
@@ -124,7 +143,13 @@ const MoneyTransferAdd = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(moneyTransfer)) {
-      dispatch(createMoneyTransfer(moneyTransfer))
+      dispatch(
+        createMoneyTransfer({
+          ...moneyTransfer,
+          branch: moneyTransfer.branch?._id,
+          transferToBranch: moneyTransfer.transferToBranch?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -144,10 +169,10 @@ const MoneyTransferAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.transferToBranch?.trim?.() === "") {
+    if (!formData.transferToBranch) {
       errors.transferToBranch = {
         invalid: true,
         message: "Branch is required",
@@ -205,31 +230,32 @@ const MoneyTransferAdd = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={moneyTransfer.branch}
-                    onChange={inputChangeHandler}
+                    options={branches}
+                    value={moneyTransfer.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
                     disabled={
                       user &&
                       user.type &&
                       user.type?.toLowerCase?.() !== "superadmin" &&
                       user.type?.toLowerCase?.() !== "admin"
                     }
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}
@@ -241,27 +267,26 @@ const MoneyTransferAdd = () => {
                   size="small"
                   error={formErrors.transferToBranch.invalid}
                 >
-                  <InputLabel id="transferToBranch">
-                    Transfer to branch
-                  </InputLabel>
-                  <Select
-                    labelId="transferToBranch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="transferToBranch"
-                    label="Transfer to branch"
-                    value={moneyTransfer.transferToBranch}
-                    onChange={inputChangeHandler}
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={branches}
+                    value={moneyTransfer.transferToBranch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "transferToBranch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Transfer to branch"
+                        error={formErrors.transferToBranch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.transferToBranch.invalid && (
                     <FormHelperText>
                       {formErrors.transferToBranch.message}

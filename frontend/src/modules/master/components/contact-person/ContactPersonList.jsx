@@ -29,7 +29,7 @@ const ContactPersonList = ({
   };
 
   let content =
-    contactPersons && contactPersons.length > 0 ? (
+    contactPersons && contactPersons?.length > 0 ? (
       contactPersons.map?.((contact, index) => {
         return (
           <Accordion

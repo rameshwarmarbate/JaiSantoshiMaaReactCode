@@ -8,6 +8,7 @@ import {
   FormHelperText,
   Button,
   Paper,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
@@ -75,6 +76,26 @@ const MoneyTransferEdit = () => {
   }, [navigate]);
 
   useEffect(() => {
+    if (fetchedMoneyTransfer) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === fetchedMoneyTransfer.branch
+      );
+      const transferToBranch = branches.find?.(
+        (branch) => branch._id === fetchedMoneyTransfer.transferToBranch
+      );
+      if (filteredBranch?._id) {
+        setMoneyTransfer((currState) => {
+          return {
+            ...currState,
+            branch: filteredBranch,
+            transferToBranch,
+          };
+        });
+      }
+    }
+  }, [branches, fetchedMoneyTransfer]);
+
+  useEffect(() => {
     dispatch(getBranches())
       .then(({ payload = {} }) => {
         const { message } = payload?.data || {};
@@ -132,6 +153,14 @@ const MoneyTransferEdit = () => {
       };
     });
   };
+  const autocompleteChangeListener = (option, name) => {
+    setMoneyTransfer((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
 
   const dateInputChangeHandler = (name, date) => {
     setMoneyTransfer((currState) => {
@@ -165,10 +194,10 @@ const MoneyTransferEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
-    if (formData.transferToBranch?.trim?.() === "") {
+    if (!formData.transferToBranch) {
       errors.transferToBranch = {
         invalid: true,
         message: "Branch is required",
@@ -204,7 +233,7 @@ const MoneyTransferEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Add a money transfer</h1>
+      <h1 className="pageHead">Update a money transfer</h1>
       <div className="inner-wrap">
         {httpError !== "" && (
           <Stack
@@ -229,31 +258,32 @@ const MoneyTransferEdit = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={moneyTransfer.branch}
-                    onChange={inputChangeHandler}
+                    options={branches}
+                    value={moneyTransfer.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
                     disabled={
                       user &&
                       user.type &&
                       user.type?.toLowerCase?.() !== "superadmin" &&
                       user.type?.toLowerCase?.() !== "admin"
                     }
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}
@@ -265,27 +295,26 @@ const MoneyTransferEdit = () => {
                   size="small"
                   error={formErrors.transferToBranch.invalid}
                 >
-                  <InputLabel id="transferToBranch">
-                    Transfer to branch
-                  </InputLabel>
-                  <Select
-                    labelId="transferToBranch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="transferToBranch"
-                    label="Transfer to branch"
-                    value={moneyTransfer.transferToBranch}
-                    onChange={inputChangeHandler}
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={branches}
+                    value={moneyTransfer.transferToBranch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "transferToBranch")
+                    }
+                    getOptionLabel={(branch) => branch.name || ""}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Transfer to branch"
+                        error={formErrors.transferToBranch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.transferToBranch.invalid && (
                     <FormHelperText>
                       {formErrors.transferToBranch.message}

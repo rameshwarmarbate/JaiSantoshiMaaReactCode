@@ -2,15 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LoadingSpinner } from "../../../../ui-controls";
 import { useDispatch, useSelector } from "react-redux";
@@ -100,7 +97,7 @@ const BranchAdd = () => {
     setBranch((currState) => {
       return {
         ...currState,
-        place: value._id,
+        place: value,
       };
     });
   };
@@ -116,7 +113,7 @@ const BranchAdd = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(branch)) {
-      dispatch(createBranch(branch))
+      dispatch(createBranch({ ...branch, place: branch.place?._id }))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -261,11 +258,11 @@ const BranchAdd = () => {
                   error={formErrors.place.invalid}
                 >
                   <Autocomplete
-                    autoSelect
+                    disablePortal
                     size="small"
                     name="place"
                     options={places}
-                    value={branch.place || undefined}
+                    value={branch.place || null}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value)
                     }
@@ -301,7 +298,7 @@ const BranchAdd = () => {
                       "Epson LX-300+II",
                       "TVS MPS 250 Champion",
                     ]}
-                    value={branch.printer || undefined}
+                    value={branch.printer || null}
                     onChange={(e, value) => autocompleteType(e, value)}
                     openOnFocus
                     getOptionLabel={(option) => option}

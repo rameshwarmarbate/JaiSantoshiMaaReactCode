@@ -3,16 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
   Paper,
   Divider,
   InputAdornment,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -109,7 +107,7 @@ const BillEdit = () => {
 
   useEffect(() => {
     const err = Object.keys(formErrors);
-    if (err.length) {
+    if (err?.length) {
       const input = document.querySelector(`input[name=${err[0]}]`);
 
       input?.scrollIntoView({
@@ -130,22 +128,6 @@ const BillEdit = () => {
       });
     }
   }, [httpError]);
-
-  useEffect(() => {
-    if (user && user.branch) {
-      const filteredBranch = branches?.find?.(
-        (branch) => branch._id === user.branch
-      );
-      if (filteredBranch?._id) {
-        setBill((currState) => {
-          return {
-            ...currState,
-            branch: filteredBranch._id,
-          };
-        });
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (fetchedBill.branch && fetchedBill.customer) {
@@ -203,7 +185,7 @@ const BillEdit = () => {
   }, [billId]);
 
   useEffect(() => {
-    if (fetchedBill._id && fetchedLorryReceipts.length && customers.length) {
+    if (fetchedBill._id && fetchedLorryReceipts?.length && customers?.length) {
       const updatedBill = { ...fetchedBill };
       const updatedLorryReceipts = fetchedLorryReceipts.map?.((fetchedLR) => {
         const isInBill = fetchedBill.lrList.filter?.(
@@ -211,7 +193,7 @@ const BillEdit = () => {
         );
         return {
           ...fetchedLR,
-          checked: isInBill.length ? true : false,
+          checked: isInBill?.length ? true : false,
         };
       });
       let updatedFilteredLorryReceipts;
@@ -222,13 +204,18 @@ const BillEdit = () => {
           );
         });
       }
-
+      const filteredBranch = branches?.find?.(
+        (branch) => branch._id === fetchedBill.branch
+      );
       updatedBill.lrList = updatedBill.lrList.map?.((billLr) => {
         return (
           updatedLorryReceipts.filter?.((lr) => lr._id === billLr._id)[0] || ""
         );
       });
-      setBill(updatedBill);
+      const customer = customers?.find?.(
+        (customer) => customer._id === fetchedBill.customer
+      );
+      setBill({ ...updatedBill, branch: filteredBranch, customer });
       setLorryReceipts(updatedFilteredLorryReceipts);
     }
   }, [fetchedBill, fetchedLorryReceipts, customers, billId]);
@@ -303,11 +290,24 @@ const BillEdit = () => {
       };
     });
   };
-
+  const autocompleteChangeListener = (value, name) => {
+    setBill((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const submitHandler = (e, isSaveAndPrint) => {
     e.preventDefault();
     if (!validateForm(bill)) {
-      dispatch(updateBill(bill))
+      dispatch(
+        updateBill({
+          ...bill,
+          branch: bill.branch?._id,
+          customer: bill.customer?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -357,16 +357,16 @@ const BillEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.customer?.trim?.() === "") {
+    if (!formData.customer) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
-    if (!formData.lrList.length) {
+    if (!formData.lrList?.length) {
       errors.lrList = {
         invalid: true,
         message: "At least one lorry receipt is required",
@@ -463,31 +463,32 @@ const BillEdit = () => {
                   size="small"
                   error={formErrors.branch.invalid}
                 >
-                  <InputLabel id="branch">Branch</InputLabel>
-                  <Select
-                    labelId="branch"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="branch"
-                    label="Branch"
-                    value={bill.branch}
-                    onChange={inputChangeHandler}
+                    options={branches}
+                    value={bill.branch || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "branch")
+                    }
+                    getOptionLabel={(branch) => branch.name}
+                    openOnFocus
                     disabled={
                       user &&
                       user.type &&
                       user.type?.toLowerCase?.() !== "superadmin" &&
                       user.type?.toLowerCase?.() !== "admin"
                     }
-                  >
-                    {branches.length > 0 &&
-                      branches.map?.((branch) => (
-                        <MenuItem
-                          key={branch._id}
-                          value={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Branch"
+                        error={formErrors.branch.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.branch.invalid && (
                     <FormHelperText>{formErrors.branch.message}</FormHelperText>
                   )}
@@ -527,26 +528,26 @@ const BillEdit = () => {
                   size="small"
                   error={formErrors.customer.invalid}
                 >
-                  <InputLabel id="customer">Customer</InputLabel>
-                  <Select
-                    labelId="customer"
+                  <Autocomplete
+                    disablePortal
+                    size="small"
                     name="customer"
-                    label="Customer"
-                    value={bill.customer}
-                    // inputProps={{ readOnly: true }}
-                    onChange={inputChangeHandler}
-                  >
-                    {customers.length > 0 &&
-                      customers.map?.((customer) => (
-                        <MenuItem
-                          key={customer._id}
-                          value={customer._id}
-                          className="menuItem"
-                        >
-                          {customer.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                    options={customers}
+                    value={bill.customer || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "customer")
+                    }
+                    getOptionLabel={(customer) => customer.name}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Customer"
+                        error={formErrors.customer.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
                   {formErrors.customer.invalid && (
                     <FormHelperText>
                       {formErrors.customer.message}

@@ -16,6 +16,7 @@ import {
   TextField,
   InputAdornment,
   debounce,
+  Autocomplete,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -125,11 +126,11 @@ const MoneyTransfers = () => {
         } else {
           setHttpError("");
           setbranches(payload?.data);
-          if (payload?.data.length) {
+          if (payload?.data?.length) {
             const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
-            if (filteredBranch.length) {
+            if (filteredBranch?.length) {
               setSelectedBranch(filteredBranch[0]);
             }
           }
@@ -187,11 +188,11 @@ const MoneyTransfers = () => {
   };
 
   const getBranchNameById = (branchId) => {
-    if (branches.length) {
+    if (branches?.length) {
       const filteredBranch = branches.filter?.(
         (branch) => branch._id === branchId
       );
-      if (filteredBranch.length) {
+      if (filteredBranch?.length) {
         return filteredBranch[0].name;
       }
       return branchId;
@@ -231,11 +232,8 @@ const MoneyTransfers = () => {
     }
   };
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch[0]);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
   };
 
   const handleAddMT = () => {
@@ -263,12 +261,13 @@ const MoneyTransfers = () => {
               size="small"
               sx={{ width: "150px", marginRight: "5px" }}
             >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
+                className="multi-select"
+                options={branches}
+                value={selectedBranch || null}
                 onChange={branchChangeHandler}
                 disabled={
                   user &&
@@ -276,18 +275,12 @@ const MoneyTransfers = () => {
                   user.type?.toLowerCase?.() !== "superadmin" &&
                   user.type?.toLowerCase?.() !== "admin"
                 }
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                getOptionLabel={(branch) => branch.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField {...params} label="Select branch" fullWidth />
+                )}
+              />
             </FormControl>
             <Button
               variant="contained"

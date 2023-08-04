@@ -5,12 +5,11 @@ import {
   IconButton,
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,6 +20,7 @@ import {
 import {
   getFormattedDate,
   getFormattedLSNumber,
+  getUserData,
 } from "../../../../services/utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -31,6 +31,15 @@ import {
   selectIsLoading,
 } from "./slice/localMemoSlice";
 
+export const isSuperAdminOrAdmin = () => {
+  const user = getUserData();
+  return (
+    user &&
+    user.type &&
+    (user.type?.toLowerCase?.() === "superadmin" ||
+      user.type?.toLowerCase?.() === "admin")
+  );
+};
 const LocalMemoList = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
@@ -143,11 +152,11 @@ const LocalMemoList = () => {
         } else {
           setHttpError("");
           setBranches(payload?.data);
-          if (payload?.data.length) {
+          if (payload?.data?.length) {
             const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
-            if (filteredBranch.length) {
+            if (filteredBranch?.length) {
               setSelectedBranch(filteredBranch[0]);
             }
           }
@@ -202,7 +211,7 @@ const LocalMemoList = () => {
   };
 
   useEffect(() => {
-    if (selectedBranch?._id && places.length) {
+    if (selectedBranch?._id && places?.length) {
       fetchData();
     }
   }, [selectedBranch, places]);
@@ -271,25 +280,21 @@ const LocalMemoList = () => {
               size="small"
               sx={{ width: "150px", marginRight: "5px" }}
             >
-              <InputLabel id="branch">Select branch</InputLabel>
-              <Select
-                labelId="branch"
+              <Autocomplete
+                disablePortal
+                size="small"
                 name="branch"
-                label="Select branch"
-                value={selectedBranch?._id || ""}
+                className="multi-select"
+                options={branches}
+                value={selectedBranch || null}
                 onChange={branchChangeHandler}
-              >
-                {branches.length > 0 &&
-                  branches.map?.((branch) => (
-                    <MenuItem
-                      key={branch._id}
-                      value={branch._id}
-                      className="menuItem"
-                    >
-                      {branch.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+                disabled={!isSuperAdminOrAdmin()}
+                getOptionLabel={(branch) => branch.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField {...params} label="Select branch" fullWidth />
+                )}
+              />
             </FormControl>
           }
           <Button

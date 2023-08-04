@@ -6,10 +6,9 @@ import {
   Stack,
   Paper,
   FormControl,
-  InputLabel,
-  MenuItem,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { LoadingSpinner } from "../../../../ui-controls";
 import LRPaymentAdvice from "./LRPaymentAdvice";
 import SupplierBills from "./SupplierBills";
@@ -89,13 +88,13 @@ const PaymentAdvice = () => {
     setTabValue(newValue);
   };
 
-  const supplierChangeHandler = (e) => {
-    setSelectedSupplier(e.target.value);
+  const supplierChangeHandler = (e, value) => {
+    setSelectedSupplier(value);
     setTabValue(0);
   };
 
-  const supplierTypeChangeHandler = (e) => {
-    setSelectedSupplierType(e.target.value);
+  const supplierTypeChangeHandler = (e, value) => {
+    setSelectedSupplierType(value);
     setSelectedSupplier("");
     setTabValue(0);
   };
@@ -128,48 +127,40 @@ const PaymentAdvice = () => {
           <div className="grid grid-6-col">
             <div className="grid-item">
               <FormControl fullWidth size="small">
-                <InputLabel id="supplierType">Select supplier type</InputLabel>
-                <Select
-                  labelId="supplierType"
-                  name="supplierType"
-                  label="Select supplier type"
-                  value={selectedSupplierType}
+                <Autocomplete
+                  disablePortal
+                  size="small"
+                  name="branch"
+                  options={supplierTypes}
+                  value={selectedSupplierType || null}
                   onChange={supplierTypeChangeHandler}
-                >
-                  {supplierTypes.length > 0 &&
-                    supplierTypes.map?.((supplierType) => (
-                      <MenuItem
-                        key={supplierType}
-                        value={supplierType}
-                        className="menuItem"
-                      >
-                        {supplierType}
-                      </MenuItem>
-                    ))}
-                </Select>
+                  getOptionLabel={(supplierTypes) => supplierTypes || ""}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select supplier type"
+                      fullWidth
+                    />
+                  )}
+                />
               </FormControl>
             </div>
             <div className="grid-item">
               <FormControl fullWidth size="small">
-                <InputLabel id="supplier">Select supplier</InputLabel>
-                <Select
-                  labelId="supplier"
+                <Autocomplete
+                  disablePortal
+                  size="small"
                   name="supplier"
-                  label="Select supplier"
-                  value={selectedSupplier}
+                  options={suppliers}
+                  value={selectedSupplier || null}
                   onChange={supplierChangeHandler}
-                >
-                  {suppliers.length > 0 &&
-                    suppliers.map?.((supplier) => (
-                      <MenuItem
-                        key={supplier._id}
-                        value={supplier._id}
-                        className="menuItem"
-                      >
-                        {supplier.name}
-                      </MenuItem>
-                    ))}
-                </Select>
+                  getOptionLabel={(supplier) => supplier.name || ""}
+                  openOnFocus
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select supplier" fullWidth />
+                  )}
+                />
               </FormControl>
             </div>
           </div>
@@ -187,7 +178,7 @@ const PaymentAdvice = () => {
         {tabValue === 0 ? (
           <LRPaymentAdvice
             suppliers={suppliers}
-            selectedSupplier={selectedSupplier}
+            selectedSupplier={selectedSupplier?._id}
             selectedSupplierType={selectedSupplierType}
             setSelectedSupplier={setSelectedSupplier}
             places={places}
@@ -196,7 +187,7 @@ const PaymentAdvice = () => {
         {tabValue === 1 ? (
           <SupplierBills
             suppliers={suppliers}
-            selectedSupplier={selectedSupplier}
+            selectedSupplier={selectedSupplier?._id}
             selectedSupplierType={selectedSupplierType}
           />
         ) : null}

@@ -23,7 +23,7 @@
   width: 50%;
   display: flex;
   align-items: center;
-  background: #303030;
+  background: #dce1ec;
   padding-left: 0px;
   border-radius: 4px 0px 0px 4px;
   text-align: center;
@@ -43,8 +43,9 @@
 }
 
 .login-logo-pnl img {
-  width: 180px;
-  margin-bottom: 10px;
+  width: 250px;
+  margin: 0 auto;
+  height: auto;
 }
 
 .grid {
@@ -109,6 +110,12 @@
   height: 39px;
   font-weight: normal;
   background-color: #0b0e12;
+}
+
+.page_head .page_actions .multi-select button {
+  float: none !important;
+  height: auto !important;
+  background-color: transparent !important;
 }
 
 .text-inline {

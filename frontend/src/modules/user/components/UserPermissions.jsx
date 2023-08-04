@@ -1,16 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
   Divider,
   Switch,
   Paper,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Select from "@mui/material/Select";
 import { Alert, Stack } from "@mui/material";
 import classes from "./UserPermissions.module.css";
 import { LoadingSpinner } from "../../../ui-controls";
@@ -29,15 +28,24 @@ const UserPermissions = () => {
   const [branchUsers, setBranchUsers] = useState([]);
   const [httpError, setHttpError] = useState("");
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(
-    user.branch ? user.branch : ""
-  );
+  const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [fetchedUser, setFetchedUser] = useState({});
   const [permissions, setPermissions] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.branch) {
+      const filteredBranch = branches.find?.(
+        (branch) => branch._id === user.branch
+      );
+      if (filteredBranch?._id) {
+        setSelectedBranch(filteredBranch);
+      }
+    }
+  }, [branches, user]);
 
   useEffect(() => {
     if (permissions) {
@@ -78,7 +86,7 @@ const UserPermissions = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      dispatch(getUsersByBranch(selectedBranch))
+      dispatch(getUsersByBranch(selectedBranch?._id))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -104,7 +112,7 @@ const UserPermissions = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      dispatch(getUserDetail(selectedUser))
+      dispatch(getUserDetail(selectedUser?.id))
         .then(({ payload = {} }) => {
           setFetchedUser({
             ...(payload?.data || {}),
@@ -121,13 +129,13 @@ const UserPermissions = () => {
     }
   }, [selectedUser]);
 
-  const branchChangeHandler = (e) => {
-    setSelectedBranch(e.target.value);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
     setBranchUsers([]);
   };
 
-  const userChangeHandler = (e) => {
-    setSelectedUser(e.target.value);
+  const userChangeHandler = (e, value) => {
+    setSelectedUser(value);
   };
 
   const handleSwitchChange = (e, checked) => {
@@ -156,7 +164,7 @@ const UserPermissions = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     const requestObject = {
-      id: selectedUser,
+      id: selectedUser?.id,
       permissions: permissions,
     };
 
@@ -230,55 +238,40 @@ const UserPermissions = () => {
           <Paper sx={{ padding: "20px", marginBottom: "20px" }}>
             <div className="grid grid-6-col">
               <div className="grid-item">
-                {branches && branches.length > 0 && (
+                {branches && branches?.length > 0 && (
                   <FormControl fullWidth size="small">
-                    <InputLabel id="branch">Branch</InputLabel>
-                    <Select
-                      labelId="branch"
+                    <Autocomplete
+                      disablePortal
+                      size="small"
                       name="branch"
-                      value={selectedBranch}
-                      label="Branch"
+                      options={branches}
+                      value={selectedBranch || null}
                       onChange={branchChangeHandler}
-                    >
-                      {branches.map?.((branch) => (
-                        <MenuItem
-                          value={branch._id}
-                          key={branch._id}
-                          className="menuItem"
-                        >
-                          {branch.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      getOptionLabel={(branch) => branch.name || ""}
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField {...params} label="Branch" fullWidth />
+                      )}
+                    />
                   </FormControl>
                 )}
               </div>
               <div className="grid-item">
-                {branches && branches.length > 0 && (
+                {branches && branches?.length > 0 && (
                   <FormControl fullWidth size="small">
-                    <InputLabel id="users">Users</InputLabel>
-                    <Select
-                      labelId="users"
+                    <Autocomplete
+                      disablePortal
+                      size="small"
                       name="users"
-                      value={selectedUser}
-                      label="Users"
+                      options={branchUsers}
+                      value={selectedUser || null}
                       onChange={userChangeHandler}
-                    >
-                      <MenuItem value="" className="menuItem">
-                        Select
-                      </MenuItem>
-                      {branchUsers &&
-                        branchUsers.length &&
-                        branchUsers.map?.((user) => (
-                          <MenuItem
-                            value={user.id}
-                            key={user.id}
-                            className="menuItem"
-                          >
-                            {user.username}
-                          </MenuItem>
-                        ))}
-                    </Select>
+                      getOptionLabel={(user) => user.username || ""}
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField {...params} label="Users" fullWidth />
+                      )}
+                    />
                   </FormControl>
                 )}
               </div>

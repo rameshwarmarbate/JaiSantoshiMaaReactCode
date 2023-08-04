@@ -2,13 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
-  InputLabel,
-  MenuItem,
   FormControl,
   FormHelperText,
   Button,
+  Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import Paper from "@mui/material/Paper";
 import { Alert, Stack } from "@mui/material";
 import dayjs from "dayjs";
@@ -61,8 +59,7 @@ const initialErrorState = {
 };
 
 const VehicleAdd = () => {
-  const [vehicleTypes, setVehicleTypes] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
+  const { suppliers, vehicleTypes } = useSelector(({ vehicle }) => vehicle);
   const [vehicle, setVehicle] = useState(initialState);
   const [fetchedVehicle, setFetchedVehicle] = useState(initialState);
   const [formErrors, setFormErrors] = useState(initialErrorState);
@@ -79,6 +76,16 @@ const VehicleAdd = () => {
   const goToVehiclesList = useCallback(() => {
     navigate("/master/vehicles");
   }, [navigate]);
+
+  useEffect(() => {
+    setVehicle({
+      ...fetchedVehicle,
+      owner: suppliers?.find?.(({ _id }) => fetchedVehicle?.owner === _id),
+      vehicleType: vehicleTypes?.find?.(
+        ({ _id }) => fetchedVehicle?.vehicleType === _id
+      ),
+    });
+  }, [suppliers, fetchedVehicle, vehicleTypes]);
 
   useEffect(() => {
     if (vehicleId) {
@@ -102,35 +109,11 @@ const VehicleAdd = () => {
   }, [vehicleId]);
 
   useEffect(() => {
-    dispatch(getSuppliers())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          setSuppliers(payload?.data);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    dispatch(getSuppliers());
   }, []);
 
   useEffect(() => {
-    dispatch(getVehicleTypes())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          setVehicleTypes(payload?.data);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    dispatch(getVehicleTypes());
   }, []);
 
   const resetButtonHandler = () => {
@@ -154,6 +137,15 @@ const VehicleAdd = () => {
     });
   };
 
+  const autocompleteChangeListener = (value, name) => {
+    setVehicle((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
+
   const dateInputChangeHandler = (name, date) => {
     setVehicle((currState) => {
       return {
@@ -166,7 +158,13 @@ const VehicleAdd = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(vehicle)) {
-      dispatch(updateVehicle(vehicle))
+      dispatch(
+        updateVehicle({
+          ...vehicle,
+          owner: vehicle?.owner?._id,
+          vehicleType: vehicle?.vehicleType?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -185,13 +183,10 @@ const VehicleAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.owner?.trim?.() === "") {
+    if (!formData.owner?.label) {
       errors.owner = { invalid: true, message: "Supplier is required" };
     }
-    if (
-      !formData.vehicleType ||
-      (formData.vehicleType && formData.vehicleType?.trim?.() === "")
-    ) {
+    if (!formData.vehicleType?.label) {
       errors.vehicleType = {
         invalid: true,
         message: "Vehicle type is required",
@@ -284,24 +279,26 @@ const VehicleAdd = () => {
                     size="small"
                     error={formErrors.owner.invalid}
                   >
-                    <InputLabel id="vehicleOwner">Vehicle supplier</InputLabel>
-                    <Select
-                      labelId="vehicleOwner"
+                    <Autocomplete
+                      disablePortal
+                      autoSelect
+                      size="small"
                       name="owner"
-                      value={vehicle.owner}
-                      label="Vehicle supplier"
-                      onChange={inputChangeHandler}
-                    >
-                      {suppliers.map?.((supplier) => (
-                        <MenuItem
-                          key={supplier._id}
-                          value={supplier._id}
-                          className="menuItem"
-                        >
-                          {supplier.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      options={suppliers}
+                      value={vehicle.owner || ""}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value, "owner")
+                      }
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vehicle supplier"
+                          error={formErrors.owner.invalid}
+                          fullWidth
+                        />
+                      )}
+                    />
                     {formErrors.owner.invalid && (
                       <FormHelperText>
                         {formErrors.owner.message}
@@ -334,24 +331,26 @@ const VehicleAdd = () => {
                     size="small"
                     error={formErrors.vehicleType.invalid}
                   >
-                    <InputLabel id="vehicleType">Vehicle type</InputLabel>
-                    <Select
-                      labelId="vehicleType"
+                    <Autocomplete
+                      disablePortal
+                      size="small"
                       name="vehicleType"
-                      value={vehicle.vehicleType}
-                      label="Vehicle type"
-                      onChange={inputChangeHandler}
-                    >
-                      {vehicleTypes.map?.((vehicleType) => (
-                        <MenuItem
-                          key={vehicleType._id}
-                          value={vehicleType._id}
-                          className="menuItem"
-                        >
-                          {vehicleType.type}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      options={vehicleTypes}
+                      value={vehicle.vehicleType || ""}
+                      onChange={(e, value) =>
+                        autocompleteChangeListener(value, "vehicleType")
+                      }
+                      openOnFocus
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vehicle type"
+                          error={formErrors.vehicleType.invalid}
+                          fullWidth
+                        />
+                      )}
+                    />
+
                     {formErrors.vehicleType.invalid && (
                       <FormHelperText>
                         {formErrors.vehicleType.message}

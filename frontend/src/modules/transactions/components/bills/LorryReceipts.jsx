@@ -121,7 +121,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
         <div className="grid-item">
           <h2 className="mb20 text-inline">Lorry receipts</h2>
         </div>
-        {lorryReceipts.length > 0 && (
+        {lorryReceipts?.length > 0 && (
           <div className="grid-item">
             <FormControlLabel
               className="groupCheckbox"
@@ -151,12 +151,12 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
       </div>
 
       <form action="" onSubmit={submitHandler} id="lrSelectionForm">
-        {lorryReceipts.length === 0 && (
+        {lorryReceipts?.length === 0 && (
           <p>No lorry receipts found for billing!</p>
         )}
         <div className="bl_lrCheckboxes">
           <FormGroup className="checkboxGroup">
-            {lorryReceipts.length > 0 &&
+            {lorryReceipts?.length > 0 &&
               lorryReceipts.map?.((lr) => (
                 <FormControlLabel
                   className="groupCheckbox"
@@ -202,7 +202,7 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
         sx={{ backgroundColor: "primary.contrastText" }}
         autoHeight
         density="compact"
-        getRowId={(row) => row._id}
+        getRowId={(row) => row._id || Math.random()}
         rows={bill.lrList}
         columns={columns}
         initialState={{

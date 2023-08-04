@@ -168,7 +168,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
           const selectedArticle = articles.filter?.(
             (article) => article._id === updatedTransactionDetail.article
           );
-          if (selectedArticle.length) {
+          if (selectedArticle?.length) {
             updatedTransactionDetail.article = selectedArticle[0].name;
           }
           updatedState.transactions = [
@@ -192,7 +192,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
               article.name === transactionDetail.article
           );
           const updatedDetail = { ...transactionDetail };
-          if (selectedArticle.length) {
+          if (selectedArticle?.length) {
             updatedDetail.article = selectedArticle[0].name;
           }
           updatedState.transactions = [

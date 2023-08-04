@@ -121,11 +121,11 @@ const MoneyTransferAdd = () => {
         } else {
           setHttpError("");
           setBranches(payload?.data);
-          if (payload?.data.length) {
+          if (payload?.data?.length) {
             const filteredBranch = payload?.data.filter?.((branch) => {
               return branch._id === user.branch;
             });
-            if (filteredBranch.length) {
+            if (filteredBranch?.length) {
               setTransaction((currState) => {
                 return {
                   ...currState,
@@ -299,7 +299,7 @@ const MoneyTransferAdd = () => {
     const filteredBranch = branches.filter?.((branch) => {
       return branch._id === user.branch;
     });
-    if (filteredBranch.length) {
+    if (filteredBranch?.length) {
       branch = filteredBranch[0]._id;
     }
     setTransaction(() => {
@@ -502,7 +502,7 @@ const MoneyTransferAdd = () => {
                   value={transaction.branch}
                   onChange={inputChangeHandler}
                 >
-                  {branches.length > 0 &&
+                  {branches?.length > 0 &&
                     branches.map?.((branch) => (
                       <MenuItem
                         key={branch._id}
@@ -601,7 +601,7 @@ const MoneyTransferAdd = () => {
                     value={transaction.lsNo}
                     onChange={inputChangeHandler}
                   >
-                    {loadingSlips.length > 0 &&
+                    {loadingSlips?.length > 0 &&
                       loadingSlips.map?.((ls) => (
                         <MenuItem
                           key={ls._id}
@@ -687,10 +687,10 @@ const MoneyTransferAdd = () => {
             )}
 
             {selectedTab === "transaction" &&
-              customers.length > 0 &&
-              drivers.length > 0 &&
-              employees.length > 0 &&
-              suppliers.length > 0 && (
+              customers?.length > 0 &&
+              drivers?.length > 0 &&
+              employees?.length > 0 &&
+              suppliers?.length > 0 && (
                 <div className="grid-item">
                   <FormControl
                     fullWidth
