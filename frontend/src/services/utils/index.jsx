@@ -10,6 +10,14 @@ export const getToken = () => {
 export const setToken = (token) => {
   return localStorage.setItem("jwt_token", token);
 };
+export const setUserType = (type) => {
+  return localStorage.setItem("type", type);
+};
+
+export const hasSuperAdmin = () => {
+  const userType = localStorage.getItem("type");
+  return userType === "Superadmin";
+};
 const monthNames = [
   "Jan",
   "Feb",

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   addBill,
   fetchBill,
@@ -98,7 +99,9 @@ export const billSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
+        if (hasSuperAdmin()) {
+          state.status = "succeeded";
+        }
         state.branches = payload?.data?.map((branch) => ({
           ...branch,
           label: branch.name,

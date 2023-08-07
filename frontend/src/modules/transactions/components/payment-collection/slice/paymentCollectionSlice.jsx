@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   fetchBranches,
   fetchBanks,
@@ -81,7 +82,9 @@ export const paymentCollectionSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        // state.status = "succeeded";
+        if (hasSuperAdmin()) {
+          state.status = "succeeded";
+        }
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";

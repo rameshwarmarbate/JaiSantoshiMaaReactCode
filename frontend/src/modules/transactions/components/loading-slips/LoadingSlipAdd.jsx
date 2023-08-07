@@ -126,11 +126,11 @@ const LoadingSlipAdd = () => {
   const user = useSelector((state) => state.user);
   const { branches, vehicles, suppliers, places, drivers, customers } =
     useSelector(({ loadingslip }) => loadingslip) || {};
-
+  const { state } = useLocation();
   const [lorryReceipts, setLorryReceipts] = useState([]);
   const [loadingSlip, setLoadingSlip] = useState({
     ...initialState,
-    branch: user.branch,
+    branch: state,
   });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
@@ -156,22 +156,6 @@ const LoadingSlipAdd = () => {
         : setIsLocalMemo(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (user && user.branch) {
-      const filteredBranch = branches.find?.(
-        (branch) => branch._id === user.branch
-      );
-      if (filteredBranch?._id) {
-        setLoadingSlip((currState) => {
-          return {
-            ...currState,
-            branch: filteredBranch,
-          };
-        });
-      }
-    }
-  }, [branches]);
 
   useEffect(() => {
     if (loadingSlip.branch) {

@@ -11,7 +11,7 @@ import { Alert, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser, validateUser } from "@modules/user/slice/userSlice";
 import LoadingSpinner from "@ui-controls/LoadingSpinner";
-import { setToken } from "@services/utils";
+import { setToken, setUserType } from "@services/utils";
 import { removeUser, selectIsLoading } from "../slice/userSlice";
 import { logo } from "../../../assets";
 
@@ -82,8 +82,9 @@ const Login = () => {
           if (payload?.data?.message) {
             setHttpError(payload.data.message);
           } else {
-            const { token } = payload?.data || {};
+            const { token, type } = payload?.data || {};
             setToken(token);
+            setUserType(type);
             dispatch(updateUser(payload?.data));
             setHttpError("");
             if (token) {

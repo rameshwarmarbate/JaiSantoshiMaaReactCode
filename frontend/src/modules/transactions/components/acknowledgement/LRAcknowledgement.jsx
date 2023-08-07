@@ -10,8 +10,6 @@ import {
   IconButton,
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Paper,
   TextField,
@@ -21,7 +19,6 @@ import {
   debounce,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -241,7 +238,6 @@ const LRAcknowledgement = () => {
   ]);
 
   useEffect(() => {
-    setLoading(true);
     if (acknowledgements?.length) {
       const filteredLSList = acknowledgements.filter?.((lr) => lr.associatedLS);
       const lsList = filteredLSList.map?.((lr) => lr.associatedLS);
@@ -249,8 +245,6 @@ const LRAcknowledgement = () => {
 
       dispatch(getLoadingSlipsById(uniqueLSList))
         .then(({ payload = {} }) => {
-          setLoading(false);
-
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
@@ -269,10 +263,7 @@ const LRAcknowledgement = () => {
         })
         .catch((error) => {
           setHttpError(error.message);
-          setLoading(false);
         });
-    } else if (!isSubmitted) {
-      setLoading(false);
     }
   }, [acknowledgements]);
 
@@ -369,7 +360,9 @@ const LRAcknowledgement = () => {
   };
 
   const addAckHandler = () => {
-    navigate("/transactions/lrAcknowledgement/addLRAcknowledgement");
+    navigate("/transactions/lrAcknowledgement/addLRAcknowledgement", {
+      state: selectedBranch?._id,
+    });
   };
 
   return (

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   fetchAllLRAck,
   fetchBranches,
@@ -82,7 +83,9 @@ export const acknowledgeSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        // state.status = "succeeded";
+        if (hasSuperAdmin()) {
+          state.status = "succeeded";
+        }
       })
       .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
@@ -91,8 +94,10 @@ export const acknowledgeSlice = createSlice({
       .addCase(getLRAckWithCount.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getLRAckWithCount.fulfilled, (state) => {
-        state.status = "succeeded";
+      .addCase(getLRAckWithCount.fulfilled, (state, { payload }) => {
+        if (!payload?.data.lorryReceipts?.length) {
+          state.status = "succeeded";
+        }
       })
       .addCase(getLRAckWithCount.rejected, (state) => {
         state.status = "failed";

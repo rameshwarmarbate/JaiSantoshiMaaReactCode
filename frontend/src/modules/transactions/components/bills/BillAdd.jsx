@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   TextField,
   FormControl,
@@ -85,9 +85,12 @@ const BillAdd = () => {
   const isLoading = useSelector(selectIsLoading);
   const { branches, customers } = useSelector(({ bill }) => bill) || {};
   const user = useSelector((state) => state.user);
-
+  const { state } = useLocation();
   const [lorryReceipts, setLorryReceipts] = useState([]);
-  const [bill, setBill] = useState(initialState);
+  const [bill, setBill] = useState({
+    ...initialState,
+    branch: state,
+  });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
   const dispatch = useDispatch();
@@ -121,22 +124,6 @@ const BillAdd = () => {
       });
     }
   }, [httpError]);
-
-  useEffect(() => {
-    if (user && user.branch) {
-      const filteredBranch = branches.find?.(
-        (branch) => branch._id === user.branch
-      );
-      if (filteredBranch?._id) {
-        setBill((currState) => {
-          return {
-            ...currState,
-            branch: filteredBranch,
-          };
-        });
-      }
-    }
-  }, [branches]);
 
   useEffect(() => {
     if (bill.branch && bill.customer) {

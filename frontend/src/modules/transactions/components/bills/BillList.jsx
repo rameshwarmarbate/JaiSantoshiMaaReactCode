@@ -10,8 +10,6 @@ import {
   IconButton,
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
   debounce,
@@ -19,7 +17,6 @@ import {
   InputAdornment,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -303,7 +300,9 @@ const BillList = () => {
   };
 
   const handleAddBill = () => {
-    navigate("/transactions/billList/addBill");
+    navigate("/transactions/billList/addBill", {
+      state: selectedBranch,
+    });
   };
 
   const navigateToEdit = (id) => {

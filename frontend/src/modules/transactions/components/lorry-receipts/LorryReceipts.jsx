@@ -313,7 +313,9 @@ const LorryReceipts = () => {
 
   const handleAddLR = () => {
     if (checkAuth("Sales/Purchase", "LorryReceipt", "write")) {
-      navigate("/transactions/lorryReceipts/addLorryReceipt");
+      navigate("/transactions/lorryReceipts/addLorryReceipt", {
+        state: selectedBranch,
+      });
     }
   };
 
@@ -335,11 +337,8 @@ const LorryReceipts = () => {
     setIsDialogOpen(false);
   };
 
-  const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter?.(
-      (branch) => branch._id === e.target.value
-    );
-    setSelectedBranch(filteredBranch[0]);
+  const branchChangeHandler = (e, value) => {
+    setSelectedBranch(value);
     setPaginationModel({
       page: 0,
       pageSize: 100,

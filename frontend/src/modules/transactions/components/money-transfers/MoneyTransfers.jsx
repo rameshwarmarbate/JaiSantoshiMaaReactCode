@@ -9,8 +9,6 @@ import {
   IconButton,
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
   TextField,
@@ -18,7 +16,6 @@ import {
   debounce,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -237,7 +234,9 @@ const MoneyTransfers = () => {
   };
 
   const handleAddMT = () => {
-    navigate("/transactions/moneyTransfers/addMoneyTransfer");
+    navigate("/transactions/moneyTransfers/addMoneyTransfer", {
+      state: selectedBranch,
+    });
   };
 
   return (

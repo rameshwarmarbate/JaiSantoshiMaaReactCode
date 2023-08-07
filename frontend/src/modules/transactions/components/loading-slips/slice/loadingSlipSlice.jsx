@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   fetchDrivers,
   fetchPlaces,
@@ -193,7 +194,9 @@ export const loadingSlipSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSuppliers.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
+        if (hasSuperAdmin()) {
+          state.status = "succeeded";
+        }
         state.suppliers = payload?.data;
       })
       .addCase(getSuppliers.rejected, (state) => {

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUserData } from "../../../../../services/utils";
+import { getUserData, hasSuperAdmin } from "../../../../../services/utils";
 
 import {
   fetchPlaces,
@@ -246,7 +246,9 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
+        if (hasSuperAdmin()) {
+          state.status = "succeeded";
+        }
         state.places = payload?.data.map?.((place) => {
           return { ...place, label: place.name, value: place.name };
         });

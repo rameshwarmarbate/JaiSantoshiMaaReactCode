@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   TextField,
   FormControl,
@@ -39,8 +39,7 @@ const initialErrorState = {
 
 const LRAcknowledgementAdd = () => {
   const isLoading = useSelector(selectIsLoading);
-  const user = useSelector((state) => state.user);
-
+  const { state } = useLocation();
   const [lorryReceipt, setLorryReceipt] = useState(initialState);
   const [lorryReceipts, setLorryReceipts] = useState([]);
   const [formErrors, setFormErrors] = useState(initialErrorState);
@@ -60,8 +59,8 @@ const LRAcknowledgementAdd = () => {
   useEffect(() => {
     if (getUpdatedLR) {
       let query = {};
-      if (user.branch) {
-        query = { branch: user.branch };
+      if (state) {
+        query = { branch: state };
       }
       dispatch(getAllLRAck(query))
         .then(({ payload = {} }) => {

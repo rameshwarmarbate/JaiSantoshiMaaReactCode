@@ -10,8 +10,6 @@ import {
   IconButton,
   Alert,
   Stack,
-  InputLabel,
-  MenuItem,
   FormControl,
   Button,
   TextField,
@@ -19,7 +17,6 @@ import {
   debounce,
   Autocomplete,
 } from "@mui/material";
-import Select from "@mui/material/Select";
 import EmailIcon from "@mui/icons-material/Email";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -339,7 +336,9 @@ const LoadingSlips = () => {
   };
 
   const handleAddLS = () => {
-    navigate("/transactions/loadingSlips/addLoadingSlip");
+    navigate("/transactions/loadingSlips/addLoadingSlip", {
+      state: selectedBranch,
+    });
   };
 
   const navigateToEdit = (id) => {

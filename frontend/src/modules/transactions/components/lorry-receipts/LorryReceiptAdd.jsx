@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   TextField,
   FormControl,
@@ -163,10 +163,10 @@ const LorryReceiptAdd = () => {
   const { articles, customers, branches, places } = useSelector(
     ({ lorryreceipt }) => lorryreceipt
   );
-
+  const { state } = useLocation();
   const [lorryReceipt, setLorryReceipt] = useState({
     ...initialState,
-    branch: user.branch ? user.branch : branches[0]?._id,
+    branch: state,
   });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
@@ -181,22 +181,14 @@ const LorryReceiptAdd = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (user && user.branch) {
-      const filteredBranch = branches.find?.(
-        (branch) => branch._id === user.branch
-      );
-      const collectAt = places.find?.(
-        ({ _id }) => _id === filteredBranch.place
-      );
-      if (filteredBranch?._id) {
-        setLorryReceipt((currState) => {
-          return {
-            ...currState,
-            branch: filteredBranch,
-            collectAt,
-          };
-        });
-      }
+    const collectAt = places.find?.(({ _id }) => _id === state?.place);
+    if (state?._id) {
+      setLorryReceipt((currState) => {
+        return {
+          ...currState,
+          collectAt,
+        };
+      });
     }
   }, [branches]);
 

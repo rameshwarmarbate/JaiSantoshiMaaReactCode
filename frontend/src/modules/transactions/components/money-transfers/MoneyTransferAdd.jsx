@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   TextField,
   FormControl,
@@ -55,9 +55,12 @@ const initialErrorState = {
 const MoneyTransferAdd = () => {
   const isLoading = useSelector(selectIsLoading);
   const user = useSelector((state) => state.user);
-
+  const { state } = useLocation();
   const [branches, setBranches] = useState([]);
-  const [moneyTransfer, setMoneyTransfer] = useState(initialState);
+  const [moneyTransfer, setMoneyTransfer] = useState({
+    ...initialState,
+    branch: state,
+  });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
   const navigate = useNavigate();
@@ -67,21 +70,6 @@ const MoneyTransferAdd = () => {
     navigate("/transactions/moneyTransfers");
   }, [navigate]);
 
-  useEffect(() => {
-    if (user && user.branch) {
-      const filteredBranch = branches.find?.(
-        (branch) => branch._id === user.branch
-      );
-      if (filteredBranch?._id) {
-        setMoneyTransfer((currState) => {
-          return {
-            ...currState,
-            branch: filteredBranch,
-          };
-        });
-      }
-    }
-  }, [branches]);
   useEffect(() => {
     dispatch(getBranches())
       .then(({ payload = {} }) => {

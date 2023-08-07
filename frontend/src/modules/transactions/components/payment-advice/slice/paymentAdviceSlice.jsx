@@ -156,7 +156,7 @@ export const paymentAdviceSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBankAccounts.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
+        state.status = "succeeded";
         state.bankAccounts = payload?.data;
       })
       .addCase(getBankAccounts.rejected, (state) => {
