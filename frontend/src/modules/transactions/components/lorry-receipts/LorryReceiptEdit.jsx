@@ -334,7 +334,11 @@ const LorryReceiptEdit = () => {
   const submitHandler = (e, isSaveAndPrint, isWithoutAmount = false) => {
     e.preventDefault();
     if (!validateForm(lorryReceipt)) {
-      const updatedLR = { ...lorryReceipt, branch: lorryReceipt?.branch?._id };
+      const updatedLR = {
+        ...lorryReceipt,
+        branch: lorryReceipt?.branch?._id,
+        user: user?.employee?.name || "",
+      };
       if (updatedLR.consignor) {
         updatedLR.consignor = updatedLR.consignor._id;
         updatedLR.consignee = updatedLR.consignee._id;
@@ -1146,7 +1150,6 @@ const LorryReceiptEdit = () => {
                     size="small"
                     name="deliveryType"
                     options={DELIVERY_TYPES}
-                    defaultValue={DELIVERY_TYPES[0]}
                     value={lorryReceipt.deliveryType}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "deliveryType")

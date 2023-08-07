@@ -167,6 +167,7 @@ const LorryReceiptAdd = () => {
   const [lorryReceipt, setLorryReceipt] = useState({
     ...initialState,
     branch: state,
+    deliveryType: DELIVERY_TYPES[0],
   });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
@@ -310,7 +311,11 @@ const LorryReceiptAdd = () => {
         updatedLR.branchCode = updatedLR.branch?.abbreviation || "BRN";
       }
       dispatch(
-        createLorryReceipt({ ...updatedLR, branch: updatedLR?.branch?._id })
+        createLorryReceipt({
+          ...updatedLR,
+          branch: updatedLR?.branch?._id,
+          user: user?.employee?.name || "",
+        })
       )
         .then(({ payload = {} }) => {
           const { message, lrNo } = payload?.data || {};
@@ -1105,7 +1110,6 @@ const LorryReceiptAdd = () => {
                     size="small"
                     name="deliveryType"
                     options={DELIVERY_TYPES}
-                    defaultValue={DELIVERY_TYPES[0]}
                     value={lorryReceipt.deliveryType}
                     disabled
                     onChange={(e, value) =>
