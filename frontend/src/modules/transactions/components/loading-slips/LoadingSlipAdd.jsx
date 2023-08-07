@@ -578,7 +578,7 @@ const LoadingSlipAdd = () => {
                     options={branches}
                     value={loadingSlip.branch || null}
                     onChange={(e, value) =>
-                      autocompleteChangeListener(value, "branch")
+                      autocompleteChangeListener(e, value, "branch")
                     }
                     getOptionLabel={(branch) => branch.name}
                     openOnFocus
@@ -592,6 +592,7 @@ const LoadingSlipAdd = () => {
                       <TextField
                         {...params}
                         label="Branch"
+                        name="branch"
                         error={formErrors.branch.invalid}
                         fullWidth
                       />

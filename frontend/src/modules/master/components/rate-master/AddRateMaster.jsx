@@ -381,12 +381,11 @@ const AddRateMaster = () => {
                   <div className="grid-item">
                     <FormControl fullWidth error={formErrors.article.invalid}>
                       <Autocomplete
-                        freeSolo
                         autoSelect
                         size="small"
                         name="article"
                         options={articles.map?.((article) => article.name)}
-                        value={rateList.article}
+                        value={rateList.article || null}
                         onChange={(e, value) => articleChangeListener(e, value)}
                         openOnFocus
                         renderInput={(params) => (

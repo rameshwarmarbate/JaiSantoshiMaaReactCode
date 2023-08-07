@@ -127,7 +127,7 @@ const BankAccountAdd = () => {
     setBankAccount((currState) => {
       return {
         ...currState,
-        bank: value?._id || "",
+        bank: value,
         ifsc: value?.ifsc || "",
       };
     });
@@ -145,7 +145,9 @@ const BankAccountAdd = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(bankAccount)) {
-      dispatch(createBankAccount(bankAccount))
+      dispatch(
+        createBankAccount({ ...bankAccount, bank: bankAccount.bank?._id })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -164,7 +166,6 @@ const BankAccountAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-
     if (!formData.bank) {
       errors.bank = { invalid: true, message: "Bank is required" };
     }

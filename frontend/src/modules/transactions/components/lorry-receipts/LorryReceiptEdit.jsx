@@ -268,6 +268,9 @@ const LorryReceiptEdit = () => {
               );
               updatedResponse.payMode = PAY_MODE[payModeIndex];
             }
+            updatedResponse.branch = branches?.find?.(
+              ({ _id }) => _id === updatedResponse.branch
+            );
 
             setLorryReceipt(updatedResponse);
           }
@@ -611,6 +614,11 @@ const LorryReceiptEdit = () => {
       return {
         ...currState,
         [name]: option,
+        ...(name === "branch"
+          ? {
+              collectAt: places.find?.(({ _id }) => _id === option?.place),
+            }
+          : {}),
       };
     });
   };
@@ -665,6 +673,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Branch"
+                        name="branch"
                         error={formErrors.branch.invalid}
                         fullWidth
                       />
@@ -765,6 +774,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Consignor"
+                        name="consignor"
                         onChange={(e) => consignorChange(e)}
                         error={formErrors.consignor.invalid}
                         fullWidth
@@ -883,6 +893,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Consignee"
+                        name="consignee"
                         onChange={(e) => consigneeChange(e)}
                         error={formErrors.consignee.invalid}
                         fullWidth
@@ -1138,13 +1149,20 @@ const LorryReceiptEdit = () => {
                     size="small"
                     name="deliveryType"
                     options={DELIVERY_TYPES}
+                    defaultValue={DELIVERY_TYPES[0]}
                     value={lorryReceipt.deliveryType}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "deliveryType")
                     }
+                    disabled
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Delivery type" fullWidth />
+                      <TextField
+                        {...params}
+                        name="deliveryType"
+                        label="Delivery type"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1171,6 +1189,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Pay type"
+                        name="payType"
                         error={formErrors.payType.invalid}
                         fullWidth
                       />
@@ -1198,7 +1217,12 @@ const LorryReceiptEdit = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="To billed" fullWidth />
+                      <TextField
+                        {...params}
+                        name="toBilled"
+                        label="To billed"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1218,7 +1242,12 @@ const LorryReceiptEdit = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Collect at" fullWidth />
+                      <TextField
+                        {...params}
+                        name="collectAt"
+                        label="Collect at"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1238,7 +1267,12 @@ const LorryReceiptEdit = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Service tax by" fullWidth />
+                      <TextField
+                        {...params}
+                        name="serviceTaxBy"
+                        label="Service tax by"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1262,6 +1296,7 @@ const LorryReceiptEdit = () => {
                       <TextField
                         {...params}
                         label="Pay mode"
+                        name="payMode"
                         error={formErrors.payMode.invalid}
                         fullWidth
                       />

@@ -185,11 +185,15 @@ const LorryReceiptAdd = () => {
       const filteredBranch = branches.find?.(
         (branch) => branch._id === user.branch
       );
+      const collectAt = places.find?.(
+        ({ _id }) => _id === filteredBranch.place
+      );
       if (filteredBranch?._id) {
         setLorryReceipt((currState) => {
           return {
             ...currState,
             branch: filteredBranch,
+            collectAt,
           };
         });
       }
@@ -561,6 +565,11 @@ const LorryReceiptAdd = () => {
       return {
         ...currState,
         [name]: option,
+        ...(name === "branch"
+          ? {
+              collectAt: places.find?.(({ _id }) => _id === option?.place),
+            }
+          : {}),
       };
     });
   };
@@ -627,6 +636,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Branch"
+                        name="branch"
                         error={formErrors.branch.invalid}
                         fullWidth
                       />
@@ -728,6 +738,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Consignor"
+                        name="consignor"
                         onChange={(e) => consignorChange(e)}
                         error={formErrors.consignor.invalid}
                         fullWidth
@@ -845,6 +856,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Consignee"
+                        name="consignee"
                         onChange={(e) => consigneeChange(e)}
                         error={formErrors.consignee.invalid}
                         fullWidth
@@ -1101,13 +1113,20 @@ const LorryReceiptAdd = () => {
                     size="small"
                     name="deliveryType"
                     options={DELIVERY_TYPES}
+                    defaultValue={DELIVERY_TYPES[0]}
                     value={lorryReceipt.deliveryType}
+                    disabled
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "deliveryType")
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Delivery type" fullWidth />
+                      <TextField
+                        {...params}
+                        name="deliveryType"
+                        label="Delivery type"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1135,6 +1154,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Pay type"
+                        name="payType"
                         error={formErrors.payType.invalid}
                         fullWidth
                       />
@@ -1163,7 +1183,12 @@ const LorryReceiptAdd = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="To billed" fullWidth />
+                      <TextField
+                        {...params}
+                        name="toBilled"
+                        label="To billed"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1184,7 +1209,12 @@ const LorryReceiptAdd = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Collect at" fullWidth />
+                      <TextField
+                        {...params}
+                        name="collectAt"
+                        label="Collect at"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1205,7 +1235,12 @@ const LorryReceiptAdd = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Service tax by" fullWidth />
+                      <TextField
+                        {...params}
+                        name="serviceTaxBy"
+                        label="Service tax by"
+                        fullWidth
+                      />
                     )}
                   />
                 </FormControl>
@@ -1230,6 +1265,7 @@ const LorryReceiptAdd = () => {
                       <TextField
                         {...params}
                         label="Pay mode"
+                        name="payMode"
                         error={formErrors.payMode.invalid}
                         fullWidth
                       />

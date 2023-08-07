@@ -143,7 +143,13 @@ const VehicleAdd = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validateForm(vehicle)) {
-      dispatch(createVehicle(vehicle))
+      dispatch(
+        createVehicle({
+          ...vehicle,
+          owner: vehicle.owner?._id,
+          vehicleType: vehicle.vehicleType?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -162,13 +168,10 @@ const VehicleAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.owner?.trim?.() === "") {
+    if (!formData.owner) {
       errors.owner = { invalid: true, message: "Supplier is required" };
     }
-    if (
-      !formData.vehicleType ||
-      (formData.vehicleType && formData.vehicleType?.trim?.() === "")
-    ) {
+    if (!formData.vehicleType) {
       errors.vehicleType = {
         invalid: true,
         message: "Vehicle type is required",
@@ -268,7 +271,7 @@ const VehicleAdd = () => {
                       options={suppliers}
                       value={vehicle.owner || null}
                       onChange={(e, value) =>
-                        autocompleteChangeListener(value?._id, "owner")
+                        autocompleteChangeListener(value, "owner")
                       }
                       openOnFocus
                       getOptionLabel={(option) => option.name}
@@ -320,7 +323,7 @@ const VehicleAdd = () => {
                       options={vehicleTypes}
                       value={vehicle.vehicleType || null}
                       onChange={(e, value) =>
-                        autocompleteChangeListener(value?._id, "vehicleType")
+                        autocompleteChangeListener(value, "vehicleType")
                       }
                       openOnFocus
                       getOptionLabel={(option) => option.type}

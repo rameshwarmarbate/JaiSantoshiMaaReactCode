@@ -485,7 +485,6 @@ const EditRateMaster = () => {
                   <div className="grid-item">
                     <FormControl fullWidth error={formErrors.article.invalid}>
                       <Autocomplete
-                        freeSolo
                         autoSelect
                         size="small"
                         name="article"

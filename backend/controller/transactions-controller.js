@@ -353,7 +353,6 @@ const addLorryReceipt = async (req, res, next) => {
                 message: `LorryReceipt with LR no (${lorryReceipt.lrNo}) already exist!`,
               });
             }
-            sendMailToCustomer(data);
             return res.status(200).json({ message: error.message });
           } else {
             // TransactionPrefix.findOneAndUpdate(
@@ -361,6 +360,7 @@ const addLorryReceipt = async (req, res, next) => {
             //   { $inc: { current: 1 } },
             //   { new: true }
             // ).exec();
+            sendMailToCustomer(req.body);
             return res.send(data);
           }
         });
@@ -441,7 +441,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // ).exec();
-                sendMailToCustomer(data);
+                sendMailToCustomer(req.body);
                 return res.send(data);
               }
             });
@@ -516,7 +516,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // ).exec();
-                sendMailToCustomer(data);
+                sendMailToCustomer(req.body);
                 return res.send(data);
               }
             });
@@ -591,7 +591,7 @@ const addLorryReceipt = async (req, res, next) => {
                 //   { $inc: { current: 1 } },
                 //   { new: true }
                 // );
-                sendMailToCustomer(data);
+                sendMailToCustomer(req.body);
                 return res.send(data);
               }
             });
@@ -1424,7 +1424,7 @@ const printLoadingSlip = (req, res) => {
               freight: lsData.totalFreight?.toFixed(2),
               advance: lsData.advance?.toFixed(2),
               rent: lsData.rent?.toFixed(2),
-              totalPayable: lsData.totalPayable?.toFixed(2),
+              totalPayable: (+total + +lsData.totalPayable)?.toFixed(2),
               blankRows: blankRows,
               logo: logo,
               laxmi: laxmi,
@@ -2040,18 +2040,9 @@ const printBill = (req, res) => {
       data.lrList.forEach(async (lorryReceipt) => {
         const foundLR = await LorryReceipt.findById(lorryReceipt._id);
         const _id = lorryReceipt._id;
-        const query = {
-          lrList: {
-            $elemMatch: {
-              _id,
-            },
-          },
-        };
-        const foundChallan = await LoadingSlip.findOne(query);
         const lr = JSON.parse(JSON.stringify(foundLR));
         lr.formattedDate = getFormattedDate(lr.date);
         lr.formattedLRNo = lr.lrNo;
-        lr.challanNo = foundChallan?.lsNo || "-";
         lrList.push(lr);
         if (data.lrList.length === lrList.length) {
           const updatedLRList = [];
@@ -2095,7 +2086,7 @@ const printBill = (req, res) => {
               consigneeName?.length > 15 || article?.length > 15
           );
           const length =
-            22 - (isTwoRowsOccupied ? lrList.length * 2 : lrList.length);
+            24 - (isTwoRowsOccupied ? lrList.length * 2 : lrList.length);
           for (let i = 0; i < length; i = i + 1) {
             blankRows.push({ sr: "-" });
           }

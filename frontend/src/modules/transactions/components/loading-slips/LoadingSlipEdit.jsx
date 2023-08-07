@@ -136,6 +136,9 @@ const LoadingSlipEdit = () => {
   const [loadingSlip, setLoadingSlip] = useState({
     ...initialState,
   });
+  const [fetchedLoadingSlip, setFetchedLoadingSlip] = useState({
+    ...initialState,
+  });
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [httpError, setHttpError] = useState("");
   const [lsLrList, setLsLrList] = useState([]);
@@ -248,6 +251,7 @@ const LoadingSlipEdit = () => {
               ({ _id }) => _id === response.branch
             );
             setLoadingSlip(response);
+            setFetchedLoadingSlip(response);
           }
         })
         .catch((error) => {
@@ -271,7 +275,7 @@ const LoadingSlipEdit = () => {
   }, [lorryReceipts, loadingSlip.lrList]);
 
   const resetButtonHandler = () => {
-    setLoadingSlip(initialState);
+    setLoadingSlip(fetchedLoadingSlip);
     setHttpError("");
     setFormErrors(initialErrorState);
   };
@@ -617,7 +621,7 @@ const LoadingSlipEdit = () => {
                     options={branches}
                     value={loadingSlip.branch || null}
                     onChange={(e, value) =>
-                      autocompleteChangeListener(value, "branch")
+                      autocompleteChangeListener(e, value, "branch")
                     }
                     getOptionLabel={(branch) => branch.name}
                     openOnFocus
@@ -631,6 +635,7 @@ const LoadingSlipEdit = () => {
                       <TextField
                         {...params}
                         label="Branch"
+                        name="branch"
                         error={formErrors.branch.invalid}
                         fullWidth
                       />

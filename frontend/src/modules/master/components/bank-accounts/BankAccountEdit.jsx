@@ -61,11 +61,10 @@ const initialErrorState = {
 };
 
 const accountTypes = [
-  { label: "Current account", value: "Current account" },
-  { label: "Saving account", value: "Saving account" },
-
-  { label: "Recurring account", value: "Recurring account" },
-  { label: "Fixed Deposit / Account", value: "Fixed Deposit / Account" },
+  "Current account",
+  "Saving account",
+  "Recurring account",
+  "Fixed Deposit / Account",
 ];
 
 const BankAccountEdit = () => {
@@ -119,7 +118,10 @@ const BankAccountEdit = () => {
   }, [bankAccountId]);
 
   const resetButtonHandler = () => {
-    setBankAccount(fetchedBankAccount);
+    setBankAccount({
+      ...fetchedBankAccount,
+      bank: banks?.find?.(({ _id }) => fetchedBankAccount?.bank === _id),
+    });
     setHttpError("");
     setFormErrors(initialErrorState);
   };

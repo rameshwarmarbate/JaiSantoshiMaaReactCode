@@ -117,7 +117,13 @@ const VehicleAdd = () => {
   }, []);
 
   const resetButtonHandler = () => {
-    setVehicle(fetchedVehicle);
+    setVehicle({
+      ...fetchedVehicle,
+      owner: suppliers?.find?.(({ _id }) => fetchedVehicle?.owner === _id),
+      vehicleType: vehicleTypes?.find?.(
+        ({ _id }) => fetchedVehicle?.vehicleType === _id
+      ),
+    });
     setHttpError("");
     setFormErrors(initialErrorState);
   };

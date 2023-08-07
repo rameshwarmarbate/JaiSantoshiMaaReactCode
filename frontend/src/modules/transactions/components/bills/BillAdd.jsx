@@ -142,8 +142,8 @@ const BillAdd = () => {
     if (bill.branch && bill.customer) {
       dispatch(
         getLorryReceiptsByConsignor({
-          branch: bill.branch,
-          consignor: bill.customer,
+          branch: bill.branch?._id,
+          consignor: bill.customer?._id,
         })
       )
         .then(({ payload = {} }) => {
@@ -275,7 +275,13 @@ const BillAdd = () => {
   const submitHandler = (e, isSaveAndPrint) => {
     e.preventDefault();
     if (!validateForm(bill)) {
-      dispatch(createBill({ ...bill, branch: bill.branch?._id }))
+      dispatch(
+        createBill({
+          ...bill,
+          branch: bill.branch?._id,
+          customer: bill.customer?._id,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -505,7 +511,7 @@ const BillAdd = () => {
                     options={customers}
                     value={bill.customer || null}
                     onChange={(e, value) =>
-                      autocompleteChangeListener(value?._id, "customer")
+                      autocompleteChangeListener(value, "customer")
                     }
                     getOptionLabel={(customer) => customer.name}
                     openOnFocus
