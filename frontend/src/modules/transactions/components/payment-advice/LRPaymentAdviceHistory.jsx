@@ -21,17 +21,11 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
       field: "lsNo",
       headerName: "Challan no.",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedLSNumber(params.row.lsNo);
-      },
     },
     {
       field: "date",
       headerName: "Date",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
     },
     {
       field: "hire",
@@ -39,9 +33,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return params.row.hire ? (
-          <strong>₹ {params.row.hire?.toFixed?.(2)}</strong>
-        ) : null;
+        return params.row.hire ? <strong>₹ {params.row.hire}</strong> : null;
       },
     },
     {
@@ -51,7 +43,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
       type: "number",
       renderCell: (params) => {
         return params.row.advance ? (
-          <strong>₹ {params.row.advance?.toFixed?.(2)}</strong>
+          <strong>₹ {params.row.advance}</strong>
         ) : null;
       },
     },
@@ -61,9 +53,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return params.row.paid ? (
-          <strong>₹ {params.row.paid?.toFixed?.(2)}</strong>
-        ) : null;
+        return params.row.paid ? <strong>₹ {params.row.paid}</strong> : null;
       },
     },
   ];
@@ -104,10 +94,10 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
         historyList.push?.({
           // _id: "payment_" + 0,
           _id: indexes,
-          date: ls.createdAt,
-          lsNo: ls.lsNo,
-          hire: ls.hire,
-          advance: ls.advance,
+          date: getFormattedDate(new Date(ls.createdAt)),
+          lsNo: getFormattedLSNumber(ls.lsNo),
+          hire: ls.hire?.toFixed?.(2),
+          advance: ls.advance?.toFixed?.(2),
           hamali: ls.hamali,
           commission: ls.commission,
           stacking: ls.stacking,
@@ -119,9 +109,9 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
             const history = {};
             // history._id = "payment_" + (index + 1);
             history._id = indexes;
-            history.date = payment.date;
-            history.lsNo = ls.lsNo;
-            history.paid = payment.paid;
+            history.date = getFormattedDate(new Date(payment.date));
+            history.lsNo = getFormattedLSNumber(ls.lsNo);
+            history.paid = payment.paid?.toFixed?.(2);
             historyList.push?.(history);
           });
         }

@@ -43,32 +43,23 @@ const MoneyTransfers = () => {
       field: "pettyCashNo",
       headerName: "Petty cash no.",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedPettyCashNo(params.row.pettyCashNo);
-      },
     },
     {
       field: "transferToBranch",
       headerName: "Transfer to branch",
       flex: 1,
-      renderCell: (params) => {
-        return getBranchNameById(params.row.transferToBranch);
-      },
     },
     {
       field: "date",
       headerName: "Date",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
     },
     {
       field: "amount",
       headerName: "Amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.amount?.toFixed?.(2)}</strong>;
+        return <strong>₹ {params.row.amount}</strong>;
       },
     },
     {
@@ -147,7 +138,15 @@ const MoneyTransfers = () => {
         if (message) {
           setHttpError(message);
         } else {
-          setMoneyTransfers(payload?.data);
+          setMoneyTransfers(
+            payload?.data?.map?.((money) => ({
+              ...money,
+              amount: money.amount?.toFixed?.(2),
+              date: getFormattedDate(new Date(money.date)),
+              pettyCashNo: getFormattedPettyCashNo(money.pettyCashNo),
+              transferToBranch: getBranchNameById(money.transferToBranch),
+            }))
+          );
         }
       })
       .catch((error) => {

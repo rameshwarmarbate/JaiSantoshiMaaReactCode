@@ -57,9 +57,6 @@ const LorryReceipts = () => {
     {
       field: "date",
       headerName: "Date",
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
       flex: 1,
     },
     {
@@ -81,7 +78,7 @@ const LorryReceipts = () => {
       type: "number",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
+        return <strong>₹ {params.row.total}</strong>;
       },
     },
     {
@@ -212,7 +209,11 @@ const LorryReceipts = () => {
               return {
                 ...currState,
                 isLoading: false,
-                data: payload?.data.lorryReceipts,
+                data: payload?.data.lorryReceipts?.map((lr) => ({
+                  ...lr,
+                  date: getFormattedDate(new Date(lr.date)),
+                  total: lr.total?.toFixed?.(2),
+                })),
                 total: payload?.data.count,
               };
             });

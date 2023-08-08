@@ -69,14 +69,9 @@ const LRAcknowledgement = () => {
       flex: 1,
     },
     {
-      field: "associatedLS.lsNo",
+      field: "lsNo",
       flex: 1,
       headerName: "LS no.",
-      renderCell: (params) => {
-        if (params.row.associatedLS?.lsNo) {
-          return getFormattedLSNumber(params.row.associatedLS.lsNo);
-        }
-      },
     },
     // {
     //   field: "associatedLS",
@@ -107,11 +102,6 @@ const LRAcknowledgement = () => {
       headerName: "Delivered date",
       flex: 1,
       minWidth: 120,
-      renderCell: (params) => {
-        return params.row.deliveryDate
-          ? getFormattedDate(params.row.deliveryDate)
-          : "";
-      },
     },
     { field: "payType", headerName: "Pay mode", maxWidth: 100, flex: 1 },
     {
@@ -121,7 +111,7 @@ const LRAcknowledgement = () => {
       minWidth: 150,
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.total?.toFixed?.(2)}</strong>;
+        return <strong>₹ {params.row.total}</strong>;
       },
     },
     {
@@ -255,6 +245,11 @@ const LRAcknowledgement = () => {
                 (ls) => ls._id === lr.associatedLS
               );
               lr.associatedLS = assoLS;
+              lr.total = lr.total?.toFixed?.(2);
+              lr.deliveryDate = lr.deliveryDate
+                ? getFormattedDate(lr.deliveryDate)
+                : "";
+              lr.lsNo = getFormattedLSNumber(assoLS?.lsNo);
             });
             setPageState((currState) => {
               return { ...currState, data: updatedLR };

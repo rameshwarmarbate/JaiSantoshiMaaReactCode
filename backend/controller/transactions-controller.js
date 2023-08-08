@@ -3225,8 +3225,8 @@ const exportLRChallanDataToXlsx = (data) => {
 
   worksheet.columns = [
     { header: "Sr. no", key: "index" },
-    { header: "LS no.", key: "date" },
-    { header: "Date", key: "formattedDate" },
+    { header: "LS no.", key: "lsNo" },
+    { header: "Date", key: "date" },
     { header: "Vehicle no", key: "vehicleNo" },
     { header: "Driver", key: "driverName" },
     { header: "Driver phone", key: "phone" },

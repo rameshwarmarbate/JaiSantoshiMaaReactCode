@@ -38,12 +38,6 @@ const EmployeeList = () => {
       field: "joiningDate",
       headerName: "Joining date",
       flex: 1,
-      renderCell: (params) => {
-        const formattedDate = params.row.joiningDate
-          ? getFormattedDate(new Date(params.row.joiningDate))
-          : "";
-        return formattedDate;
-      },
     },
     { field: "telephone", headerName: "Telephone", flex: 1 },
     {
@@ -96,7 +90,14 @@ const EmployeeList = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          setEmployees(payload?.data);
+          setEmployees(
+            payload?.data?.map?.((employee) => ({
+              ...employee,
+              joiningDate: employee.joiningDate
+                ? getFormattedDate(new Date(employee.joiningDate))
+                : "",
+            }))
+          );
         }
       })
       .catch(() => {});

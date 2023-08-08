@@ -54,44 +54,29 @@ const LoadingSlips = () => {
     {
       field: "date",
       headerName: "Date",
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.createdAt));
-      },
       flex: 1,
     },
     { field: "vehicleNo", headerName: "Vehicle no.", width: 120, flex: 1 },
     {
       field: "fromName",
       headerName: "From",
-      renderCell: (params) => {
-        return params.row.from?.name;
-      },
       flex: 1,
     },
     {
       field: "toName",
       headerName: "To",
-      renderCell: (params) => {
-        return params.row.to?.name;
-      },
       flex: 1,
     },
     {
       field: "totalFreight",
       headerName: "Hire amount",
-      type: "number",
-      renderCell: (params) => {
-        return <strong>₹ {params.row.totalFreight?.toFixed?.(2)}</strong>;
-      },
+
       flex: 1,
     },
     {
       field: "totalPayable",
       headerName: "Balance",
-      type: "number",
-      renderCell: (params) => {
-        return <strong>₹ {params.row.totalPayable?.toFixed?.(2)}</strong>;
-      },
+
       flex: 1,
     },
     {
@@ -221,9 +206,12 @@ const LoadingSlips = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedLS = payload?.data.loadingSlips.filter?.(
-            (ls) => !ls.isLocalMemo
-          );
+          const updatedLS = payload?.data.loadingSlips.filter?.((ls) => {
+            ls.date = getFormattedDate(new Date(ls.createdAt));
+            ls.totalFreight = ls.totalFreight?.toFixed?.(2);
+            ls.totalPayable = ls.totalPayable?.toFixed?.(2);
+            return !ls.isLocalMemo;
+          });
           setLoadingSlips(updatedLS);
           setPageState((currState) => {
             return {

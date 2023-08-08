@@ -23,9 +23,6 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
       field: "date",
       headerName: "Date",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
     },
     {
       field: "amount",
@@ -34,7 +31,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
       type: "number",
       renderCell: (params) => {
         return params.row.amount ? (
-          <strong>₹ {params.row.amount?.toFixed?.(2)}</strong>
+          <strong>₹ {params.row.amount}</strong>
         ) : null;
       },
     },
@@ -44,9 +41,7 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return params.row.paid ? (
-          <strong>₹ {params.row.paid?.toFixed?.(2)}</strong>
-        ) : null;
+        return params.row.paid ? <strong>₹ {params.row.paid}</strong> : null;
       },
     },
     {
@@ -138,8 +133,9 @@ const BillPaymentAdviceHistory = ({ supplierBills }) => {
             const history = {};
             // history._id = "payment_" + (index + 1);
             history._id = indexes;
-            history.date = payment.date;
-            history.paid = payment.paid;
+            history.date = getFormattedDate(new Date(payment.date));
+            history.paid = payment.paid?.toFixed?.(2);
+            history.amount = payment.amount?.toFixed?.(2);
             history.payMode = payment.payMode;
             history.chequeNo = payment.chequeNo ? payment.chequeNo : "-";
             history.chequeDate = payment.chequeDate

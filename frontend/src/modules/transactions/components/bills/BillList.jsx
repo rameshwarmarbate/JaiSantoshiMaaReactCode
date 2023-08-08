@@ -51,34 +51,23 @@ const BillList = () => {
       field: "billNo",
       headerName: "Bill no.",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedLSNumber(params.row.billNo);
-      },
     },
     {
       field: "date",
       headerName: "Date",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
     },
     {
       field: "customer",
       headerName: "Customer",
       flex: 1,
-      renderCell: (params) => {
-        return params.row.customer?.name
-          ? params.row.customer.name
-          : params.row.customer;
-      },
     },
     {
       field: "total",
       headerName: "Bill amount",
       flex: 1,
       renderCell: (params) => {
-        return <strong>₹ {params.row.grandTotal?.toFixed?.(2)}</strong>;
+        return <strong>₹ {params.row.total}</strong>;
       },
     },
     {
@@ -209,7 +198,15 @@ const BillList = () => {
                 return {
                   ...currState,
                   isLoading: false,
-                  data: payload?.data.bills,
+                  data: payload?.data.bills?.map?.((bill) => ({
+                    ...bill,
+                    billNo: getFormattedLSNumber(bill.billNo),
+                    date: getFormattedDate(new Date(bill.date)),
+                    customer: bill.customer?.name
+                      ? bill.customer.name
+                      : bill.customer,
+                    total: bill.grandTotal?.toFixed?.(2),
+                  })),
                   total: payload?.data.count,
                 };
               });

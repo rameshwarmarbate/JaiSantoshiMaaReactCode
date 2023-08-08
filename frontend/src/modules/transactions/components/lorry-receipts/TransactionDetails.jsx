@@ -466,7 +466,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
         onSubmit={submitHandler}
         className="mb20"
       >
-        <div className="grid grid-7-col">
+        <div className="grid grid-8-col">
           <div className="grid-item">
             <FormControl
               fullWidth

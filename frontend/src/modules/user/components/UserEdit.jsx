@@ -371,7 +371,7 @@ const UserEdit = () => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="User Type"
+                              label="Employee"
                               error={formErrors.employee.invalid}
                               fullWidth
                             />

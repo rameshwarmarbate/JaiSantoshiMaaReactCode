@@ -50,27 +50,16 @@ const QuotationList = () => {
       field: "quotationNo",
       headerName: "Quotation no.",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedLSNumber(params.row.quotationNo);
-      },
     },
     {
       field: "date",
       headerName: "Date",
       flex: 1,
-      renderCell: (params) => {
-        return getFormattedDate(new Date(params.row.date));
-      },
     },
     {
       field: "customer",
       headerName: "Customer",
       flex: 1,
-      renderCell: (params) => {
-        return params.row.customer?.name
-          ? params.row.customer.name
-          : params.row.customer;
-      },
     },
     {
       field: "actions",
@@ -152,7 +141,16 @@ const QuotationList = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          setQuotations(payload?.data);
+          setQuotations(
+            payload?.data?.map?.((quot) => ({
+              ...quot,
+              date: getFormattedDate(new Date(quot.date)),
+              quotationNo: getFormattedLSNumber(quot.quotationNo),
+              customer: quot.customer?.name
+                ? quot.customer.name
+                : quot.customer,
+            }))
+          );
         }
       })
       .catch(() => {
