@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -178,44 +178,48 @@ const BillList = () => {
       });
   }, []);
 
+  const fetchData = () => {
+    const requestObject = {
+      branch: selectedBranch._id,
+      pagination: {
+        limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
+        page: paginationModel.page + 1,
+      },
+    };
+    dispatch(getBills(requestObject))
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          if (payload?.data.bills) {
+            setPageState((currState) => {
+              return {
+                ...currState,
+                isLoading: false,
+                data: payload?.data.bills?.map?.((bill) => ({
+                  ...bill,
+                  billNo: getFormattedLSNumber(bill.billNo),
+                  date: getFormattedDate(new Date(bill.date)),
+                  customer: bill.customer?.name
+                    ? bill.customer.name
+                    : bill.customer,
+                  total: bill.grandTotal?.toFixed?.(2),
+                })),
+                total: payload?.data.count,
+              };
+            });
+          }
+        }
+      })
+      .catch((error) => {
+        setHttpError(error.message);
+      });
+  };
+
   useEffect(() => {
     if (selectedBranch?._id) {
-      const requestObject = {
-        branch: selectedBranch._id,
-        pagination: {
-          limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
-          page: paginationModel.page + 1,
-        },
-      };
-      dispatch(getBills(requestObject))
-        .then(({ payload = {} }) => {
-          const { message } = payload?.data || {};
-          if (message) {
-            setHttpError(message);
-          } else {
-            if (payload?.data.bills) {
-              setPageState((currState) => {
-                return {
-                  ...currState,
-                  isLoading: false,
-                  data: payload?.data.bills?.map?.((bill) => ({
-                    ...bill,
-                    billNo: getFormattedLSNumber(bill.billNo),
-                    date: getFormattedDate(new Date(bill.date)),
-                    customer: bill.customer?.name
-                      ? bill.customer.name
-                      : bill.customer,
-                    total: bill.grandTotal?.toFixed?.(2),
-                  })),
-                  total: payload?.data.count,
-                };
-              });
-            }
-          }
-        })
-        .catch((error) => {
-          setHttpError(error.message);
-        });
+      fetchData();
     }
   }, [selectedBranch, paginationModel.page, paginationModel.pageSize]);
 
@@ -287,6 +291,7 @@ const BillList = () => {
             setHttpError(message);
           }
           setIsDialogOpen(false);
+          fetchData();
         })
         .catch((error) => {
           setHttpError(error.message);

@@ -1,6 +1,6 @@
+import React from "react";
 import Divider from "@mui/material/Divider";
 import classes from "./Footer.module.css";
-
 const Footer = () => {
   return (
     <footer className={classes.mainFooter}>

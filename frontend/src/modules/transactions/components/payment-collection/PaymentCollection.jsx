@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
@@ -307,59 +307,63 @@ const PaymentCollection = () => {
     }
   }, [selectedBranch]);
 
+  const fetchData = () => {
+    dispatch(
+      getBillsByCustomer({
+        customer: selectedCustomer?._id,
+        branch: selectedBranch?._id,
+      })
+    )
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          setHttpError("");
+          const bills = payload?.data.map?.((bill) => {
+            const received = bill.paymentCollection.reduce?.(
+              (total, payment) => {
+                return total + payment.receive;
+              },
+              0
+            );
+            return {
+              ...bill,
+              receive: "",
+              received: received,
+              balance: bill.total - received,
+              field: <TextField />,
+            };
+          });
+          setBills(bills);
+
+          let totalReceivable = 0;
+          let totalReceived = 0;
+
+          bills.forEach?.((bill) => {
+            totalReceivable += +bill.total;
+            totalReceived += +bill.received;
+          });
+
+          setPaymentCollection((currState) => {
+            return {
+              ...currState,
+              totalReceivable: totalReceivable,
+              totalReceived: totalReceived,
+            };
+          });
+        }
+      })
+      .catch(() => {
+        setHttpError(
+          "Something went wrong! Please try later or contact Administrator."
+        );
+      });
+  };
+
   useEffect(() => {
     if (selectedCustomer && selectedBranch) {
-      dispatch(
-        getBillsByCustomer({
-          customer: selectedCustomer?._id,
-          branch: selectedBranch?._id,
-        })
-      )
-        .then(({ payload = {} }) => {
-          const { message } = payload?.data || {};
-          if (message) {
-            setHttpError(message);
-          } else {
-            setHttpError("");
-            const bills = payload?.data.map?.((bill) => {
-              const received = bill.paymentCollection.reduce?.(
-                (total, payment) => {
-                  return total + payment.receive;
-                },
-                0
-              );
-              return {
-                ...bill,
-                receive: "",
-                received: received,
-                balance: bill.total - received,
-                field: <TextField />,
-              };
-            });
-            setBills(bills);
-
-            let totalReceivable = 0;
-            let totalReceived = 0;
-
-            bills.forEach?.((bill) => {
-              totalReceivable += +bill.total;
-              totalReceived += +bill.received;
-            });
-
-            setPaymentCollection((currState) => {
-              return {
-                ...currState,
-                totalReceivable: totalReceivable,
-                totalReceived: totalReceived,
-              };
-            });
-          }
-        })
-        .catch(() => {
-          setHttpError(
-            "Something went wrong! Please try later or contact Administrator."
-          );
-        });
+      fetchData();
     }
   }, [selectedCustomer, selectedBranch]);
 
@@ -463,9 +467,9 @@ const PaymentCollection = () => {
           } else {
             setHttpError("");
             setFormErrors(initialErrorState);
-            setBills([]);
+            fetchData();
             setPaymentCollection(initialState);
-            setSelectedCustomer("");
+            // setSelectedCustomer("");
           }
         })
         .catch((error) => {

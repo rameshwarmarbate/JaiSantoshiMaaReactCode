@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -430,7 +430,7 @@ const EditRateMaster = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
-        <h1 className="pageHead">Update rate master</h1>
+        <h1 className="pageHead">Edit rates</h1>
         {httpError !== "" && (
           <Stack
             sx={{

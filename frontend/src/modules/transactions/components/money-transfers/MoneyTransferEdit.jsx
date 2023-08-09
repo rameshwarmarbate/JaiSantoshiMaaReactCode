@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -230,7 +230,7 @@ const MoneyTransferEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Update a money transfer</h1>
+      <h1 className="pageHead">Edit a money transfer</h1>
       <div className="inner-wrap">
         {httpError !== "" && (
           <Stack

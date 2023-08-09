@@ -1,3 +1,4 @@
+import React from "react";
 import { FiUsers, FiCreditCard, FiEdit, FiList } from "react-icons/fi";
 const navItems = [
   {

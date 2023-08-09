@@ -1,7 +1,7 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import { Footer, Navigation, Header } from "..";
 import classes from "./Layout.module.css";
-
 const Layout = (props) => {
   const user = useSelector((state) => state.user);
   return (

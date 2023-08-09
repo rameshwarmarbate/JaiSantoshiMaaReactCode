@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -585,7 +585,7 @@ const LoadingSlipEdit = () => {
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
         <h1 className="pageHead">
-          {isLocalMemo ? "Update a local challan" : "Update a challan"}
+          {isLocalMemo ? "Edit a local challan" : "Edit a challan"}
         </h1>
         {httpError !== "" && (
           <Stack

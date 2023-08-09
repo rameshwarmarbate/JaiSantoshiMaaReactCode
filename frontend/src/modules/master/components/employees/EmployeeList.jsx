@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -204,7 +204,7 @@ const EmployeeList = () => {
               className="ml6"
               onClick={handleAddEmployee}
             >
-              Add a employee
+              Add an employee
             </Button>
           </div>
         </div>

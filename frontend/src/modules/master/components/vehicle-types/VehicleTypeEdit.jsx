@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -133,7 +133,7 @@ const VehicleTypeEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Add an article</h1>
+      <h1 className="pageHead">Edit a vehicle type</h1>
       <div className="inner-wrap">
         {httpError !== "" && (
           <Stack
@@ -195,7 +195,7 @@ const VehicleTypeEdit = () => {
                 size="medium"
                 onClick={cancelButtonHandler}
               >
-                Cancel
+                Back
               </Button>
               <Button
                 variant="outlined"

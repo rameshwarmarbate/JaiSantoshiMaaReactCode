@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -438,7 +438,7 @@ const BillEdit = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
-        <h1 className="pageHead">Update a bill</h1>
+        <h1 className="pageHead">Edit a bill</h1>
         {httpError !== "" && (
           <Stack
             sx={{

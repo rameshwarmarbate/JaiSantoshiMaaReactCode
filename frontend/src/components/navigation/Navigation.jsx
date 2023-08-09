@@ -1,10 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useResolvedPath } from "react-router-dom";
 import { useSelector } from "react-redux";
 import classes from "./Navigation.module.css";
 import navItems from "./navList";
 import { arrow, arrowDown } from "../../assets";
-import { useEffect, useState } from "react";
-
 const Navigation = () => {
   const user = useSelector((state) => state.user);
   return (

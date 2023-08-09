@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -150,7 +150,7 @@ const LRAcknowledgementEdit = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
-        <h1 className="pageHead">Update a lorry receipt acknowledgement</h1>
+        <h1 className="pageHead">Edit a lorry receipt acknowledgement</h1>
         {httpError !== "" && (
           <Stack
             sx={{

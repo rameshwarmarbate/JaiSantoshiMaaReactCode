@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -213,7 +213,7 @@ const EmployeeEdit = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
-        <h1 className="pageHead">Edit a employee</h1>
+        <h1 className="pageHead">Edit an employee</h1>
         {httpError !== "" && (
           <Stack
             sx={{
@@ -450,7 +450,7 @@ const EmployeeEdit = () => {
                 size="medium"
                 onClick={cancelButtonHandler}
               >
-                Cancel
+                Back
               </Button>
               <Button
                 variant="outlined"

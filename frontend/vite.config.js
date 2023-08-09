@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import mdx from "@mdx-js/rollup";
+import pluginRewriteAll from "vite-plugin-rewrite-all";
 
 export default defineConfig({
   plugins: [
@@ -10,6 +11,7 @@ export default defineConfig({
       jsxImportSource: "@emotion/react",
       jsxRuntime: "classic",
     }),
+    pluginRewriteAll(),
   ],
   resolve: {
     alias: [

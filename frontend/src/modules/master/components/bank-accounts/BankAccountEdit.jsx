@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   TextField,
@@ -251,7 +251,7 @@ const BankAccountEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Add a bank account</h1>
+      <h1 className="pageHead">Edit a bank account</h1>
       {httpError !== "" && (
         <Stack
           sx={{
@@ -432,7 +432,7 @@ const BankAccountEdit = () => {
               size="medium"
               onClick={backButtonHandler}
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="outlined"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -627,7 +627,7 @@ const LorryReceiptEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Update a lorry receipt</h1>
+      <h1 className="pageHead">Edit a lorry receipt</h1>
       <div className="inner-wrap">
         {httpError !== "" && (
           <Stack

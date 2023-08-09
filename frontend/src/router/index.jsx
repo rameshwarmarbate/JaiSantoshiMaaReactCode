@@ -1,8 +1,7 @@
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
 import Welcome from "../modules/home/Welcome";
-
 const UserList = lazy(() => import("../modules/user/components/UsersList"));
 const UserRegistration = lazy(() =>
   import("../modules/user/components/UserRegistration")

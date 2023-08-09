@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -198,7 +198,7 @@ const QuotationEdit = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <h1 className="pageHead">Update a quotation</h1>
+      <h1 className="pageHead">Edit a quotation</h1>
       <div className="inner-wrap">
         {httpError !== "" && (
           <Stack

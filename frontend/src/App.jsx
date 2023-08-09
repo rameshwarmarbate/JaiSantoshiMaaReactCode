@@ -1,3 +1,4 @@
+import React from "react";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -8,7 +9,6 @@ import { Layout } from "./components";
 import "./style/index.css";
 import "./style/responsive.css";
 import { BrowserRouter } from "react-router-dom";
-
 function App() {
   const theme = createTheme({
     typography: {
