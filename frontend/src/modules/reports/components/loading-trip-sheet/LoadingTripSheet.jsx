@@ -151,7 +151,7 @@ const LoadingTripSheet = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLS = payload?.data.loadingSlips.map?.((ls) => {
+            const updatedLS = payload?.data.loadingSlips?.map?.((ls) => {
               return {
                 ...ls,
                 date: getFormattedDate(new Date(ls.date)),
@@ -162,7 +162,7 @@ const LoadingTripSheet = () => {
               return {
                 ...currState,
                 isLoading: false,
-                data: updatedLS,
+                data: updatedLS || [],
                 total: payload?.data.count,
               };
             });

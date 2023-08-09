@@ -212,61 +212,63 @@ const LRPaymentAdvice = ({
   const { branches: bankAccounts, banks } =
     useSelector(({ paymentadvice }) => paymentadvice) || {};
 
+  const fetchData = () => {
+    dispatch(
+      getLoadingSlipsBySupplier({
+        supplier: selectedSupplier,
+        branch: user.branch,
+      })
+    )
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          setHttpError("");
+          if (places?.length) {
+            let outstanding = 0;
+            let paid = 0;
+            const updatedResponse = payload?.data?.map?.((ls) => {
+              const from = places.filter?.((place) => place._id === ls.from)[0];
+              const to = places.filter?.((place) => place._id === ls.to)[0];
+              ls.from = from?.name;
+              ls.to = to?.name;
+              ls.suppPay = 0;
+              ls.paid = false;
+              ls.paidToSupp = ls.supplierPayments?.reduce?.(
+                (total, payment) => {
+                  return total + payment.paid;
+                },
+                0
+              );
+              outstanding =
+                outstanding + ls.totalFreight + ls.advance - ls.rent;
+              paid = paid + ls.paidToSupp;
+              return ls;
+            });
+            setPayments((currState) => {
+              return {
+                ...currState,
+                outstanding: outstanding,
+                totalPaid: paid,
+              };
+            });
+            setSupplierLS(updatedResponse);
+          } else {
+            setSupplierLS(payload?.data);
+          }
+        }
+      })
+      .catch(() => {
+        setHttpError(
+          "Something went wrong! Please try later or contact Administrator."
+        );
+      });
+  };
+
   useEffect(() => {
     if (selectedSupplier && selectedSupplierType) {
-      dispatch(
-        getLoadingSlipsBySupplier({
-          supplier: selectedSupplier,
-          branch: user.branch,
-        })
-      )
-        .then(({ payload = {} }) => {
-          const { message } = payload?.data || {};
-          if (message) {
-            setHttpError(message);
-          } else {
-            setHttpError("");
-            if (places?.length) {
-              let outstanding = 0;
-              let paid = 0;
-              const updatedResponse = payload?.data?.map?.((ls) => {
-                const from = places.filter?.(
-                  (place) => place._id === ls.from
-                )[0];
-                const to = places.filter?.((place) => place._id === ls.to)[0];
-                ls.from = from?.name;
-                ls.to = to?.name;
-                ls.suppPay = 0;
-                ls.paid = false;
-                ls.paidToSupp = ls.supplierPayments?.reduce?.(
-                  (total, payment) => {
-                    return total + payment.paid;
-                  },
-                  0
-                );
-                outstanding =
-                  outstanding + ls.totalFreight + ls.advance - ls.rent;
-                paid = paid + ls.paidToSupp;
-                return ls;
-              });
-              setPayments((currState) => {
-                return {
-                  ...currState,
-                  outstanding: outstanding,
-                  totalPaid: paid,
-                };
-              });
-              setSupplierLS(updatedResponse);
-            } else {
-              setSupplierLS(payload?.data);
-            }
-          }
-        })
-        .catch(() => {
-          setHttpError(
-            "Something went wrong! Please try later or contact Administrator."
-          );
-        });
+      fetchData();
     }
     if (!selectedSupplier || !selectedSupplierType) {
       setSupplierLS([]);
@@ -355,8 +357,8 @@ const LRPaymentAdvice = ({
             setHttpError(message);
           } else {
             setHttpError("");
-            setSupplierLS([]);
-            setSelectedSupplier("");
+            fetchData();
+            // setSelectedSupplier("");
           }
           setPayments(initialState);
         })
