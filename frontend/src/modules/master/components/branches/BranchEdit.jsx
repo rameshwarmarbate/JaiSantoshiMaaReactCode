@@ -351,7 +351,7 @@ const BranchEdit = () => {
               size="medium"
               onClick={cancelButtonHandler}
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="outlined"
