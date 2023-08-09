@@ -183,7 +183,7 @@ const SupplierBillList = ({
         if (message) {
           setHttpError(message);
         } else {
-          const updatedAccounts = payload?.data.map?.((account) => {
+          const updatedAccounts = payload?.data?.map?.((account) => {
             return {
               ...account,
               label: account.accountNo,
@@ -213,8 +213,8 @@ const SupplierBillList = ({
             setHttpError("");
             let outstanding = 0;
             let paid = 0;
-            const updatedResponse = payload?.data.map?.((bill) => {
-              const totalPaid = bill.payments.reduce?.((total, payment) => {
+            const updatedResponse = payload?.data?.map?.((bill) => {
+              const totalPaid = bill.payments?.reduce?.((total, payment) => {
                 return total + payment.paid;
               }, 0);
               bill.paid = false;
@@ -222,7 +222,7 @@ const SupplierBillList = ({
               bill.suppPay = 0;
               bill.balance = bill.amount - totalPaid;
               outstanding = outstanding + bill.amount;
-              bill.paidToSupp = bill.payments.reduce?.((total, payment) => {
+              bill.paidToSupp = bill.payments?.reduce?.((total, payment) => {
                 return total + payment.paid;
               }, 0);
               paid = paid + bill.paidToSupp;
@@ -250,9 +250,9 @@ const SupplierBillList = ({
 
   const submitHandler = (e) => {
     e.preventDefault();
-    const billsForPay = supplierBills.filter?.((ls) => ls.paid);
+    const billsForPay = supplierBills?.filter?.((ls) => ls.paid);
     if (!validateForm(payments)) {
-      const filteredBills = billsForPay.map?.((bill) => {
+      const filteredBills = billsForPay?.map?.((bill) => {
         return {
           _id: bill._id,
           payment: {
@@ -277,8 +277,8 @@ const SupplierBillList = ({
               setHttpError(message);
             } else {
               setHttpError("");
-              const updatedResponse = payload?.data.map?.((bill) => {
-                const totalPaid = bill.payments.reduce?.((total, payment) => {
+              const updatedResponse = payload?.data?.map?.((bill) => {
+                const totalPaid = bill.payments?.reduce?.((total, payment) => {
                   return total + payment.paid;
                 }, 0);
                 bill.totalPaid = totalPaid;
@@ -301,7 +301,7 @@ const SupplierBillList = ({
   useEffect(() => {
     if (payments.jsmBank && payments.jsmBank._id) {
       setAccountsByBank(() => {
-        return bankAccounts.filter?.((acc) => {
+        return bankAccounts?.filter?.((acc) => {
           return acc.bank === payments.jsmBank._id;
         });
       });
@@ -327,7 +327,7 @@ const SupplierBillList = ({
     const value = e.target.value;
     setSupplierBills((currState) => {
       const updatedState = [...currState];
-      updatedState.forEach?.((bill) => {
+      updatedState?.forEach?.((bill) => {
         if (bill._id === name) {
           if (value === "0" || value === "") {
             bill.suppPay = +value;
@@ -340,7 +340,7 @@ const SupplierBillList = ({
       });
       return updatedState;
     });
-    const paidToday = supplierBills.reduce?.(
+    const paidToday = supplierBills?.reduce?.(
       (acc, bill) => (bill.suppPay ? +acc + +bill.suppPay : acc),
       0
     );

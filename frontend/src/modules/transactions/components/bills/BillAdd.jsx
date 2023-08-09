@@ -138,15 +138,17 @@ const BillAdd = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLR = payload?.data.filter?.((lr) => !lr.billGenerated);
-            updatedLR.forEach?.((lr) => {
+            const updatedLR = payload?.data?.filter?.(
+              (lr) => !lr.billGenerated
+            );
+            updatedLR?.forEach?.((lr) => {
               lr.checked = false;
               lr.consignor =
-                customers.filter?.(
+                customers?.filter?.(
                   (customer) => customer._id === lr.consignor
                 )[0] || "";
               lr.consignee =
-                customers.filter?.(
+                customers?.filter?.(
                   (customer) => customer._id === lr.consignee
                 )[0] || "";
             });
@@ -169,7 +171,7 @@ const BillAdd = () => {
 
   useEffect(() => {
     let totalFreight = 0;
-    bill.lrList.forEach?.((lr) => {
+    bill.lrList?.forEach?.((lr) => {
       totalFreight += +lr.total;
     });
 
@@ -219,7 +221,7 @@ const BillAdd = () => {
   ]);
 
   useEffect(() => {
-    const totalFreight = bill.lrList.reduce?.(
+    const totalFreight = bill.lrList?.reduce?.(
       (acc, item) => acc + item.total,
       0
     );
@@ -387,7 +389,7 @@ const BillAdd = () => {
   };
 
   const setLRForBill = () => {
-    const selectedLR = lorryReceipts.filter?.((lr) => lr.checked);
+    const selectedLR = lorryReceipts?.filter?.((lr) => lr.checked);
     setBill((currState) => {
       return {
         ...currState,

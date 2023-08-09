@@ -56,7 +56,7 @@ const LorryReceiptAdd = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedLR = payload?.data.map?.((lr) => {
+          const updatedLR = payload?.data?.map?.((lr) => {
             return { ...lr, label: lr.lrNo, value: lr.lrNo };
           });
           setLorryReceipts(updatedLR);

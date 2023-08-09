@@ -108,7 +108,7 @@ const BankAccountAdd = () => {
       };
     });
     if (name === "bank") {
-      const selectedBank = banks.filter?.((bank) => bank._id === value);
+      const selectedBank = banks?.filter?.((bank) => bank._id === value);
       if (selectedBank?.length) {
         setBankAccount((currState) => {
           return {

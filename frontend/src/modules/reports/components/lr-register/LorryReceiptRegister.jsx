@@ -106,7 +106,7 @@ const LorryReceiptRegister = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedCustomers = payload?.data.map?.((customer) => {
+          const updatedCustomers = payload?.data?.map?.((customer) => {
             return {
               ...customer,
               label: customer.name,
@@ -128,7 +128,7 @@ const LorryReceiptRegister = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -177,15 +177,15 @@ const LorryReceiptRegister = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLR = payload?.data.lorryReceipts.map?.((lr) => {
+            const updatedLR = payload?.data.lorryReceipts?.map?.((lr) => {
               return {
                 ...lr,
                 date: getFormattedDate(new Date(lr.date)),
                 totalWeight: lr.transactions
-                  .reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
+                  ?.reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
                   ?.toFixed?.(2),
                 totalArticles: lr.transactions
-                  .reduce?.((acc, lr) => acc + lr.articleNo, 0)
+                  ?.reduce?.((acc, lr) => acc + lr.articleNo, 0)
                   ?.toFixed?.(2),
               };
             });

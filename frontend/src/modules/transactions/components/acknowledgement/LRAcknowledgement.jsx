@@ -173,7 +173,7 @@ const LRAcknowledgement = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -229,8 +229,10 @@ const LRAcknowledgement = () => {
 
   useEffect(() => {
     if (acknowledgements?.length) {
-      const filteredLSList = acknowledgements.filter?.((lr) => lr.associatedLS);
-      const lsList = filteredLSList.map?.((lr) => lr.associatedLS);
+      const filteredLSList = acknowledgements?.filter?.(
+        (lr) => lr.associatedLS
+      );
+      const lsList = filteredLSList?.map?.((lr) => lr.associatedLS);
       const uniqueLSList = [...new Set(lsList)];
 
       dispatch(getLoadingSlipsById(uniqueLSList))
@@ -240,8 +242,8 @@ const LRAcknowledgement = () => {
             setHttpError(message);
           } else {
             const updatedLR = acknowledgements;
-            updatedLR.forEach?.((lr) => {
-              const assoLS = payload?.data.find?.(
+            updatedLR?.forEach?.((lr) => {
+              const assoLS = payload?.data?.find?.(
                 (ls) => ls._id === lr.associatedLS
               );
               lr.associatedLS = assoLS;
@@ -265,7 +267,7 @@ const LRAcknowledgement = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);

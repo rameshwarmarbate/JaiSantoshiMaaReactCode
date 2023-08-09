@@ -100,7 +100,7 @@ const AddRateMaster = () => {
   }, [navigate]);
 
   const deleteRate = (id) => {
-    const updatedRates = rateList.rates.filter?.((rate) => rate._id !== id);
+    const updatedRates = rateList.rates?.filter?.((rate) => rate._id !== id);
     setRateList((currState) => {
       return {
         ...currState,
@@ -117,7 +117,7 @@ const AddRateMaster = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedPlaces = payload?.data.map?.((place) => {
+          const updatedPlaces = payload?.data?.map?.((place) => {
             return { ...place, label: place.name, value: place.name };
           });
           setPlaces(updatedPlaces);
@@ -134,7 +134,7 @@ const AddRateMaster = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedArticles = payload?.data.map?.((article) => {
+          const updatedArticles = payload?.data?.map?.((article) => {
             return { ...article, label: article.name, value: article.name };
           });
           setArticles(updatedArticles);
@@ -151,7 +151,7 @@ const AddRateMaster = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedResponse = payload?.data.map?.((customer) => {
+          const updatedResponse = payload?.data?.map?.((customer) => {
             return {
               ...customer,
               label: customer.name,
@@ -182,7 +182,7 @@ const AddRateMaster = () => {
     if (!validateForm(rateList)) {
       const updatedRateList = rateList;
       updatedRateList.customer = updatedRateList.customer._id;
-      updatedRateList.rates.forEach?.((rate) => {
+      updatedRateList.rates?.forEach?.((rate) => {
         rate.station = rate.station._id;
         delete rate._id;
       });
@@ -384,7 +384,7 @@ const AddRateMaster = () => {
                         autoSelect
                         size="small"
                         name="article"
-                        options={articles.map?.((article) => article.name)}
+                        options={articles?.map?.((article) => article.name)}
                         value={rateList.article || null}
                         onChange={(e, value) => articleChangeListener(e, value)}
                         openOnFocus

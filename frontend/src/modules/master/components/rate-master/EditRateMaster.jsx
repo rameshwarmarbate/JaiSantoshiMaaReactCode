@@ -116,8 +116,8 @@ const EditRateMaster = () => {
             setHttpError(message);
           } else {
             setRateList((currState) => {
-              const rates = payload?.data.rates.map?.((rate) => {
-                const station = places.find?.(
+              const rates = payload?.data.rates?.map?.((rate) => {
+                const station = places?.find?.(
                   (place) => place._id === rate.station
                 );
                 return {
@@ -148,7 +148,7 @@ const EditRateMaster = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedPlaces = payload?.data.map?.((place) => {
+          const updatedPlaces = payload?.data?.map?.((place) => {
             return {
               ...place,
               label: place.name,
@@ -169,7 +169,7 @@ const EditRateMaster = () => {
           setHttpError(message);
         } else {
           setHttpError("");
-          const updatedArticles = payload?.data.map?.((article) => {
+          const updatedArticles = payload?.data?.map?.((article) => {
             return { ...article, label: article.name, value: article.name };
           });
           setArticles(updatedArticles);
@@ -182,7 +182,7 @@ const EditRateMaster = () => {
 
   useEffect(() => {
     if (editId) {
-      const filterEdited = rateList.rates.filter?.((rate) => {
+      const filterEdited = rateList.rates?.filter?.((rate) => {
         if (rate.id) {
           return rate.id === editId;
         }
@@ -192,14 +192,14 @@ const EditRateMaster = () => {
       });
       let station;
       if (filterEdited?.length) {
-        station = places.find?.(
+        station = places?.find?.(
           (place) => place._id === filterEdited[0].station._id
         );
       }
       setRateList((currState) => {
         return {
           ...currState,
-          rates: currState.rates.filter?.((rate) => rate.id !== editId),
+          rates: currState.rates?.filter?.((rate) => rate.id !== editId),
           article: filterEdited[0].article,
           station: station,
           stationName: station.name,
@@ -225,7 +225,7 @@ const EditRateMaster = () => {
     e.preventDefault();
     if (!validateForm(rateList)) {
       const updatedRateList = rateList;
-      updatedRateList.rates.forEach?.((rate) => {
+      updatedRateList.rates?.forEach?.((rate) => {
         if (rate.station && rate.station._id && rate.station.name) {
           rate.stationName = rate.station.name;
           rate.station = rate.station._id;
@@ -370,7 +370,7 @@ const EditRateMaster = () => {
           setHttpError("");
         }
       } else {
-        const filteredList = rateList.rates.filter?.((item) => {
+        const filteredList = rateList.rates?.filter?.((item) => {
           if (item.id) {
             return item.id !== editId;
           }
@@ -488,7 +488,7 @@ const EditRateMaster = () => {
                         autoSelect
                         size="small"
                         name="article"
-                        options={articles.map?.((article) => article.name)}
+                        options={articles?.map?.((article) => article.name)}
                         value={rateList.article}
                         onChange={(e, value) => articleChangeListener(e, value)}
                         openOnFocus

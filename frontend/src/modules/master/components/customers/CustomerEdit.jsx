@@ -234,7 +234,7 @@ const CustomerEdit = () => {
   const handleTriggerDelete = (contactIndex) => {
     setCustomer((currentState) => {
       const currentCustomer = { ...currentState };
-      currentCustomer.contactPerson = currentCustomer.contactPerson.filter?.(
+      currentCustomer.contactPerson = currentCustomer.contactPerson?.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentCustomer;

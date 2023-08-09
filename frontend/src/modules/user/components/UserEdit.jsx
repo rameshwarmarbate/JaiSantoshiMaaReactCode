@@ -72,10 +72,10 @@ const UserEdit = () => {
 
   useEffect(() => {
     if (fetchedUser.branch || fetchedUser.employee) {
-      const filteredBranch = branches.find?.(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === fetchedUser.branch
       );
-      const employee = employees.find?.(
+      const employee = employees?.find?.(
         (branch) => branch._id === fetchedUser.employee
       );
       if (filteredBranch?._id) {

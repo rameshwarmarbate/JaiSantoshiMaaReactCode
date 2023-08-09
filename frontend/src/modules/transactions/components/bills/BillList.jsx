@@ -162,7 +162,7 @@ const BillList = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             if (payload?.data?.length) {
@@ -253,7 +253,7 @@ const BillList = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);

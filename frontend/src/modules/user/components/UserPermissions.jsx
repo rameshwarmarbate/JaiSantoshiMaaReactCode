@@ -38,7 +38,7 @@ const UserPermissions = () => {
 
   useEffect(() => {
     if (user.branch) {
-      const filteredBranch = branches.find?.(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === user.branch
       );
       if (filteredBranch?._id) {

@@ -172,13 +172,13 @@ const LoadingSlipEdit = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const lrList = payload?.data.map?.((lr) => {
+            const lrList = payload?.data?.map?.((lr) => {
               return {
                 ...lr,
                 checked: false,
               };
             });
-            const filteredLorryReceipts = lrList.filter?.((lr) => {
+            const filteredLorryReceipts = lrList?.filter?.((lr) => {
               return !lr.associatedLS || lr.associatedLS === lsId;
             });
             setLorryReceipts(filteredLorryReceipts);
@@ -229,20 +229,22 @@ const LoadingSlipEdit = () => {
             setFormErrors(initialErrorState);
             let response = { ...(payload?.data || {}) };
             const vehicleIndex = vehicles
-              .map?.((vehicle) => vehicle.vehicleNo)
-              .indexOf(vehicleNo);
+              ?.map?.((vehicle) => vehicle.vehicleNo)
+              ?.indexOf?.(vehicleNo);
             response.vehicle = vehicles[vehicleIndex];
             const driverIndex = drivers
-              .map?.((driver) => driver.licenseNo)
-              .indexOf(licenseNo);
+              ?.map?.((driver) => driver.licenseNo)
+              ?.indexOf?.(licenseNo);
             response.driver = drivers[driverIndex];
-            const fromIndex = places.map?.((place) => place._id).indexOf(from);
+            const fromIndex = places
+              ?.map?.((place) => place._id)
+              ?.indexOf?.(from);
             response.from = places[fromIndex];
-            const toIndex = places.map?.((place) => place._id).indexOf(to);
+            const toIndex = places?.map?.((place) => place._id)?.indexOf?.(to);
             response.to = places[toIndex];
             const paybleIndex = branches
-              .map?.((branch) => branch._id)
-              .indexOf(paybleAt);
+              ?.map?.((branch) => branch._id)
+              ?.indexOf?.(paybleAt);
             response.paybleAt = branches[paybleIndex];
             response.branch = branches?.find?.(
               ({ _id }) => _id === response.branch
@@ -259,10 +261,10 @@ const LoadingSlipEdit = () => {
 
   useEffect(() => {
     if (lorryReceipts?.length && loadingSlip.lrList?.length) {
-      const selectedLRList = lorryReceipts.map?.((lorryReceipt) => {
+      const selectedLRList = lorryReceipts?.map?.((lorryReceipt) => {
         return {
           ...lorryReceipt,
-          checked: loadingSlip.lrList.some?.((lr) => {
+          checked: loadingSlip.lrList?.some?.((lr) => {
             return lr._id === lorryReceipt._id;
           }),
         };
@@ -300,7 +302,7 @@ const LoadingSlipEdit = () => {
     e.preventDefault();
     if (!validateForm(loadingSlip)) {
       const updatedLoadingSlip = { ...loadingSlip };
-      updatedLoadingSlip.lrList = lsLrList.filter?.((lr) => lr.checked);
+      updatedLoadingSlip.lrList = lsLrList?.filter?.((lr) => lr.checked);
       dispatch(updateLoadingSlip(updatedLoadingSlip))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
@@ -480,10 +482,10 @@ const LoadingSlipEdit = () => {
     });
     if (name === "vehicle") {
       if (option && option._id) {
-        const selectedVehicle = vehicles.find?.(
+        const selectedVehicle = vehicles?.find?.(
           (vehicle) => vehicle._id === option._id
         );
-        const selectedSupplier = suppliers.find?.(
+        const selectedSupplier = suppliers?.find?.(
           (supplier) => supplier._id === selectedVehicle.owner
         );
         setLoadingSlip((currState) => {
@@ -510,7 +512,7 @@ const LoadingSlipEdit = () => {
 
     if (name === "driver") {
       if (option && option._id) {
-        const driver = drivers.find?.((driver) => driver._id === option._id);
+        const driver = drivers?.find?.((driver) => driver._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -532,7 +534,7 @@ const LoadingSlipEdit = () => {
     }
     if (name === "from") {
       if (option && option._id) {
-        const from = places.find?.((place) => place._id === option._id);
+        const from = places?.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -551,7 +553,7 @@ const LoadingSlipEdit = () => {
 
     if (name === "to") {
       if (option && option._id) {
-        const to = places.find?.((place) => place._id === option._id);
+        const to = places?.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,

@@ -182,7 +182,7 @@ const LorryReceiptAdd = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const collectAt = places.find?.(({ _id }) => _id === state?.place);
+    const collectAt = places?.find?.(({ _id }) => _id === state?.place);
     if (state?._id) {
       setLorryReceipt((currState) => {
         return {
@@ -220,7 +220,7 @@ const LorryReceiptAdd = () => {
   useEffect(() => {
     let totalFreight = 0;
     if (lorryReceipt.transactions?.length) {
-      lorryReceipt.transactions.forEach?.((transaction) => {
+      lorryReceipt.transactions?.forEach?.((transaction) => {
         totalFreight += +transaction.freight;
       });
     }
@@ -564,7 +564,7 @@ const LorryReceiptAdd = () => {
         [name]: option,
         ...(name === "branch"
           ? {
-              collectAt: places.find?.(({ _id }) => _id === option?.place),
+              collectAt: places?.find?.(({ _id }) => _id === option?.place),
             }
           : {}),
       };

@@ -102,7 +102,7 @@ export const billSlice = createSlice({
         if (hasSuperAdmin()) {
           state.status = "succeeded";
         }
-        state.branches = payload?.data?.map((branch) => ({
+        state.branches = payload?.data?.map?.((branch) => ({
           ...branch,
           label: branch.name,
           value: branch?._id,

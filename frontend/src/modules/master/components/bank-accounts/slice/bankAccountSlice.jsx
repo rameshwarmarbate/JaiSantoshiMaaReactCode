@@ -120,7 +120,7 @@ export const bankAccountSlice = createSlice({
       })
       .addCase(getBanks.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.banks = payload.data.map((bank) => ({
+        state.banks = payload.data?.map?.((bank) => ({
           ...bank,
           label: bank.name,
           value: bank._id,

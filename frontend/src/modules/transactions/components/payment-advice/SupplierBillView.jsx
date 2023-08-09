@@ -120,7 +120,7 @@ const SupplierBillView = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {supplierBill.payments.map?.((row) => (
+                {supplierBill.payments?.map?.((row) => (
                   <TableRow
                     key={row.date}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

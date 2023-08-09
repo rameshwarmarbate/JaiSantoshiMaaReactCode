@@ -123,7 +123,7 @@ export const branchSlice = createSlice({
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.places = payload.data?.map((place) => ({
+        state.places = payload.data?.map?.((place) => ({
           ...place,
           label: place.name,
           value: place._id,

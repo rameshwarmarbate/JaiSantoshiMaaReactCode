@@ -51,9 +51,9 @@ const FreightDetails = ({
     if (lorryReceipts?.length) {
       const updatedLorryReceipts = [...lorryReceipts];
 
-      updatedLorryReceipts.forEach?.((lr) => {
+      updatedLorryReceipts?.forEach?.((lr) => {
         let weight = 0;
-        lr.transactions.forEach?.((transaction) => {
+        lr.transactions?.forEach?.((transaction) => {
           weight += +transaction.weight;
         });
         lr.weight = weight;
@@ -67,7 +67,7 @@ const FreightDetails = ({
   const inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.checked;
-    const updatedLR = filteredLR.map?.((lr) => {
+    const updatedLR = filteredLR?.map?.((lr) => {
       if (lr._id === name) {
         lr.checked = value;
       }
@@ -89,7 +89,7 @@ const FreightDetails = ({
     e.preventDefault();
     let _total = 0;
     setSelectedLR(
-      filteredLR.filter?.((lr) => {
+      filteredLR?.filter?.((lr) => {
         if (lr.checked) {
           _total += lr.total;
         }
@@ -111,7 +111,7 @@ const FreightDetails = ({
     if (search) {
       setFilteredLR((currState) => {
         const updatedLR = currState;
-        updatedLR.forEach?.((lr) => {
+        updatedLR?.forEach?.((lr) => {
           lr.show = lr.lrNo.includes?.(search);
         });
         return updatedLR;
@@ -119,7 +119,7 @@ const FreightDetails = ({
     } else {
       setFilteredLR((currState) => {
         const updatedLR = currState;
-        updatedLR.forEach?.((lr) => {
+        updatedLR?.forEach?.((lr) => {
           lr.show = true;
         });
         return updatedLR;
@@ -151,7 +151,7 @@ const FreightDetails = ({
         <form action="" onSubmit={submitHandler} id="lrSelectionForm">
           <FormGroup className="checkboxGroup">
             {filteredLR?.length > 0 &&
-              filteredLR.map?.((lr) =>
+              filteredLR?.map?.((lr) =>
                 lr.show ? (
                   <FormControlLabel
                     className="groupCheckbox"

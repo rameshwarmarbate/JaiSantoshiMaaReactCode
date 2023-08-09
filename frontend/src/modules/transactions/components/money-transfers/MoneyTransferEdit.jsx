@@ -74,10 +74,10 @@ const MoneyTransferEdit = () => {
 
   useEffect(() => {
     if (fetchedMoneyTransfer) {
-      const filteredBranch = branches.find?.(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === fetchedMoneyTransfer.branch
       );
-      const transferToBranch = branches.find?.(
+      const transferToBranch = branches?.find?.(
         (branch) => branch._id === fetchedMoneyTransfer.transferToBranch
       );
       if (filteredBranch?._id) {

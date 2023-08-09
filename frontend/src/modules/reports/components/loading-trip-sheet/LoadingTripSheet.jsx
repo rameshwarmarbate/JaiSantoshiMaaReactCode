@@ -109,7 +109,7 @@ const LoadingTripSheet = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (user && user.branch) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);

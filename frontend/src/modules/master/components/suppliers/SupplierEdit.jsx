@@ -198,7 +198,7 @@ const SupplierEdit = () => {
     if (!editContact) {
       setSupplier((currentState) => {
         const currentSupplier = { ...currentState };
-        currentSupplier.contactPerson.push?.(receivedPerson);
+        currentSupplier.contactPerson?.push?.(receivedPerson);
         return currentSupplier;
       });
     } else {
@@ -225,7 +225,7 @@ const SupplierEdit = () => {
   const handleTriggerDelete = (contactIndex) => {
     setSupplier((currentState) => {
       const currentSupplier = { ...currentState };
-      currentSupplier.contactPerson = currentSupplier.contactPerson.filter?.(
+      currentSupplier.contactPerson = currentSupplier.contactPerson?.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentSupplier;

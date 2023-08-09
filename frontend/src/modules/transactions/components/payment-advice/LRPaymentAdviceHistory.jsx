@@ -66,7 +66,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -89,9 +89,9 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
     if (supplierLS?.length) {
       const historyList = [];
       let indexes = 0;
-      supplierLS.forEach?.((ls, index) => {
+      supplierLS?.forEach?.((ls, index) => {
         indexes = indexes + 1;
-        historyList.push?.({
+        historyList?.push?.({
           // _id: "payment_" + 0,
           _id: indexes,
           date: getFormattedDate(new Date(ls.createdAt)),
@@ -104,7 +104,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
           totalHire: ls.hire + ls.hamali - ls.commission - ls.stacking,
         });
         if (ls.supplierPayments?.length) {
-          ls.supplierPayments.forEach?.((payment) => {
+          ls.supplierPayments?.forEach?.((payment) => {
             indexes = indexes + 1;
             const history = {};
             // history._id = "payment_" + (index + 1);
@@ -112,7 +112,7 @@ const LRPaymentAdviceHistory = ({ supplierLS }) => {
             history.date = getFormattedDate(new Date(payment.date));
             history.lsNo = getFormattedLSNumber(ls.lsNo);
             history.paid = payment.paid?.toFixed?.(2);
-            historyList.push?.(history);
+            historyList?.push?.(history);
           });
         }
       });

@@ -143,14 +143,14 @@ const BillEdit = () => {
             setHttpError(message);
           } else {
             const updatedLR = [...(payload?.data || [])];
-            updatedLR.forEach?.((lr) => {
+            updatedLR?.forEach?.((lr) => {
               lr.checked = false;
               lr.consignor =
-                customers.filter?.(
+                customers?.filter?.(
                   (customer) => customer._id === lr.consignor
                 )[0] || "";
               lr.consignee =
-                customers.filter?.(
+                customers?.filter?.(
                   (customer) => customer._id === lr.consignee
                 )[0] || "";
             });
@@ -187,8 +187,8 @@ const BillEdit = () => {
   useEffect(() => {
     if (fetchedBill._id && fetchedLorryReceipts?.length && customers?.length) {
       const updatedBill = { ...fetchedBill };
-      const updatedLorryReceipts = fetchedLorryReceipts.map?.((fetchedLR) => {
-        const isInBill = fetchedBill.lrList.filter?.(
+      const updatedLorryReceipts = fetchedLorryReceipts?.map?.((fetchedLR) => {
+        const isInBill = fetchedBill.lrList?.filter?.(
           (lr) => lr._id === fetchedLR._id
         );
         return {
@@ -198,7 +198,7 @@ const BillEdit = () => {
       });
       let updatedFilteredLorryReceipts;
       if (billId) {
-        updatedFilteredLorryReceipts = updatedLorryReceipts.filter?.((lr) => {
+        updatedFilteredLorryReceipts = updatedLorryReceipts?.filter?.((lr) => {
           return (
             !lr.billGenerated || (lr.billGenerated && lr.assoBill === billId)
           );
@@ -207,9 +207,9 @@ const BillEdit = () => {
       const filteredBranch = branches?.find?.(
         (branch) => branch._id === fetchedBill.branch
       );
-      updatedBill.lrList = updatedBill.lrList.map?.((billLr) => {
+      updatedBill.lrList = updatedBill.lrList?.map?.((billLr) => {
         return (
-          updatedLorryReceipts.filter?.((lr) => lr._id === billLr._id)[0] || ""
+          updatedLorryReceipts?.filter?.((lr) => lr._id === billLr._id)[0] || ""
         );
       });
       const customer = customers?.find?.(
@@ -258,7 +258,7 @@ const BillEdit = () => {
   ]);
 
   useEffect(() => {
-    const totalFreight = bill.lrList.reduce?.(
+    const totalFreight = bill.lrList?.reduce?.(
       (acc, item) => acc + item.total,
       0
     );
@@ -425,7 +425,7 @@ const BillEdit = () => {
   };
 
   const setLRForBill = () => {
-    const selectedLR = lorryReceipts.filter?.((lr) => lr.checked);
+    const selectedLR = lorryReceipts?.filter?.((lr) => lr.checked);
     setBill((currState) => {
       return {
         ...currState,

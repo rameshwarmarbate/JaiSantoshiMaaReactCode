@@ -173,7 +173,7 @@ const LoadingSlips = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data?.length) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -206,7 +206,7 @@ const LoadingSlips = () => {
         if (message) {
           setHttpError(message);
         } else {
-          const updatedLS = payload?.data.loadingSlips.filter?.((ls) => {
+          const updatedLS = payload?.data.loadingSlips?.filter?.((ls) => {
             ls.date = getFormattedDate(new Date(ls.createdAt));
             ls.totalFreight = ls.totalFreight?.toFixed?.(2);
             ls.totalPayable = ls.totalPayable?.toFixed?.(2);
@@ -283,7 +283,7 @@ const LoadingSlips = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);

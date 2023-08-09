@@ -154,7 +154,7 @@ export const loadingSlipSlice = createSlice({
       })
       .addCase(getBranches.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.branches = payload?.data.map?.((branch) => {
+        state.branches = payload?.data?.map?.((branch) => {
           return { ...branch, label: branch.name, value: branch._id };
         });
       })

@@ -424,10 +424,10 @@ const LoadingSlipAdd = () => {
     });
     if (name === "vehicle") {
       if (option && option._id) {
-        const selectedVehicle = vehicles.find?.(
+        const selectedVehicle = vehicles?.find?.(
           (vehicle) => vehicle._id === option._id
         );
-        const selectedSupplier = suppliers.find?.(
+        const selectedSupplier = suppliers?.find?.(
           (supplier) => supplier._id === selectedVehicle.owner
         );
         setLoadingSlip((currState) => {
@@ -454,7 +454,7 @@ const LoadingSlipAdd = () => {
 
     if (name === "driver") {
       if (option && option._id) {
-        const driver = drivers.find?.((driver) => driver._id === option._id);
+        const driver = drivers?.find?.((driver) => driver._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -476,7 +476,7 @@ const LoadingSlipAdd = () => {
     }
     if (name === "from") {
       if (option && option._id) {
-        const from = places.find?.((place) => place._id === option._id);
+        const from = places?.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
@@ -495,7 +495,7 @@ const LoadingSlipAdd = () => {
 
     if (name === "to") {
       if (option && option._id) {
-        const to = places.find?.((place) => place._id === option._id);
+        const to = places?.find?.((place) => place._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,

@@ -68,7 +68,7 @@ const LRAcknowledgementAdd = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedList = payload?.data.map?.((lr) => {
+            const updatedList = payload?.data?.map?.((lr) => {
               return {
                 ...lr,
                 label: lr.lrNo,
@@ -116,7 +116,7 @@ const LRAcknowledgementAdd = () => {
   };
 
   const onSelect = (e, value) => {
-    const option = lorryReceipts.find?.(
+    const option = lorryReceipts?.find?.(
       ({ label }) =>
         value?.toLowerCase?.()?.trim?.() === label?.toLowerCase?.()?.trim?.()
     );

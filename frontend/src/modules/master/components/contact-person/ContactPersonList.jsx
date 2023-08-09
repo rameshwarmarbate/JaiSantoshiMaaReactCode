@@ -30,7 +30,7 @@ const ContactPersonList = ({
 
   let content =
     contactPersons && contactPersons?.length > 0 ? (
-      contactPersons.map?.((contact, index) => {
+      contactPersons?.map?.((contact, index) => {
         return (
           <Accordion
             key={`panel${index}`}

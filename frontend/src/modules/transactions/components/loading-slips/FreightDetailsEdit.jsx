@@ -53,9 +53,9 @@ const FreightDetailsEdit = ({
   useEffect(() => {
     if (lorryReceipts?.length) {
       const updatedLorryReceipts = [...lorryReceipts];
-      updatedLorryReceipts.forEach?.((lr) => {
+      updatedLorryReceipts?.forEach?.((lr) => {
         let weight = 0;
-        lr.transactions.forEach?.((transaction) => {
+        lr.transactions?.forEach?.((transaction) => {
           weight += +transaction.weight;
         });
         lr.weight = weight;
@@ -70,7 +70,7 @@ const FreightDetailsEdit = ({
     if (updatedLR?.length && initial) {
       let _total = 0;
       setSelectedLR(
-        updatedLR.filter?.((lr) => {
+        updatedLR?.filter?.((lr) => {
           if (lr.checked) {
             _total += lr.total;
           }
@@ -91,7 +91,7 @@ const FreightDetailsEdit = ({
     const value = e.target.checked;
     setUpdatedLR((currState) => {
       const updatedState = [...currState];
-      updatedState.forEach?.((lr) => {
+      updatedState?.forEach?.((lr) => {
         if (lr._id === name) {
           lr.checked = value;
         }
@@ -104,7 +104,7 @@ const FreightDetailsEdit = ({
     e.preventDefault();
     let _total = 0;
     setSelectedLR(
-      updatedLR.filter?.((lr) => {
+      updatedLR?.filter?.((lr) => {
         if (lr.checked) {
           _total += lr.total;
         }
@@ -126,7 +126,7 @@ const FreightDetailsEdit = ({
     if (search) {
       setUpdatedLR((currState) => {
         const updatedLR = currState;
-        updatedLR.forEach?.((lr) => {
+        updatedLR?.forEach?.((lr) => {
           lr.show = lr.lrNo.includes?.(search);
         });
         return updatedLR;
@@ -134,7 +134,7 @@ const FreightDetailsEdit = ({
     } else {
       setUpdatedLR((currState) => {
         const updatedLR = currState;
-        updatedLR.forEach?.((lr) => {
+        updatedLR?.forEach?.((lr) => {
           lr.show = true;
         });
         return updatedLR;
@@ -163,7 +163,7 @@ const FreightDetailsEdit = ({
       <form action="" onSubmit={submitHandler} id="lrSelectionForm">
         <FormGroup className="checkboxGroup">
           {updatedLR?.length > 0 &&
-            updatedLR.map?.((lr) =>
+            updatedLR?.map?.((lr) =>
               lr.show ? (
                 <FormControlLabel
                   className="groupCheckbox"

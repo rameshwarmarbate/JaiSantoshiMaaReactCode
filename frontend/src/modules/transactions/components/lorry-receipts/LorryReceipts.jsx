@@ -172,7 +172,7 @@ const LorryReceipts = () => {
           setHttpError("");
           setbranches(payload?.data);
           if (payload?.data?.length) {
-            const filteredBranch = payload?.data.find?.(
+            const filteredBranch = payload?.data?.find?.(
               (branch) => branch._id === user.branch
             );
             setSelectedBranch(filteredBranch);
@@ -209,7 +209,7 @@ const LorryReceipts = () => {
               return {
                 ...currState,
                 isLoading: false,
-                data: payload?.data.lorryReceipts?.map((lr) => ({
+                data: payload?.data.lorryReceipts?.map?.((lr) => ({
                   ...lr,
                   date: getFormattedDate(new Date(lr.date)),
                   total: lr.total?.toFixed?.(2),
@@ -240,7 +240,7 @@ const LorryReceipts = () => {
             setHttpError(message);
           } else {
             const fileURL = base64ToObjectURL(payload?.data.file);
-            const selectedLR = pageState.data.find?.(
+            const selectedLR = pageState.data?.find?.(
               (lr) => lr._id === viewLRId._id
             );
             if (fileURL) {
@@ -287,7 +287,7 @@ const LorryReceipts = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);

@@ -175,7 +175,7 @@ const CustomerAdd = () => {
     if (!editContact) {
       setCustomer((currentState) => {
         const currentCustomer = { ...currentState };
-        currentCustomer.contactPerson.push?.(receivedPerson);
+        currentCustomer.contactPerson?.push?.(receivedPerson);
         return currentCustomer;
       });
     } else {
@@ -202,7 +202,7 @@ const CustomerAdd = () => {
   const handleTriggerDelete = (contactIndex) => {
     setCustomer((currentState) => {
       const currentCustomer = { ...currentState };
-      currentCustomer.contactPerson = currentCustomer.contactPerson.filter?.(
+      currentCustomer.contactPerson = currentCustomer.contactPerson?.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentCustomer;

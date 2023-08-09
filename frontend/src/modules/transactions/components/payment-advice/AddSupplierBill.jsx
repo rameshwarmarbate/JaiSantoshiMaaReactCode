@@ -79,7 +79,7 @@ const AddSupplierBill = ({
   const { branches } = useSelector(({ paymentadvice }) => paymentadvice) || {};
 
   const cancelButtonHandler = useCallback(() => {
-    const filteredBranch = branches.find?.(
+    const filteredBranch = branches?.find?.(
       (branch) => branch._id === user.branch
     );
     setBill(() => {
@@ -92,7 +92,7 @@ const AddSupplierBill = ({
 
   useEffect(() => {
     if (user && user.branch) {
-      const filteredBranch = branches.find?.(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === user.branch
       );
       if (filteredBranch?._id) {

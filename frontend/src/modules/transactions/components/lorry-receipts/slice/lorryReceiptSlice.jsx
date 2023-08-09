@@ -212,7 +212,7 @@ export const lorryReceiptSlice = createSlice({
       })
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.customers = payload?.data.map?.((customer) => {
+        state.customers = payload?.data?.map?.((customer) => {
           return { ...customer, label: customer.name };
         });
       })
@@ -249,7 +249,7 @@ export const lorryReceiptSlice = createSlice({
         if (hasSuperAdmin()) {
           state.status = "succeeded";
         }
-        state.places = payload?.data.map?.((place) => {
+        state.places = payload?.data?.map?.((place) => {
           return { ...place, label: place.name, value: place.name };
         });
       })

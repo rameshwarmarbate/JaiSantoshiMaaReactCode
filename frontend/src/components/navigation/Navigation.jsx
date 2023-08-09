@@ -9,7 +9,7 @@ const Navigation = () => {
   return (
     <nav className={classes.nav}>
       <ul>
-        {navItems.map?.((navItem) => {
+        {navItems?.map?.((navItem) => {
           if (
             user &&
             user.type &&
@@ -69,7 +69,7 @@ const CustomLink = ({ to, children, ...props }) => {
       </Link>
       {props.subnav && props.subnav?.length > 0 && (
         <ul>
-          {props.subnav.map?.((subnavItem) => (
+          {props.subnav?.map?.((subnavItem) => (
             <CustomSubLink key={subnavItem.to} subto={subnavItem.to}>
               {subnavItem.label}
             </CustomSubLink>

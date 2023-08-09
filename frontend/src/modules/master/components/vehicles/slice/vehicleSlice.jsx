@@ -123,7 +123,7 @@ export const vehicleSlice = createSlice({
       })
       .addCase(getVehicleTypes.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.vehicleTypes = payload.data?.map((type) => ({
+        state.vehicleTypes = payload.data?.map?.((type) => ({
           ...type,
           label: type.type,
           value: type._id,
@@ -148,7 +148,7 @@ export const vehicleSlice = createSlice({
       })
       .addCase(getSuppliers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.suppliers = payload.data?.map((supplier) => ({
+        state.suppliers = payload.data?.map?.((supplier) => ({
           ...supplier,
           label: supplier.name,
           value: supplier._id,

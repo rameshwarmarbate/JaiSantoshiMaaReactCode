@@ -378,7 +378,7 @@ const QuotationEdit = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {quotation.stations.map?.((station, index) => (
+                  {quotation.stations?.map?.((station, index) => (
                     <TableRow
                       key={index}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

@@ -115,7 +115,7 @@ const MoneyTransfers = () => {
           setHttpError("");
           setbranches(payload?.data);
           if (payload?.data?.length) {
-            const filteredBranch = payload?.data.filter?.((branch) => {
+            const filteredBranch = payload?.data?.filter?.((branch) => {
               return branch._id === user.branch;
             });
             if (filteredBranch?.length) {
@@ -163,7 +163,7 @@ const MoneyTransfers = () => {
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
       apiRef.current.setQuickFilterValues(
-        newValue.split?.(" ").filter?.((word) => word !== "")
+        newValue.split?.(" ")?.filter?.((word) => word !== "")
       );
     }, 500);
   }, [apiRef]);
@@ -185,7 +185,7 @@ const MoneyTransfers = () => {
 
   const getBranchNameById = (branchId) => {
     if (branches?.length) {
-      const filteredBranch = branches.filter?.(
+      const filteredBranch = branches?.filter?.(
         (branch) => branch._id === branchId
       );
       if (filteredBranch?.length) {

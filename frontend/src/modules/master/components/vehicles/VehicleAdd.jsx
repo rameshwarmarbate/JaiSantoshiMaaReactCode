@@ -200,7 +200,7 @@ const VehicleAdd = () => {
     if (!editTax) {
       setVehicle((currentState) => {
         const currentVehicle = { ...currentState };
-        currentVehicle.taxDetails.push?.(receivedTaxDetail);
+        currentVehicle.taxDetails?.push?.(receivedTaxDetail);
         return currentVehicle;
       });
     } else {
@@ -227,7 +227,7 @@ const VehicleAdd = () => {
   const handleTriggerDelete = (contactIndex) => {
     setVehicle((currentState) => {
       const currentVehicle = { ...currentState };
-      currentVehicle.taxDetails = currentVehicle.taxDetails.filter?.(
+      currentVehicle.taxDetails = currentVehicle.taxDetails?.filter?.(
         (contact, index) => index !== contactIndex
       );
       return currentVehicle;

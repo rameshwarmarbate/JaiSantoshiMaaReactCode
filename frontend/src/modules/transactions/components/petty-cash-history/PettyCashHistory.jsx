@@ -104,7 +104,7 @@ const PettyCashHistory = () => {
       flex: 1,
       minWidth: 300,
       renderCell: (params) => {
-        const selectedBank = banks.filter?.(
+        const selectedBank = banks?.filter?.(
           (bank) => bank._id === params.row.bank
         );
         return `${
@@ -155,7 +155,7 @@ const PettyCashHistory = () => {
           setHttpError("");
           setBranches(payload?.data);
           if (payload?.data?.length) {
-            const filteredBranch = payload?.data.filter?.((branch) => {
+            const filteredBranch = payload?.data?.filter?.((branch) => {
               return branch._id === user.branch;
             });
             if (filteredBranch?.length) {
@@ -209,7 +209,7 @@ const PettyCashHistory = () => {
 
   useEffect(() => {
     if (pettyTransactions?.length) {
-      const updatedTransactions = pettyTransactions.map?.((pt) => {
+      const updatedTransactions = pettyTransactions?.map?.((pt) => {
         return {
           ...pt,
           credit: pt.type === "credit" ? pt.amount : "-",
@@ -228,7 +228,7 @@ const PettyCashHistory = () => {
   }, []);
 
   const branchChangeHandler = (e) => {
-    const filteredBranch = branches.filter?.(
+    const filteredBranch = branches?.filter?.(
       (branch) => branch._id === e.target.value
     );
     setSelectedBranch(filteredBranch[0]);

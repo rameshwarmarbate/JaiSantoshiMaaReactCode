@@ -86,7 +86,7 @@ export const quotationSlice = createSlice({
       })
       .addCase(getPlaces.fulfilled, (state, { payload }) => {
         // state.status = "succeeded";
-        state.places = payload?.data.map?.((place) => {
+        state.places = payload?.data?.map?.((place) => {
           return { ...place, label: place.name, value: place.name };
         });
       })
