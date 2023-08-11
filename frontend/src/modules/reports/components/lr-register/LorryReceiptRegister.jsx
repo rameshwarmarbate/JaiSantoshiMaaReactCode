@@ -275,7 +275,7 @@ const LorryReceiptRegister = () => {
         if (message) {
           setHttpError(message);
         } else {
-          var blob = new Blob([payload?.data], {
+          const blob = new Blob([payload?.data], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           });
           FileSaver.saveAs(blob, "LorryReceipts.xlsx");
