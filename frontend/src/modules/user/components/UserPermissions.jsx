@@ -37,7 +37,7 @@ const UserPermissions = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.branch) {
+    if (branches?.length) {
       const filteredBranch = branches?.find?.(
         (branch) => branch._id === user.branch
       );
@@ -45,7 +45,7 @@ const UserPermissions = () => {
         setSelectedBranch(filteredBranch);
       }
     }
-  }, [branches, user]);
+  }, [branches]);
 
   useEffect(() => {
     if (permissions) {

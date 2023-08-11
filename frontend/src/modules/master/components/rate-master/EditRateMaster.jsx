@@ -301,7 +301,7 @@ const EditRateMaster = () => {
       return {
         ...currState,
         station: option,
-        stationName: option.name,
+        stationName: option?.name,
       };
     });
   };

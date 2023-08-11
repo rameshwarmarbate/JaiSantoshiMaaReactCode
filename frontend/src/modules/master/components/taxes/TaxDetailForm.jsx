@@ -88,10 +88,10 @@ const TaxDetailForm = ({ onTaxDetailAdd, editTaxDetail }) => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.taxType?.trim?.() === "") {
+    if (!formData.taxType?.trim?.()) {
       errors.taxType = { invalid: true, message: "Tax type is required" };
     }
-    if (formData.amount?.trim?.() === "") {
+    if (!formData.amount?.trim?.()) {
       errors.amount = { invalid: true, message: "Amount is required" };
     }
     if (isNaN(formData.amount) && isNaN(parseFloat(formData.amount))) {

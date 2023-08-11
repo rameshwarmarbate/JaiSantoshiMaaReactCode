@@ -493,16 +493,10 @@ const PaymentCollection = () => {
     if (!formData.payMode) {
       errors.payMode = { invalid: true, message: "Payment mode is required" };
     }
-    if (
-      formData.payMode?.value === "Cheque" &&
-      formData.bankName?.trim?.() === ""
-    ) {
+    if (formData.payMode?.value === "Cheque" && !formData.bankName?.trim?.()) {
       errors.bankName = { invalid: true, message: "Bank name is required" };
     }
-    if (
-      formData.payMode?.value === "Cheque" &&
-      formData.chequeNo?.trim?.() === ""
-    ) {
+    if (formData.payMode?.value === "Cheque" && !formData.chequeNo?.trim?.()) {
       errors.chequeNo = { invalid: true, message: "Cheque number is required" };
     }
     if (formData.payMode?.value === "Cheque" && !formData.chequeDate) {

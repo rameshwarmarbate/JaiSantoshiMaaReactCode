@@ -141,7 +141,7 @@ const QuotationEdit = () => {
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.customer?.trim?.() === "") {
+    if (!formData.customer?.trim?.()) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
     if (!formData.from) {
@@ -150,7 +150,7 @@ const QuotationEdit = () => {
     if (!formData.to) {
       errors.to = { invalid: true, message: "To date is required" };
     }
-    if (formData.ratePer?.trim?.() === "") {
+    if (!formData.ratePer?.trim?.()) {
       errors.ratePer = { invalid: true, message: "Rate type is required" };
     }
     if (!formData.stations?.length) {

@@ -397,7 +397,7 @@ const MoneyTransferAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branch?.trim?.() === "") {
+    if (!formData.branch?.trim?.()) {
       errors.branch = { invalid: true, message: "Branch is required" };
     }
     if (isNaN(formData.amount) || formData.amount <= 0) {
@@ -409,40 +409,31 @@ const MoneyTransferAdd = () => {
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.description?.trim?.() === "") {
+    if (!formData.description?.trim?.()) {
       errors.description = {
         invalid: true,
         message: "Description is required",
       };
     }
-    if (formData.type?.trim?.() === "") {
+    if (!formData.type?.trim?.()) {
       errors.type = { invalid: true, message: "Debit / Credit is required" };
     }
-    if (
-      selectedTab === "transaction" &&
-      formData.transactionType?.trim?.() === ""
-    ) {
+    if (selectedTab === "transaction" && !formData.transactionType?.trim?.()) {
       errors.transactionType = {
         invalid: true,
         message: "Transaction type is required",
       };
     }
-    if (
-      selectedTab === "transaction" &&
-      formData.transactionName?.trim?.() === ""
-    ) {
+    if (selectedTab === "transaction" && !formData.transactionName?.trim?.()) {
       errors.transactionName = {
         invalid: true,
         message: "Transaction name is required",
       };
     }
-    if (selectedTab === "transfer" && formData.bank?.trim?.() === "") {
+    if (selectedTab === "transfer" && !formData.bank?.trim?.()) {
       errors.bank = { invalid: true, message: "Bank is required" };
     }
-    if (
-      selectedTab === "transfer" &&
-      formData.bankAccountNumber?.trim?.() === ""
-    ) {
+    if (selectedTab === "transfer" && !formData.bankAccountNumber?.trim?.()) {
       errors.bankAccountNumber = {
         invalid: true,
         message: "Bank account number is required",

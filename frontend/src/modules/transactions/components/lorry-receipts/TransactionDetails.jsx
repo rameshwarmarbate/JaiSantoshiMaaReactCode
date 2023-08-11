@@ -387,7 +387,7 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
     }
     if (
       (typeof formData.articleNo === "string" &&
-        formData.articleNo?.trim?.() === "") ||
+        !formData.articleNo?.trim?.()) ||
       (typeof formData.articleNo === "number" && formData.articleNo <= 0)
     ) {
       errors.articleNo = {

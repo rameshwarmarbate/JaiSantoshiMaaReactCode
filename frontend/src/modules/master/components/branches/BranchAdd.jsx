@@ -132,22 +132,22 @@ const BranchAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.branchCode?.trim?.() === "") {
+    if (!formData.branchCode?.trim?.()) {
       errors.branchCode = { invalid: true, message: "Branch code is required" };
     }
-    if (formData.abbreviation?.trim?.() === "") {
+    if (!formData.abbreviation?.trim?.()) {
       errors.abbreviation = {
         invalid: true,
         message: "Abbreviation is required",
       };
     }
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Branch name is required" };
     }
-    if (formData.place?.trim?.() === "") {
+    if (!formData.place) {
       errors.place = { invalid: true, message: "Place is required" };
     }
-    if (formData.printer?.trim?.() === "") {
+    if (!formData.printer) {
       errors.printer = { invalid: true, message: "Printer is required" };
     }
     let validationErrors = false;

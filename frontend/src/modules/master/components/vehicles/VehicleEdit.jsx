@@ -198,7 +198,7 @@ const VehicleAdd = () => {
         message: "Vehicle type is required",
       };
     }
-    if (formData.vehicleNo?.trim?.() === "") {
+    if (!formData.vehicleNo?.trim?.()) {
       errors.vehicleNo = {
         invalid: true,
         message: "Vehicle number is required",

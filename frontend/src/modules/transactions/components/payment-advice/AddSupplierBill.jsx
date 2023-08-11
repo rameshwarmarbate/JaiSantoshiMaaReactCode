@@ -147,6 +147,7 @@ const AddSupplierBill = ({
           } else {
             setHttpError("");
             cancelButtonHandler();
+            setFormErrors(initialErrorState);
           }
           setTriggerFetch(true);
         })

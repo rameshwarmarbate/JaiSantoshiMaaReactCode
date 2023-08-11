@@ -308,7 +308,7 @@ const LRPaymentAdvice = ({
       const updatedState = [...currState];
       updatedState?.forEach?.((ls) => {
         if (ls._id === name) {
-          if (value === "0" || value === "") {
+          if (value === "0" || !value) {
             ls.suppPay = +value;
             ls.paid = false;
           } else {
@@ -360,7 +360,7 @@ const LRPaymentAdvice = ({
           } else {
             setHttpError("");
             fetchData();
-            // setSelectedSupplier("");
+            setFormErrors(initialErrorState);
           }
           setPayments(initialState);
         })
@@ -386,7 +386,7 @@ const LRPaymentAdvice = ({
       errors.payMode = { invalid: true, message: "Payment mode is required" };
     }
     if (formData.payMode?.value === "Cheque") {
-      if (formData.chequeNo?.trim?.() === "") {
+      if (!formData.chequeNo?.trim?.()) {
         errors.chequeNo = { invalid: true, message: "Cheque no is required" };
       }
       if (!formData.chequeDate) {
@@ -400,7 +400,7 @@ const LRPaymentAdvice = ({
       formData.payMode?.value === "NEFT/RTGS" ||
       formData.payMode?.value === "Online banking"
     ) {
-      if (formData.transactionNo?.trim?.() === "") {
+      if (!formData.transactionNo?.trim?.()) {
         errors.transactionNo = {
           invalid: true,
           message: "Transaction no is required",

@@ -130,7 +130,7 @@ const UserRegistration = () => {
     if (!formData.username?.trim?.()) {
       errors.username = { invalid: true, message: "Username is required" };
     }
-    if (formData.password?.trim?.() === "") {
+    if (!formData.password?.trim?.()) {
       errors.password = { invalid: true, message: "Password is required" };
     } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
@@ -145,7 +145,7 @@ const UserRegistration = () => {
         message: "Password and Confirm password does not match",
       };
     }
-    if (formData.confirmPassword?.trim?.() === "") {
+    if (!formData.confirmPassword?.trim?.()) {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password is required",

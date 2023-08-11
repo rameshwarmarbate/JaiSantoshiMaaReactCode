@@ -36,7 +36,7 @@ const monthNames = [
 export const getFormattedDate = (receivedDate) => {
   const date = new Date(receivedDate);
   const day = date.getDate();
-  const formattedDay = ("0" + day).slice?.(-2);
+  const formattedDay = ("0" + day)?.slice?.(-2);
   const month = date.getMonth();
   const year = date.getFullYear();
 
@@ -212,7 +212,7 @@ export const base64ToObjectURL = (base64) => {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters?.length);
     for (let i = 0; i < byteCharacters?.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt?.(i);
+      byteNumbers[i] = byteCharacters?.charCodeAt?.(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
     const file = new Blob([byteArray], {
@@ -247,6 +247,6 @@ export const validateNumber = (e) => {
 };
 
 export const validatePhoneNumber = (e) => {
-  const value = e.target.value.slice?.(0, 10)?.replace?.(/[^0-9]/g, "");
+  const value = e.target.value?.slice?.(0, 10)?.replace?.(/[^0-9]/g, "");
   e.target.value = value;
 };

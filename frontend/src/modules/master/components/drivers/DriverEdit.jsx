@@ -182,16 +182,16 @@ const DriverEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Name is required" };
     }
-    if (formData.correspondenceAddress?.trim?.() === "") {
+    if (!formData.correspondenceAddress?.trim?.()) {
       errors.correspondenceAddress = {
         invalid: true,
         message: "Address is required",
       };
     }
-    if (formData.telephone?.trim?.() === "") {
+    if (!formData.telephone?.trim?.()) {
       errors.telephone = { invalid: true, message: "Telephone is required" };
     }
     if (
@@ -214,7 +214,7 @@ const DriverEdit = () => {
         message: "Mobile number should be 10 digits number",
       };
     }
-    if (formData.licenseNo?.trim?.() === "") {
+    if (!formData.licenseNo?.trim?.()) {
       errors.licenseNo = { invalid: true, message: "License no is required" };
     }
     let validationErrors = false;

@@ -2115,7 +2115,7 @@ const updateRateMaster = (req, res) => {
       },
 
       active: true,
-      _id: { $ne: _id },
+      _id: { $ne: req.body._id },
     },
     (foundErr, foundRateList) => {
       if (foundErr) {

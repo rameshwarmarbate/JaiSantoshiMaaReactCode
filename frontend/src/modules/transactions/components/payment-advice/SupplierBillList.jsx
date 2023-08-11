@@ -288,6 +288,7 @@ const SupplierBillList = ({
               });
               setSupplierBills(updatedResponse);
               setPayments(initialState);
+              setFormErrors(initialErrorState);
             }
             setTriggerFetch(true);
           })
@@ -329,7 +330,7 @@ const SupplierBillList = ({
       const updatedState = [...currState];
       updatedState?.forEach?.((bill) => {
         if (bill._id === name) {
-          if (value === "0" || value === "") {
+          if (value === "0" || !value) {
             bill.suppPay = +value;
             bill.paid = false;
           } else {
@@ -368,7 +369,7 @@ const SupplierBillList = ({
       errors.payMode = { invalid: true, message: "Payment mode is required" };
     }
     if (formData.payMode?.value === "Cheque") {
-      if (formData.chequeNo?.trim?.() === "") {
+      if (!formData.chequeNo?.trim?.()) {
         errors.chequeNo = { invalid: true, message: "Cheque no is required" };
       }
       if (!formData.chequeDate) {
@@ -382,7 +383,7 @@ const SupplierBillList = ({
       formData.payMode?.value === "NEFT/RTGS" ||
       formData.payMode?.value === "Online banking"
     ) {
-      if (formData.transactionNo?.trim?.() === "") {
+      if (!formData.transactionNo?.trim?.()) {
         errors.transactionNo = {
           invalid: true,
           message: "Transaction no is required",

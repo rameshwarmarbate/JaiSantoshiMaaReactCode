@@ -106,7 +106,7 @@ const ArticleEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Article name is required" };
     }
     let validationErrors = false;

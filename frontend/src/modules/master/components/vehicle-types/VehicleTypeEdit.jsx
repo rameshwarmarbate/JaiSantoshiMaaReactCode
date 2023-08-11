@@ -109,7 +109,7 @@ const VehicleTypeEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.type?.trim?.() === "") {
+    if (!formData.type?.trim?.()) {
       errors.type = { invalid: true, message: "Vehicle type is required" };
     }
     if (isNaN(formData.tyreQuantity)) {

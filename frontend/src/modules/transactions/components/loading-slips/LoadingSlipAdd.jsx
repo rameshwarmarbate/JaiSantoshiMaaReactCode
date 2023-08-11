@@ -151,7 +151,7 @@ const LoadingSlipAdd = () => {
 
   useEffect(() => {
     if (location.pathname) {
-      location.pathname.endsWith("addLocalMemoLS")
+      location.pathname?.endsWith("addLocalMemoLS")
         ? setIsLocalMemo(true)
         : setIsLocalMemo(false);
     }
@@ -320,19 +320,19 @@ const LoadingSlipAdd = () => {
     if (!formData.vehicle) {
       errors.vehicle = { invalid: true, message: "Vehicle is required" };
     }
-    if (formData.vehicleOwner?.trim?.() === "") {
+    if (!formData.vehicleOwner?.trim?.()) {
       errors.vehicleOwner = {
         invalid: true,
         message: "Vehicle owner is required",
       };
     }
-    if (formData.vehicleOwnerAddress?.trim?.() === "") {
+    if (!formData.vehicleOwnerAddress?.trim?.()) {
       errors.vehicleOwnerAddress = {
         invalid: true,
         message: "Vehicle owner address is required",
       };
     }
-    if (formData.vehicleOwnerPhone?.trim?.() === "") {
+    if (!formData.vehicleOwnerPhone?.trim?.()) {
       errors.vehicleOwnerPhone = {
         invalid: true,
         message: "Owner phone no is required",
@@ -341,10 +341,10 @@ const LoadingSlipAdd = () => {
     if (!formData.driver) {
       errors.driver = { invalid: true, message: "Driver name is required" };
     }
-    if (formData.licenseNo?.trim?.() === "") {
+    if (!formData.licenseNo?.trim?.()) {
       errors.licenseNo = { invalid: true, message: "License no is required" };
     }
-    if (formData.phone?.trim?.() === "") {
+    if (!formData.phone?.trim?.()) {
       errors.phone = {
         invalid: true,
         message: "Driver's phone no is required",
@@ -372,16 +372,16 @@ const LoadingSlipAdd = () => {
         message: "At least one lorry receipt is required",
       };
     }
-    if (formData.totalFreight < 0 || formData.totalFreight === "") {
+    if (formData.totalFreight < 0 || !formData.totalFreight) {
       errors.totalFreight = {
         invalid: true,
         message: "Total freight is invalid",
       };
     }
-    if (formData.rent < 0 || formData.rent === "") {
+    if (formData.rent < 0 || !formData.rent) {
       errors.rent = { invalid: true, message: "Rent is invalid" };
     }
-    if (formData.advance < 0 || formData.advance === "") {
+    if (formData.advance < 0 || !formData.advance) {
       errors.advance = { invalid: true, message: "Advance is invalid" };
     }
 
@@ -732,7 +732,7 @@ const LoadingSlipAdd = () => {
                       <TextField
                         {...params}
                         label="Driver"
-                        error={formErrors.vehicle.invalid}
+                        error={formErrors.driver.invalid}
                         fullWidth
                       />
                     )}
@@ -908,6 +908,7 @@ const LoadingSlipAdd = () => {
                     value={loadingSlip.advance || ""}
                     onChange={inputChangeHandler}
                     onInput={validateNumber}
+                    error={formErrors.advance.invalid}
                     name="advance"
                     id="advance"
                   />

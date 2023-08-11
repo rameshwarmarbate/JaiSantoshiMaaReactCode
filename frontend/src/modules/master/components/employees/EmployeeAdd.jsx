@@ -167,13 +167,13 @@ const EmployeeAdd = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Name is required" };
     }
-    if (formData.correspondenceAddress?.trim?.() === "") {
+    if (!formData.correspondenceAddress?.trim?.()) {
       errors.address = { invalid: true, message: "Address is required" };
     }
-    if (formData.telephone?.trim?.() === "") {
+    if (!formData.telephone?.trim?.()) {
       errors.telephone = {
         invalid: true,
         message: "Telephone number is required",

@@ -27,8 +27,27 @@ export default defineConfig({
   },
   server: {
     port: 3001,
-    fs: {
-      allow: [".."],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("@mui/")) {
+              return id
+                .toString()
+                .split("node_modules/")[1]
+                .split("/")[1]
+                .toString();
+            }
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
+          }
+        },
+      },
     },
   },
 });

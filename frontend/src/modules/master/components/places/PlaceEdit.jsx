@@ -102,10 +102,10 @@ const PlaceEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Place name is required" };
     }
-    if (formData.abbreviation?.trim?.() === "") {
+    if (!formData.abbreviation?.trim?.()) {
       errors.abbreviation = {
         invalid: true,
         message: "Abbreviation is required",

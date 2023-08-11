@@ -158,10 +158,10 @@ const SupplierEdit = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Customer name is required" };
     }
-    if (formData.address?.trim?.() === "") {
+    if (!formData.address?.trim?.()) {
       errors.address = { invalid: true, message: "Address is required" };
     }
     if (

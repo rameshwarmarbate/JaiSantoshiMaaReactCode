@@ -76,7 +76,7 @@ const UserEdit = () => {
         (branch) => branch._id === fetchedUser.branch
       );
       const employee = employees?.find?.(
-        (branch) => branch._id === fetchedUser.employee
+        ({ _id }) => _id === fetchedUser.employee
       );
       if (filteredBranch?._id) {
         setFetchedUser((currState) => {
@@ -169,10 +169,10 @@ const UserEdit = () => {
         errors.employee = { invalid: true, message: "Employee is required" };
       }
     }
-    if (!formData.username || formData.username?.trim?.() === "") {
+    if (!formData.username || !formData.username?.trim?.()) {
       errors.username = { invalid: true, message: "Username is required" };
     }
-    if (!formData.password || formData.password?.trim?.() === "") {
+    if (!formData.password || !formData.password?.trim?.()) {
       errors.password = { invalid: true, message: "Password is required" };
     } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {
@@ -187,10 +187,7 @@ const UserEdit = () => {
         message: "Password and Confirm password does not match",
       };
     }
-    if (
-      !formData.confirmPassword ||
-      formData.confirmPassword?.trim?.() === ""
-    ) {
+    if (!formData.confirmPassword || !formData.confirmPassword?.trim?.()) {
       errors.confirmPassword = {
         invalid: true,
         message: "Confirm password is required",

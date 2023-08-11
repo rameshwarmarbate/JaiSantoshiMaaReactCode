@@ -54,10 +54,10 @@ const ContactPersonForm = ({ onContactPersonAdd, editContact }) => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (formData.name?.trim?.() === "") {
+    if (!formData.name?.trim?.()) {
       errors.name = { invalid: true, message: "Name is required" };
     }
-    if (formData.phone?.trim?.() === "") {
+    if (!formData.phone?.trim?.()) {
       errors.phone = { invalid: true, message: "Phone is required" };
     }
     if (

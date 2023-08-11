@@ -97,6 +97,7 @@ const LorryReceiptAdd = () => {
           } else {
             setHttpError("");
             setLorryReceipt(initialState);
+            setFormErrors(initialErrorState);
           }
         })
         .catch((error) => {
@@ -110,7 +111,7 @@ const LorryReceiptAdd = () => {
     if (!formData.lr) {
       errors.lr = { invalid: true, message: "Lorry receipt is required" };
     }
-    if (formData.foNum?.trim?.() === "") {
+    if (!formData.foNum?.trim?.()) {
       errors.foNum = { invalid: true, message: "FO no is required" };
     }
 

@@ -166,34 +166,34 @@ const BankAccountAdd = () => {
     if (!formData.bank) {
       errors.bank = { invalid: true, message: "Bank is required" };
     }
-    if (formData.ifsc?.trim?.() === "") {
+    if (!formData.ifsc?.trim?.()) {
       errors.ifsc = { invalid: true, message: "IFSC code is required" };
     }
-    if (formData.accountHolder?.trim?.() === "") {
+    if (!formData.accountHolder?.trim?.()) {
       errors.accountHolder = {
         invalid: true,
         message: "Account holder name is required",
       };
     }
-    if (formData.accountType?.trim?.() === "") {
+    if (!formData.accountType?.trim?.()) {
       errors.accountType = {
         invalid: true,
         message: "Account type is required",
       };
     }
-    if (formData.customerId?.trim?.() === "") {
+    if (!formData.customerId?.trim?.()) {
       errors.customerId = {
         invalid: true,
         message: "Customer ID is required",
       };
     }
-    if (formData.accountNo?.trim?.() === "") {
+    if (!formData.accountNo?.trim?.()) {
       errors.accountNo = {
         invalid: true,
         message: "Account number is required",
       };
     }
-    if (formData.openingBalance?.trim?.() === "") {
+    if (!formData.openingBalance?.trim?.()) {
       errors.openingBalance = {
         invalid: true,
         message: "Opening balance is required",

@@ -38,10 +38,10 @@ const AdminRegistration = () => {
 
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
-    if (!formData.username || formData.username?.trim?.() === "") {
+    if (!formData.username || !formData.username?.trim?.()) {
       errors.username = { invalid: true, message: "Username is required" };
     }
-    if (!formData.password || formData.password?.trim?.() === "") {
+    if (!formData.password || !formData.password?.trim?.()) {
       errors.password = { invalid: true, message: "Password is required" };
     } else if (formData.password?.trim?.()?.length < 5) {
       errors.password = {

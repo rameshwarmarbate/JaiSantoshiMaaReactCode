@@ -169,7 +169,7 @@ const MoneyTransferAdd = () => {
     if (!formData.date) {
       errors.date = { invalid: true, message: "Date is required" };
     }
-    if (formData.amount?.trim?.() === "" || formData.amount?.trim?.() === "0") {
+    if (!formData.amount || formData.amount === "0") {
       errors.amount = {
         invalid: true,
         message: "Amount is required and should be greater than 0",

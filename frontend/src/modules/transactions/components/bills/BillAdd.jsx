@@ -448,6 +448,7 @@ const BillAdd = () => {
                       <TextField
                         {...params}
                         label="Branch"
+                        name="branch"
                         error={formErrors.branch.invalid}
                         fullWidth
                       />
