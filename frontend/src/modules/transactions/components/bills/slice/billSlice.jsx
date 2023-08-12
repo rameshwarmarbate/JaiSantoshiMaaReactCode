@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   addBill,
+  exportToExcelBill,
   fetchBill,
   fetchBills,
   fetchBranches,
@@ -55,6 +56,14 @@ export const downloadBill = createAsyncThunk(
   "DOWNLOAD_BILL",
   async (requestObject) => {
     const { data, status } = await printBill(requestObject);
+    return { data, status };
+  }
+);
+
+export const downloadExcelBill = createAsyncThunk(
+  "DOWNLOAD_EXCEL_BILL",
+  async (requestObject) => {
+    const { data, status } = await exportToExcelBill(requestObject);
     return { data, status };
   }
 );

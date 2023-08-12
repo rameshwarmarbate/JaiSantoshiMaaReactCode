@@ -228,11 +228,31 @@ const getLorryReceiptsByConsignor = (req, res, next) => {
     return res.status(200).json({ message: "Consignor ID is required!" });
   }
 
-  LorryReceipt.find({
+  const query = {
     branch: req.body.branch,
     consignor: req.body.consignor,
     active: true,
-  })
+  };
+
+  if (req.body.from) {
+    const date = new Date(req.body.from);
+    const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+    const newDate = new Date(updatedDate)?.setUTCHours(0, 0, 0, 000);
+    query.date = {
+      $gte: new Date(newDate)?.toISOString(),
+    };
+  }
+  if (req.body.to) {
+    const date = new Date(req.body.to);
+    const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+    const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+    query.date = {
+      ...query.date,
+      $lte: new Date(newDate)?.toISOString(),
+    };
+  }
+
+  LorryReceipt.find(query)
     .limit(1000)
     .exec((error, lorryReceipts) => {
       if (error) {
@@ -1923,6 +1943,8 @@ const addBill = (req, res, next) => {
   const bill = new Bill({
     branch: req.body.branch,
     date: req.body.date,
+    from: req.body.from,
+    to: req.body.to,
     customer: req.body.customer,
     lrList: req.body.lrList,
     totalFreight: +req.body.totalFreight,
@@ -2066,6 +2088,8 @@ const updateBill = (req, res, next) => {
                 $set: {
                   branch: req.body.branch,
                   date: req.body.date,
+                  from: req.body.from,
+                  to: req.body.to,
                   customer: req.body.customer,
                   lrList: req.body.lrList,
                   totalFreight: +req.body.totalFreight,
@@ -2283,6 +2307,81 @@ const printBill = (req, res) => {
                 });
             }
           );
+        }
+      });
+    });
+  });
+};
+
+const exportToExcelBill = (req, res) => {
+  if (!req.params.id) {
+    return res.status(200).json({ message: "Bill ID is required!" });
+  }
+  Bill.findById(req.params.id, (findBillErr, data) => {
+    if (findBillErr) {
+      return res.status(200).json(findBillErr);
+    }
+    Customer.findById(data.customer, (findCustErr, custData) => {
+      if (findCustErr) {
+        return res.status(200).json(findCustErr);
+      }
+      const lrList = [];
+      data.lrList.forEach(async (lorryReceipt) => {
+        const foundLR = await LorryReceipt.findById(lorryReceipt._id);
+        const _id = lorryReceipt._id;
+        const lr = JSON.parse(JSON.stringify(foundLR));
+        lr.formattedDate = getFormattedDate(lr.date);
+        lr.formattedLRNo = lr.lrNo;
+        lrList.push(lr);
+        if (data.lrList.length === lrList.length) {
+          const updatedLRList = [];
+          let totalWeight = 0;
+          let totalArticles = 0;
+          lrList.forEach((lr) => {
+            lr.transactions.forEach((tr, index) => {
+              totalWeight = totalWeight + +tr.weight;
+              totalArticles = totalArticles + +tr.articleNo;
+              if (index === 0) {
+                updatedLRList.push({
+                  ...lr,
+                  ...tr,
+                  articleNo: tr.articleNo?.toFixed(2),
+                  rate: tr.rate?.toFixed(2),
+                  lrCharges: lr.lrCharges ? lr.lrCharges?.toFixed(2) : "0.00",
+                  hamali: lr.hamali ? lr.hamali?.toFixed(2) : "0.00",
+                  deliveryCharges: lr.deliveryCharges
+                    ? lr.deliveryCharges?.toFixed(2)
+                    : "0.00",
+                  total: (
+                    +tr.freight +
+                    +lr.lrCharges +
+                    +lr.hamali +
+                    +lr.deliveryCharges
+                  )?.toFixed(2),
+                });
+              } else {
+                updatedLRList.push({
+                  ...tr,
+                  articleNo: tr.articleNo?.toFixed(2),
+                  rate: tr.rate?.toFixed(2),
+                  total: tr.freight?.toFixed(2),
+                });
+              }
+            });
+          });
+
+          const workbook = exportBillToXlsx(updatedLRList);
+          res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          );
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + "bill.xlsx"
+          );
+          return workbook.xlsx.write(res).then(() => {
+            res.status(200).end();
+          });
         }
       });
     });
@@ -3187,6 +3286,7 @@ module.exports = {
   getLoadingSlipForReport,
   getLorryReceiptsForLS,
   getChallanAck,
+  exportToExcelBill,
 };
 
 const exportLRDataToXlsx = (data) => {
@@ -3234,6 +3334,32 @@ const exportLRChallanDataToXlsx = (data) => {
     { header: "To", key: "toName" },
     { header: "Hire amount", key: "totalFreight" },
     { header: "Balance", key: "totalPayable" },
+  ];
+  worksheet.addRows(data);
+  return workbook;
+};
+
+const exportBillToXlsx = (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Bill");
+  const columns = data.reduce(
+    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
+    []
+  );
+  worksheet.columns = [
+    { header: "Date", key: "formattedDate" },
+    { header: "LR No", key: "formattedLRNo" },
+    { header: "Station", key: "to" },
+    { header: "Invoice No.", key: "invoiceNo" },
+    { header: "Article", key: "article" },
+    { header: "FO Num", key: "foNum" },
+    { header: "Weight", key: "weight" },
+    { header: "No. of Article", key: "articleNo" },
+    { header: "Rate", key: "rate" },
+    { header: "LR Charge", key: "lrCharges" },
+    { header: "Hamali", key: "hamali" },
+    { header: "Delivery Charges", key: "deliveryCharges" },
+    { header: "Amount", key: "total" },
   ];
   worksheet.addRows(data);
   return workbook;

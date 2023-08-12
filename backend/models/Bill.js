@@ -16,6 +16,12 @@ const Bill = new Schema(
       type: String,
       required: true,
     },
+    from: {
+      type: String,
+    },
+    to: {
+      type: String,
+    },
     customer: {
       type: String,
       required: true,

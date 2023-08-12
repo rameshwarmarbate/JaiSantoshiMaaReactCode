@@ -51,3 +51,8 @@ export function modifyBill(requestObject) {
   const url = `api/transactions/updateBill/${requestObject._id}`;
   return fetchFromApiServer("PUT", url, requestObject);
 }
+
+export function exportToExcelBill({ id }) {
+  const url = `api/transactions/exportToExcelBill/${id}`;
+  return fetchFromApiServer("BLOB", url);
+}

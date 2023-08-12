@@ -20,15 +20,19 @@ import { LoadingSpinner } from "../../../../ui-controls";
 import { base64ToObjectURL, validateNumber } from "../../../../services/utils";
 import {
   downloadBill,
+  downloadExcelBill,
   getBill,
   getLorryReceiptsByConsignor,
   selectIsLoading,
   updateBill,
 } from "./slice/billSlice";
+import FileSaver from "file-saver";
 
 const initialState = {
   branch: "",
   date: new Date(),
+  from: "",
+  to: "",
   customer: "",
   lrList: [],
   totalFreight: "",
@@ -129,41 +133,63 @@ const BillEdit = () => {
     }
   }, [httpError]);
 
+  const fetchLorry = (branch, consignor, from, to) => {
+    dispatch(
+      getLorryReceiptsByConsignor({
+        branch,
+        consignor,
+        from,
+        to,
+      })
+    )
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          const updatedLR = [...(payload?.data || [])];
+          updatedLR?.forEach?.((lr) => {
+            lr.checked = false;
+            lr.consignor =
+              customers?.filter?.(
+                (customer) => customer._id === lr.consignor
+              )[0] || "";
+            lr.consignee =
+              customers?.filter?.(
+                (customer) => customer._id === lr.consignee
+              )[0] || "";
+          });
+          setFetchedLorryReceipts(updatedLR);
+        }
+      })
+      .catch(() => {
+        setHttpError(
+          "Something went wrong! Please try later or contact Administrator."
+        );
+      });
+  };
+
   useEffect(() => {
     if (fetchedBill.branch && fetchedBill.customer) {
-      dispatch(
-        getLorryReceiptsByConsignor({
-          branch: fetchedBill.branch,
-          consignor: fetchedBill.customer,
-        })
-      )
-        .then(({ payload = {} }) => {
-          const { message } = payload?.data || {};
-          if (message) {
-            setHttpError(message);
-          } else {
-            const updatedLR = [...(payload?.data || [])];
-            updatedLR?.forEach?.((lr) => {
-              lr.checked = false;
-              lr.consignor =
-                customers?.filter?.(
-                  (customer) => customer._id === lr.consignor
-                )[0] || "";
-              lr.consignee =
-                customers?.filter?.(
-                  (customer) => customer._id === lr.consignee
-                )[0] || "";
-            });
-            setFetchedLorryReceipts(updatedLR);
-          }
-        })
-        .catch(() => {
-          setHttpError(
-            "Something went wrong! Please try later or contact Administrator."
-          );
-        });
+      fetchLorry(
+        fetchedBill.branch,
+        fetchedBill.customer,
+        fetchedBill.from,
+        fetchedBill.to
+      );
     }
-  }, [fetchedBill.branch, fetchedBill.customer]);
+  }, [
+    fetchedBill.branch,
+    fetchedBill.customer,
+    fetchedBill.from,
+    fetchedBill.to,
+  ]);
+
+  // useEffect(() => {
+  //   if (bill.branch && bill.customer) {
+  //     fetchLorry(bill.branch?._id, bill.customer?._id, bill.from, bill.to);
+  //   }
+  // }, [bill.branch, bill.customer, bill.from, bill.to]);
 
   useEffect(() => {
     if (billId) {
@@ -298,7 +324,7 @@ const BillEdit = () => {
       };
     });
   };
-  const submitHandler = (e, isSaveAndPrint) => {
+  const submitHandler = (e, isSaveAndPrint, isExport) => {
     e.preventDefault();
     if (!validateForm(bill)) {
       dispatch(
@@ -336,6 +362,26 @@ const BillEdit = () => {
                 .catch((error) => {
                   setHttpError(error.message);
                 });
+            } else if (isExport) {
+              dispatch(downloadExcelBill({ id: payload?.data._id, email: "" }))
+                .then(({ payload = {} }) => {
+                  const { message } = payload?.data || {};
+                  if (message) {
+                    setHttpError(message);
+                  } else {
+                    const blob = new Blob([payload?.data], {
+                      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    });
+                    FileSaver.saveAs(blob, "Bill.xlsx");
+                    setHttpError("");
+                    setFormErrors(initialErrorState);
+                    setBill(initialState);
+                    goToBillList();
+                  }
+                })
+                .catch((error) => {
+                  setHttpError(error.message);
+                });
             } else {
               setHttpError("");
               setFormErrors(initialErrorState);
@@ -354,7 +400,10 @@ const BillEdit = () => {
     e.preventDefault();
     submitHandler(e, true);
   };
-
+  const saveAndExport = (e) => {
+    e.preventDefault();
+    submitHandler(e, false, true);
+  };
   const validateForm = (formData) => {
     const errors = { ...initialErrorState };
     if (!formData.branch) {
@@ -496,6 +545,40 @@ const BillEdit = () => {
                 </FormControl>
               </div>
               <div className="grid-item">
+                <FormControl
+                  fullWidth
+                  size="small"
+                  error={formErrors.customer.invalid}
+                >
+                  <Autocomplete
+                    disablePortal
+                    autoSelect
+                    size="small"
+                    name="customer"
+                    options={customers}
+                    value={bill.customer || null}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(value, "customer")
+                    }
+                    getOptionLabel={(customer) => customer.name}
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Customer"
+                        error={formErrors.customer.invalid}
+                        fullWidth
+                      />
+                    )}
+                  />
+                  {formErrors.customer.invalid && (
+                    <FormHelperText>
+                      {formErrors.customer.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
                 <FormControl fullWidth error={formErrors.date.invalid}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -524,36 +607,43 @@ const BillEdit = () => {
                 </FormControl>
               </div>
               <div className="grid-item">
-                <FormControl
-                  fullWidth
-                  size="small"
-                  error={formErrors.customer.invalid}
-                >
-                  <Autocomplete
-                    disablePortal
-                    size="small"
-                    name="customer"
-                    options={customers}
-                    value={bill.customer || null}
-                    onChange={(e, value) =>
-                      autocompleteChangeListener(value, "customer")
-                    }
-                    getOptionLabel={(customer) => customer.name}
-                    openOnFocus
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Customer"
-                        error={formErrors.customer.invalid}
-                        fullWidth
-                      />
-                    )}
-                  />
-                  {formErrors.customer.invalid && (
-                    <FormHelperText>
-                      {formErrors.customer.message}
-                    </FormHelperText>
-                  )}
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="From"
+                      inputFormat="DD/MM/YYYY"
+                      value={bill.from || null}
+                      maxDate={bill.to}
+                      disableFuture={true}
+                      onChange={dateInputChangeHandler.bind(null, "from")}
+                      inputProps={{
+                        readOnly: true,
+                      }}
+                      renderInput={(params) => (
+                        <TextField name="from" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="To"
+                      inputFormat="DD/MM/YYYY"
+                      value={bill.to || null}
+                      minDate={bill.from}
+                      disableFuture={true}
+                      onChange={dateInputChangeHandler.bind(null, "to")}
+                      inputProps={{
+                        readOnly: true,
+                      }}
+                      renderInput={(params) => (
+                        <TextField name="to" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </div>
             </div>
@@ -844,6 +934,17 @@ const BillEdit = () => {
               onClick={saveAndPrint}
             >
               Save &amp; Print
+            </Button>{" "}
+            <Button
+              variant="contained"
+              size="medium"
+              type="button"
+              color="primary"
+              form="billForm"
+              className="ml6"
+              onClick={saveAndExport}
+            >
+              export to excel sheet
             </Button>
           </div>
         </Paper>

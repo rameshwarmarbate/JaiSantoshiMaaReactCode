@@ -232,6 +232,9 @@ routes.route("/removeBill/:id").delete(checkAuth, transactionsCtrl.removeBill);
 routes.route("/getBill/:id").get(checkAuth, transactionsCtrl.getBill);
 
 routes.route("/printBill/:id").post(checkAuth, transactionsCtrl.printBill);
+routes
+  .route("/exportToExcelBill/:id")
+  .post(checkAuth, transactionsCtrl.exportToExcelBill);
 
 //Update a bill
 routes.route("/updateBill/:id").put(checkAuth, transactionsCtrl.updateBill);

@@ -21,13 +21,17 @@ import { base64ToObjectURL, validateNumber } from "../../../../services/utils";
 import {
   createBill,
   downloadBill,
+  downloadExcelBill,
   getLorryReceiptsByConsignor,
   selectIsLoading,
 } from "./slice/billSlice";
+import FileSaver from "file-saver";
 
 const initialState = {
   branch: "",
   date: new Date(),
+  from: "",
+  to: "",
   customer: "",
   lrList: [],
   totalFreight: "",
@@ -131,6 +135,8 @@ const BillAdd = () => {
         getLorryReceiptsByConsignor({
           branch: bill.branch?._id,
           consignor: bill.customer?._id,
+          from: bill.from,
+          to: bill.to,
         })
       )
         .then(({ payload = {} }) => {
@@ -167,7 +173,7 @@ const BillAdd = () => {
           );
         });
     }
-  }, [bill.branch, bill.customer, customers]);
+  }, [bill.branch, bill.customer, bill.from, bill.to]);
 
   useEffect(() => {
     let totalFreight = 0;
@@ -261,7 +267,7 @@ const BillAdd = () => {
       };
     });
   };
-  const submitHandler = (e, isSaveAndPrint) => {
+  const submitHandler = (e, isSaveAndPrint, isExport) => {
     e.preventDefault();
     if (!validateForm(bill)) {
       dispatch(
@@ -300,6 +306,26 @@ const BillAdd = () => {
                   setHttpError(error.message);
                   // setSelectedBill(null);
                 });
+            } else if (isExport) {
+              dispatch(downloadExcelBill({ id: payload?.data._id, email: "" }))
+                .then(({ payload = {} }) => {
+                  const { message } = payload?.data || {};
+                  if (message) {
+                    setHttpError(message);
+                  } else {
+                    const blob = new Blob([payload?.data], {
+                      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    });
+                    FileSaver.saveAs(blob, "Bill.xlsx");
+                    setHttpError("");
+                    setFormErrors(initialErrorState);
+                    setBill(initialState);
+                    goToBillList();
+                  }
+                })
+                .catch((error) => {
+                  setHttpError(error.message);
+                });
             } else {
               setHttpError("");
               setFormErrors(initialErrorState);
@@ -317,6 +343,10 @@ const BillAdd = () => {
   const saveAndPrint = (e) => {
     e.preventDefault();
     submitHandler(e, true);
+  };
+  const saveAndExport = (e) => {
+    e.preventDefault();
+    submitHandler(e, false, true);
   };
 
   const validateForm = (formData) => {
@@ -460,34 +490,6 @@ const BillAdd = () => {
                 </FormControl>
               </div>
               <div className="grid-item">
-                <FormControl fullWidth error={formErrors.date.invalid}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      error={formErrors.date.invalid}
-                      label="Date"
-                      inputFormat="DD/MM/YYYY"
-                      value={bill.date}
-                      disableFuture={true}
-                      onChange={dateInputChangeHandler.bind(null, "date")}
-                      inputProps={{
-                        readOnly: true,
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          name="date"
-                          size="small"
-                          {...params}
-                          error={formErrors.date.invalid}
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
-                  {formErrors.date.invalid && (
-                    <FormHelperText>{formErrors.date.message}</FormHelperText>
-                  )}
-                </FormControl>
-              </div>
-              <div className="grid-item">
                 <FormControl
                   fullWidth
                   size="small"
@@ -519,6 +521,74 @@ const BillAdd = () => {
                       {formErrors.customer.message}
                     </FormHelperText>
                   )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth error={formErrors.date.invalid}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      error={formErrors.date.invalid}
+                      label="Date"
+                      inputFormat="DD/MM/YYYY"
+                      value={bill.date}
+                      disableFuture={true}
+                      onChange={dateInputChangeHandler.bind(null, "date")}
+                      inputProps={{
+                        readOnly: true,
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          name="date"
+                          size="small"
+                          {...params}
+                          error={formErrors.date.invalid}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                  {formErrors.date.invalid && (
+                    <FormHelperText>{formErrors.date.message}</FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="From"
+                      inputFormat="DD/MM/YYYY"
+                      value={bill.from || null}
+                      disableFuture={true}
+                      maxDate={bill.to}
+                      onChange={dateInputChangeHandler.bind(null, "from")}
+                      inputProps={{
+                        readOnly: true,
+                      }}
+                      renderInput={(params) => (
+                        <TextField name="from" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="To"
+                      inputFormat="DD/MM/YYYY"
+                      value={bill.to || null}
+                      disableFuture={true}
+                      minDate={bill.from}
+                      onChange={dateInputChangeHandler.bind(null, "to")}
+                      inputProps={{
+                        readOnly: true,
+                      }}
+                      renderInput={(params) => (
+                        <TextField name="to" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </div>
             </div>
@@ -808,6 +878,17 @@ const BillAdd = () => {
               onClick={saveAndPrint}
             >
               Save &amp; Print
+            </Button>
+            <Button
+              variant="contained"
+              size="medium"
+              type="button"
+              color="primary"
+              form="billForm"
+              className="ml6"
+              onClick={saveAndExport}
+            >
+              export to excel sheet
             </Button>
           </div>
         </Paper>

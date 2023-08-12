@@ -468,8 +468,8 @@ const getSearchedUsers = (req, res, next) => {
   if (!req.body.search) {
     return getUsers(req, res, next);
   }
+  const expression = new RegExp(req.body.search);
   User.aggregate([
-    { $match: { active: true, $text: { $search: req.body.search } } },
     { $sort: { createdAt: -1 } },
     {
       $addFields: {
@@ -497,6 +497,39 @@ const getSearchedUsers = (req, res, next) => {
         as: "Employee",
       },
     },
+    { $unwind: { path: "$Branch", preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: "$Employee", preserveNullAndEmptyArrays: true } },
+    {
+      $match: {
+        active: true,
+        $or: [
+          {
+            ["Branch.name"]: {
+              $regex: expression,
+              $options: "i",
+            },
+          },
+          {
+            ["Employee.name"]: {
+              $regex: expression,
+              $options: "i",
+            },
+          },
+          {
+            type: {
+              $regex: expression,
+              $options: "i",
+            },
+          },
+          {
+            username: {
+              $regex: expression,
+              $options: "i",
+            },
+          },
+        ],
+      },
+    },
   ]).exec(function (error, users) {
     if (error) {
       return res.status(200).json({
@@ -507,8 +540,8 @@ const getSearchedUsers = (req, res, next) => {
       users.forEach((user) => {
         if (user && user.type && user.type.toLowerCase() !== "superadmin") {
           const updatedUser = {
-            branch: user.Branch[0]?.name || "",
-            employee: user.Employee[0]?.name || "",
+            branch: user.Branch?.name || "",
+            employee: user.Employee?.name || "",
             type: user.type,
             username: user.username,
             id: user._id,
