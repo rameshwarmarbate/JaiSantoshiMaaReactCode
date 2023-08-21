@@ -4,6 +4,9 @@ import Login from "../user/components/Login";
 
 const Welcome = () => {
   const user = useSelector((state) => state.user);
+  if (!user.username) {
+    return <Login />;
+  }
 
   return (
     <>
@@ -17,7 +20,6 @@ const Welcome = () => {
         </span>{" "}
         <br /> {import.meta.env.VITE_TITLE?.toLowerCase?.()}
       </h1>
-      {!user.username && <Login />}
     </>
   );
 };

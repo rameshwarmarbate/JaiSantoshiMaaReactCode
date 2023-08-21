@@ -27,6 +27,13 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(removeUser());
+    const jQueryScript = document.createElement("link");
+    jQueryScript.setAttribute(
+      "href",
+      "https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css"
+    );
+    jQueryScript.setAttribute("rel", "stylesheet");
+    document.head.appendChild(jQueryScript);
     navigate("/");
   };
 

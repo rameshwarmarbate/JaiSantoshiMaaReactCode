@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Footer, Navigation, Header } from "..";
 import classes from "./Layout.module.css";
 const Layout = (props) => {
   const user = useSelector((state) => state.user);
+  useEffect(() => {
+    if (user.username) {
+      const linkNode = document.getElementsByTagName("link")[1];
+      linkNode.parentNode.removeChild(linkNode);
+    }
+  }, [user]);
   return (
     <>
       {user && user.username && (
@@ -24,7 +30,7 @@ const Layout = (props) => {
       {!user.username && (
         <div className="bg-login">
           <div className="bl_login">
-            <main className={classes.main}>{props.children}</main>
+            <main className={classes.main1}>{props.children}</main>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ const express = require("express"),
   cors = require("cors"),
   bodyParser = require("body-parser"),
   dbConfig = require("./database/db"),
+  dotenv = require("dotenv"),
   engines = require("consolidate");
 
 const app = express();
@@ -15,7 +16,7 @@ app.use(
     extended: true,
   })
 );
-
+dotenv.config();
 app.use("/public", express.static("public"));
 app.use("/bills", express.static("bills"));
 app.engine("html", engines.mustache);

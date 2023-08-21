@@ -1,7 +1,3 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
-
 const Branch = require("../models/Branch");
 const Place = require("../models/Place");
 const Employee = require("../models/Employee");

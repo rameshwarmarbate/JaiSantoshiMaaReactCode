@@ -1,6 +1,3 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 const pdf = require("html-pdf");
 const options = {
   format: "Letter",
@@ -27,24 +24,17 @@ const numWords = require("num-words");
 var fs = require("fs");
 const path = require("path");
 const ExcelJS = require("exceljs");
-
 const LorryReceipt = require("../models/LorryReceipt");
 const LoadingSlip = require("../models/LoadingSlip");
 const Customer = require("../models/Customer");
 const MoneyTransfer = require("../models/MoneyTransfer");
 const PettyTransaction = require("../models/PettyTransaction");
 const Bill = require("../models/Bill");
-const Supplier = require("../models/Supplier");
 const Vehicle = require("../models/Vehicle");
-const VehicleType = require("../models/VehicleType");
 const SuppliersBill = require("../models/SuppliersBill");
 const Quotation = require("../models/Quotation");
-const User = require("../models/User.js");
-
-// const TransactionPrefix = require("../models/TransactionPrefix");
-
 const sendEmail = require("../controller/email");
-const Employee = require("../models/Employee");
+const translator = require("./openAI");
 
 const getLorryReceipts = (req, res, next) => {
   const query = { active: true };
@@ -279,20 +269,45 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
         return res.status(200).json({ message: consigneeError.message });
       }
       fetchedConsignee = consignee;
-      Customer.findById(LRData.consignor, (consignorError, consignor) => {
+      Customer.findById(LRData.consignor, async (consignorError, consignor) => {
         if (consignorError) {
           return res.status(200).json({ message: consignorError.message });
         }
         fetchedConsignor = consignor;
+        const text = await translator(
+          `${consignee.name}|${LRData.from}|${LRData.to}|${consignor.name}`
+        );
+        const [name, from, to, conName] = text?.split("|");
+        if (name) {
+          fetchedConsignee.name = name;
+        }
+        if (to) {
+          LRData.to = to;
+        }
+        if (from) {
+          LRData.from = from;
+        }
+        if (conName) {
+          fetchedConsignor.name = conName;
+        }
         let totalArticles = 0;
         let totalWeight = 0;
         let totalChargeWeight = 0;
         LRData.total = LRData.total - LRData.lrCharges + 10;
         LRData.billtyCharges = "10.00";
 
+        let articles = "";
+        LRData.transactions?.forEach(({ article }) => {
+          articles = articles ? `${article}|` : article;
+        });
+        const desc = await translator(articles);
+        const descriptions = desc.split("|");
         LRData.transactions.forEach((tr, index) => {
           if (tr.articleNo) {
             totalArticles = totalArticles + tr.articleNo;
+          }
+          if (descriptions[index]) {
+            tr.article = descriptions[index];
           }
           if (tr.weight) {
             totalWeight = totalWeight + tr.weight;
@@ -789,111 +804,145 @@ const viewLorryReceipt = (req, res, next) => {
           return res.status(200).json({ message: consigneeError.message });
         }
         fetchedConsignee = consignee;
-        Customer.findById(LRData.consignor, (consignorError, consignor) => {
-          if (consignorError) {
-            return res.status(200).json({ message: consignorError.message });
-          }
-          fetchedConsignor = consignor;
-          let totalArticles = 0;
-          let totalWeight = 0;
-          let totalChargeWeight = 0;
-          LRData.total = LRData.total - LRData.lrCharges + 10;
-          LRData.billtyCharges = isWithoutAmount ? "-" : "10.00";
+        Customer.findById(
+          LRData.consignor,
+          async (consignorError, consignor) => {
+            if (consignorError) {
+              return res.status(200).json({ message: consignorError.message });
+            }
 
-          LRData.transactions.forEach((tr, index) => {
-            if (tr.articleNo) {
-              totalArticles = totalArticles + tr.articleNo;
+            fetchedConsignor = consignor;
+            const text = await translator(
+              `${consignee.name}|${LRData.from}|${LRData.to}|${consignor.name}`
+            );
+            const [name, from, to, conName] = text?.split("|");
+            if (name) {
+              fetchedConsignee.name = name;
             }
-            if (tr.weight) {
-              totalWeight = totalWeight + tr.weight;
+            if (to) {
+              LRData.to = to;
             }
-            if (tr.chargeWeight) {
-              totalChargeWeight = totalChargeWeight + tr.chargeWeight;
+            if (from) {
+              LRData.from = from;
             }
-            tr.freight = tr.freight?.toFixed(2);
-            tr.rate = tr.rate?.toFixed(2);
-            tr.srNo = index + 1;
-          });
-          LRData.totalFreight = isWithoutAmount
-            ? "   -   "
-            : LRData.totalFreight?.toFixed(2);
-          LRData.deliveryCharges = isWithoutAmount
-            ? "   -   "
-            : LRData.deliveryCharges?.toFixed(2);
-          LRData.lrCharges = isWithoutAmount ? "   -   " : `0.00`;
-          LRData.hamali = isWithoutAmount
-            ? "   -   "
-            : LRData.hamali?.toFixed(2);
-          LRData.total = isWithoutAmount ? "   -   " : LRData.total?.toFixed(2);
+            if (conName) {
+              fetchedConsignor.name = conName;
+            }
+            let totalArticles = 0;
+            let totalWeight = 0;
+            let totalChargeWeight = 0;
+            LRData.total = LRData.total - LRData.lrCharges + 10;
+            LRData.billtyCharges = isWithoutAmount ? "-" : "10.00";
 
-          const logo = base64_encode(
-            path.join(__dirname, "../public/images/logo.png")
-          );
-          const laxmi = base64_encode(
-            path.join(__dirname, "../public/images/laxmi.jpeg")
-          );
-          const checked = base64_encode(
-            path.join(__dirname, "../public/images/checked.png")
-          );
-          const unchecked = base64_encode(
-            path.join(__dirname, "../public/images/unchecked.png")
-          );
-          const templatePath =
-            path.join(__dirname, "../bills/") + "LorryReceipt-Marathi.html";
-          res.render(
-            templatePath,
-            {
-              info: {
-                lr: LRData,
-                lrNo: LRData.LRNo || "-",
-                isTBB:
-                  LRData.payType && LRData.payType?.toLowerCase() === "tbb",
-                isToPay:
-                  LRData.payType && LRData.payType?.toLowerCase() === "topay",
-                isPaid:
-                  LRData.payType && LRData.payType?.toLowerCase() === "paid",
-                consignee: fetchedConsignee,
-                consignor: fetchedConsignor,
-                totalArticles: totalArticles,
-                totalWeight: totalWeight,
-                totalChargeWeight: totalChargeWeight,
-                logo: logo,
-                laxmi: laxmi,
-                checked: checked,
-                unchecked: unchecked,
-                user: req.body.user,
+            let articles = "";
+            LRData.transactions?.forEach(({ article }) => {
+              articles = articles ? `${article}|` : article;
+            });
+            const desc = await translator(articles);
+            const descriptions = desc.split("|");
+            LRData.transactions.forEach((tr, index) => {
+              if (tr.articleNo) {
+                totalArticles = totalArticles + tr.articleNo;
+              }
+              if (descriptions[index]) {
+                tr.article = descriptions[index];
+              }
+              if (tr.weight) {
+                totalWeight = totalWeight + tr.weight;
+              }
+              if (tr.chargeWeight) {
+                totalChargeWeight = totalChargeWeight + tr.chargeWeight;
+              }
+              tr.freight = tr.freight?.toFixed(2);
+              tr.rate = tr.rate?.toFixed(2);
+              tr.srNo = index + 1;
+            });
+            LRData.totalFreight = isWithoutAmount
+              ? "   -   "
+              : LRData.totalFreight?.toFixed(2);
+            LRData.deliveryCharges = isWithoutAmount
+              ? "   -   "
+              : LRData.deliveryCharges?.toFixed(2);
+            LRData.lrCharges = isWithoutAmount ? "   -   " : `0.00`;
+            LRData.hamali = isWithoutAmount
+              ? "   -   "
+              : LRData.hamali?.toFixed(2);
+            LRData.total = isWithoutAmount
+              ? "   -   "
+              : LRData.total?.toFixed(2);
+
+            const logo = base64_encode(
+              path.join(__dirname, "../public/images/logo.png")
+            );
+            const laxmi = base64_encode(
+              path.join(__dirname, "../public/images/laxmi.jpeg")
+            );
+            const checked = base64_encode(
+              path.join(__dirname, "../public/images/checked.png")
+            );
+            const unchecked = base64_encode(
+              path.join(__dirname, "../public/images/unchecked.png")
+            );
+            const templatePath =
+              path.join(__dirname, "../bills/") + "LorryReceipt-Marathi.html";
+            res.render(
+              templatePath,
+              {
+                info: {
+                  lr: LRData,
+                  lrNo: LRData.LRNo || "-",
+                  isTBB:
+                    LRData.payType && LRData.payType?.toLowerCase() === "tbb",
+                  isToPay:
+                    LRData.payType && LRData.payType?.toLowerCase() === "topay",
+                  isPaid:
+                    LRData.payType && LRData.payType?.toLowerCase() === "paid",
+                  consignee: fetchedConsignee,
+                  consignor: fetchedConsignor,
+                  totalArticles: totalArticles,
+                  totalWeight: totalWeight,
+                  totalChargeWeight: totalChargeWeight,
+                  logo: logo,
+                  laxmi: laxmi,
+                  checked: checked,
+                  unchecked: unchecked,
+                  user: req.body.user,
+                },
               },
-            },
-            (err, HTML) => {
-              const finalPath = path.join(__dirname, "../bills/lorryReceipts/");
-              const fileName = LRData.lrNo;
-              pdf.create(HTML, options).toBuffer((buffErr, buffer) => {
-                if (buffErr) {
-                  return res.status(200).json({ message: buffErr.message });
-                }
-                const base64String = buffer.toString("base64");
-                if (req.body.email && req.body.email?.trim() !== "") {
-                  sendEmail(
-                    req.body.email,
-                    base64String,
-                    `${fileName}.pdf`,
-                    `JSM - Lorry receipt no. ${fileName}`,
-                    `JSM - Lorry receipt no. ${fileName}`,
-                    `<p><b>Hello</b></p><p>Please find attached lorry receipt</p>`
-                  )
-                    .then((response) => {
-                      return res.json({ success: true });
-                    })
-                    .catch((err) => {
-                      return res.status(200).json({ message: err });
-                    });
-                } else {
-                  return res.json({ file: base64String });
-                }
-              });
-            }
-          );
-        });
+              (err, HTML) => {
+                const finalPath = path.join(
+                  __dirname,
+                  "../bills/lorryReceipts/"
+                );
+                const fileName = LRData.lrNo;
+                pdf.create(HTML, options).toBuffer((buffErr, buffer) => {
+                  if (buffErr) {
+                    return res.status(200).json({ message: buffErr.message });
+                  }
+                  const base64String = buffer.toString("base64");
+                  if (req.body.email && req.body.email?.trim() !== "") {
+                    sendEmail(
+                      req.body.email,
+                      base64String,
+                      `${fileName}.pdf`,
+                      `JSM - Lorry receipt no. ${fileName}`,
+                      `JSM - Lorry receipt no. ${fileName}`,
+                      `<p><b>Hello</b></p><p>Please find attached lorry receipt</p>`
+                    )
+                      .then((response) => {
+                        return res.json({ success: true });
+                      })
+                      .catch((err) => {
+                        return res.status(200).json({ message: err });
+                      });
+                  } else {
+                    return res.json({ file: base64String });
+                  }
+                });
+              }
+            );
+          }
+        );
       });
     }
   });

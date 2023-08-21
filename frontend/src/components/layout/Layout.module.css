@@ -9,6 +9,14 @@ body {
   min-height: calc(100vh - 130px);
 }
 
+.main1 {
+  width: 100%;
+  float: left;
+  margin: auto;
+  padding: 0px;
+  min-height: calc(100vh - 130px);
+}
+
 .show-menu .left-panel nav::-webkit-scrollbar {
   width: 6px;
   height: 6px;
