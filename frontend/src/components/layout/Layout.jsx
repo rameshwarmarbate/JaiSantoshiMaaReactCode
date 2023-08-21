@@ -7,7 +7,7 @@ const Layout = (props) => {
   useEffect(() => {
     if (user.username) {
       const linkNode = document.getElementsByTagName("link")[1];
-      linkNode.parentNode.removeChild(linkNode);
+      linkNode?.parentNode?.removeChild(linkNode);
     }
   }, [user]);
   return (

@@ -352,8 +352,10 @@ const LorryReceiptAdd = () => {
               setFormErrors(initialErrorState);
               setLorryReceipt(initialState);
             }
-            setLrNo(lrNo);
-            handleClickOpen();
+            if (lrNo) {
+              setLrNo(lrNo);
+              handleClickOpen();
+            }
           }
         })
         .catch((error) => {
