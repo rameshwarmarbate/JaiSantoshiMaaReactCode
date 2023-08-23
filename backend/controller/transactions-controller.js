@@ -296,18 +296,14 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
         LRData.total = LRData.total - LRData.lrCharges + 10;
         LRData.billtyCharges = "10.00";
 
-        let articles = "";
-        LRData.transactions?.forEach(({ article }) => {
-          articles = articles ? `${article} |` : article;
-        });
-        const desc = await translator(articles);
-        const descriptions = desc.split("|");
-        LRData.transactions.forEach((tr, index) => {
+        for (let index = 0; index < LRData.transactions.length; index++) {
+          const tr = LRData.transactions[index];
           if (tr.articleNo) {
             totalArticles = totalArticles + tr.articleNo;
           }
-          if (descriptions[index]) {
-            tr.article = descriptions[index];
+          const article = await translator(tr.article);
+          if (article) {
+            tr.article = article;
           }
           if (tr.weight) {
             totalWeight = totalWeight + tr.weight;
@@ -318,7 +314,8 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
           tr.freight = tr.freight?.toFixed(2);
           tr.rate = tr.rate?.toFixed(2);
           tr.srNo = index + 1;
-        });
+        }
+
         LRData.totalFreight = LRData.totalFreight?.toFixed(2);
         LRData.deliveryCharges = LRData.deliveryCharges?.toFixed(2);
         LRData.lrCharges = `0.00`;
@@ -834,18 +831,14 @@ const viewLorryReceipt = (req, res, next) => {
             LRData.total = LRData.total - LRData.lrCharges + 10;
             LRData.billtyCharges = isWithoutAmount ? "-" : "10.00";
 
-            let articles = "";
-            LRData.transactions?.forEach(({ article }) => {
-              articles = articles ? `${article}|` : article;
-            });
-            const desc = await translator(articles);
-            const descriptions = desc.split("|");
-            LRData.transactions.forEach((tr, index) => {
+            for (let index = 0; index < LRData.transactions.length; index++) {
+              const tr = LRData.transactions[index];
               if (tr.articleNo) {
                 totalArticles = totalArticles + tr.articleNo;
               }
-              if (descriptions[index]) {
-                tr.article = descriptions[index];
+              const article = await translator(tr.article);
+              if (article) {
+                tr.article = article;
               }
               if (tr.weight) {
                 totalWeight = totalWeight + tr.weight;
@@ -856,7 +849,7 @@ const viewLorryReceipt = (req, res, next) => {
               tr.freight = tr.freight?.toFixed(2);
               tr.rate = tr.rate?.toFixed(2);
               tr.srNo = index + 1;
-            });
+            }
             LRData.totalFreight = isWithoutAmount
               ? "   -   "
               : LRData.totalFreight?.toFixed(2);
