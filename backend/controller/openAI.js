@@ -20,13 +20,14 @@ async function translator(text) {
       // top_p: 1,
       // frequency_penalty: 0,
       // presence_penalty: 0,
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "user",
-          content: `Convert "${text}" to marathi letters excludes numbers`,
+          content: `Convert following ${text} in to Marathi Devanagari script`,
         },
       ],
+      stop: ["\n", "\ninput:", "In Marathi Devanagari script", "would be:"],
     });
 
     return response.data.choices[0].message.content;

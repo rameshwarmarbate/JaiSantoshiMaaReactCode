@@ -34,7 +34,7 @@ const Vehicle = require("../models/Vehicle");
 const SuppliersBill = require("../models/SuppliersBill");
 const Quotation = require("../models/Quotation");
 const sendEmail = require("../controller/email");
-const { translator, descreptionTranslator } = require("./openAI");
+const { translator } = require("./openAI");
 
 const getLorryReceipts = (req, res, next) => {
   const query = { active: true };
@@ -301,10 +301,10 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
           if (tr.articleNo) {
             totalArticles = totalArticles + tr.articleNo;
           }
-          const article = await translator(tr.article);
-          if (article) {
-            tr.article = article;
-          }
+          // const article = await translator(tr.article);
+          // if (article) {
+          //   tr.article = article;
+          // }
           if (tr.weight) {
             totalWeight = totalWeight + tr.weight;
           }
@@ -836,10 +836,10 @@ const viewLorryReceipt = (req, res, next) => {
               if (tr.articleNo) {
                 totalArticles = totalArticles + tr.articleNo;
               }
-              const article = await translator(tr.article);
-              if (article) {
-                tr.article = article;
-              }
+              // const article = await translator(tr.article);
+              // if (article) {
+              //   tr.article = article;
+              // }
               if (tr.weight) {
                 totalWeight = totalWeight + tr.weight;
               }
