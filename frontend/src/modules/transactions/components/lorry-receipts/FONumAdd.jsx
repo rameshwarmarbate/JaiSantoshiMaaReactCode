@@ -18,7 +18,7 @@ import {
 import { LoadingSpinner } from "../../../../ui-controls";
 
 const initialState = {
-  lr: null,
+  lr: "",
   foNum: "",
 };
 
@@ -170,7 +170,7 @@ const LorryReceiptAdd = () => {
                     size="small"
                     name="vehicleNo"
                     options={lorryReceipts}
-                    value={lorryReceipt.lr}
+                    value={lorryReceipt.lr || null}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "lr")
                     }
@@ -187,6 +187,66 @@ const LorryReceiptAdd = () => {
                   {formErrors.lr.invalid && (
                     <FormHelperText>{formErrors.lr.message}</FormHelperText>
                   )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Consignor"
+                    value={lorryReceipt.lr?.consignorName || ""}
+                    name="lsNo"
+                    id="lsNo"
+                    inputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="From"
+                    value={lorryReceipt.lr?.from || ""}
+                    name="lsNo"
+                    id="lsNo"
+                    inputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Consignee"
+                    value={lorryReceipt.lr?.consigneeName || ""}
+                    name="lsNo"
+                    id="lsNo"
+                    inputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="To"
+                    value={lorryReceipt.lr?.to || ""}
+                    name="lsNo"
+                    id="lsNo"
+                    inputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </FormControl>
               </div>
               <div className="grid-item">

@@ -34,7 +34,7 @@ const Vehicle = require("../models/Vehicle");
 const SuppliersBill = require("../models/SuppliersBill");
 const Quotation = require("../models/Quotation");
 const sendEmail = require("../controller/email");
-const translator = require("./openAI");
+const { translator, descreptionTranslator } = require("./openAI");
 
 const getLorryReceipts = (req, res, next) => {
   const query = { active: true };
@@ -274,10 +274,10 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
           return res.status(200).json({ message: consignorError.message });
         }
         fetchedConsignor = consignor;
-        const text = await translator(
-          `${consignee.name}|${LRData.from}|${LRData.to}|${consignor.name}`
-        );
-        const [name, from, to, conName] = text?.split("|");
+        const name = await translator(consignee.name);
+        const to = await translator(LRData.to);
+        const from = await translator(LRData.from);
+        const conName = await translator(consignor.name);
         if (name) {
           fetchedConsignee.name = name;
         }
@@ -298,7 +298,7 @@ const sendMailToCustomer = async (res, lr, isUpdate = false) => {
 
         let articles = "";
         LRData.transactions?.forEach(({ article }) => {
-          articles = articles ? `${article}|` : article;
+          articles = articles ? `${article} |` : article;
         });
         const desc = await translator(articles);
         const descriptions = desc.split("|");
@@ -812,10 +812,10 @@ const viewLorryReceipt = (req, res, next) => {
             }
 
             fetchedConsignor = consignor;
-            const text = await translator(
-              `${consignee.name}|${LRData.from}|${LRData.to}|${consignor.name}`
-            );
-            const [name, from, to, conName] = text?.split("|");
+            const name = await translator(consignee.name);
+            const to = await translator(LRData.to);
+            const from = await translator(LRData.from);
+            const conName = await translator(consignor.name);
             if (name) {
               fetchedConsignee.name = name;
             }
@@ -2989,10 +2989,10 @@ const getLorryReceiptsForReport = (req, res) => {
       query.branch = req.body.query.branch;
     }
     if (req.body.query.consignor) {
-      query.consignor = req.body.query.consignor;
-    }
-    if (req.body.query.consignee) {
-      query.consignee = req.body.query.consignee;
+      query["$or"] = [
+        { consignor: req.body.query.consignor },
+        { consignee: req.body.query.consignor },
+      ];
     }
     if (req.body.query.from) {
       const date = new Date(req.body.query.from);
@@ -3048,10 +3048,10 @@ const downloadLRReport = (req, res) => {
       query.branch = req.body.query.branch;
     }
     if (req.body.query.consignor) {
-      query.consignor = req.body.query.consignor;
-    }
-    if (req.body.query.consignee) {
-      query.consignee = req.body.query.consignee;
+      query["$or"] = [
+        { consignor: req.body.query.consignor },
+        { consignee: req.body.query.consignor },
+      ];
     }
     if (req.body.query.from) {
       const date = new Date(req.body.query.from);

@@ -34,9 +34,10 @@
 }
 
 .bg-login {
-  /* background: rgba(0, 0, 0, 0.4) url(../assets/transport-bg.jpg) no-repeat; */
+  /* background: rgba(0, 0, 0, 0.4) url(../assets/login-design_ver_01_bkup.jpg)
+    no-repeat;
   background-size: cover;
-  background-position: 0px -100px;
+  background-position: 0px -80px; */
   height: 100vh;
   margin-top: -50px;
   /* padding-top: 50px; */

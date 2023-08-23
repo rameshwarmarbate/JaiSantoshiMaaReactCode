@@ -354,7 +354,7 @@ const LoadingSlips = () => {
           <div className="page_actions">
             <FormControl
               size="small"
-              sx={{ width: "150px", marginRight: "5px" }}
+              sx={{ width: "210px", marginRight: "5px" }}
             >
               <Autocomplete
                 disablePortal

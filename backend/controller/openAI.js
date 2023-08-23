@@ -9,7 +9,7 @@ function delay(time) {
 const openai = new OpenAIApi(configuration);
 
 async function translator(text) {
-  await delay(5000);
+  // await delay(1000);
   try {
     const response = await openai.createChatCompletion({
       // const response = await openai.createCompletion({
@@ -24,7 +24,7 @@ async function translator(text) {
       messages: [
         {
           role: "user",
-          content: `Convert '${text}' to marathi letters excludes numbers.`,
+          content: `Convert "${text}" to marathi letters excludes numbers`,
         },
       ],
     });
@@ -42,4 +42,39 @@ async function translator(text) {
   return text;
 }
 
-module.exports = translator;
+async function descreptionTranslator(text) {
+  // await delay(1000);
+  try {
+    const response = await openai.createChatCompletion({
+      // const response = await openai.createCompletion({
+      // model: "text-davinci-003",
+      // prompt: `Convert '${text}' to marathi letters excludes numbers`,
+      // temperature: 0,
+      // max_tokens: 200,
+      // top_p: 1,
+      // frequency_penalty: 0,
+      // presence_penalty: 0,
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: `convert the following array [${text}] to marathi letters and return it in json format only.`,
+        },
+      ],
+    });
+    const data = JSON.parse(`${response.data.choices[0].message.content}`);
+    console.log(data);
+    return data.marathi_letters;
+    // return response.data.choices[0].text?.trim();
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
+    }
+  }
+  return text;
+}
+
+module.exports = { translator, descreptionTranslator };

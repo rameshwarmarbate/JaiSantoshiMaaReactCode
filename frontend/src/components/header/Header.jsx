@@ -34,6 +34,7 @@ const Header = () => {
     );
     jQueryScript.setAttribute("rel", "stylesheet");
     document.head.appendChild(jQueryScript);
+    window.location.reload();
     navigate("/");
   };
 

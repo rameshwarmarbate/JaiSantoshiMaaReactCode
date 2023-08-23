@@ -121,102 +121,18 @@ const Login = () => {
     let toggler = document.getElementById("toggler");
     if (ref.current.type === "text") {
       ref.current.type = "password";
-      toggler.classList.remove("far");
-      toggler.classList.remove("fa-eye");
-      toggler.classList.add("fa-regular");
-      toggler.classList.add("fa-eye-slash");
+      toggler.classNameList.remove("far");
+      toggler.classNameList.remove("fa-eye");
+      toggler.classNameList.add("fa-regular");
+      toggler.classNameList.add("fa-eye-slash");
     } else {
       ref.current.type = "text";
-      toggler.classList.add("fa-eye");
-      toggler.classList.add("far");
-      toggler.classList.remove("fa-regular");
-      toggler.classList.remove("fa-eye-slash");
+      toggler.classNameList.add("fa-eye");
+      toggler.classNameList.add("far");
+      toggler.classNameList.remove("fa-regular");
+      toggler.classNameList.remove("fa-eye-slash");
     }
   };
-  // return (
-  //   <>
-  //
-
-  //     <Paper sx={{ padding: "20px", marginBottom: "20px" }}>
-  //       {httpError !== "" && (
-  //         <Stack
-  //           sx={{
-  //             width: "100%",
-  //             margin: "0 0 30px 0",
-  //             border: "1px solid red",
-  //             borderRadius: "4px",
-  //           }}
-  //           spacing={2}
-  //         >
-  //           <Alert severity="error">{httpError}</Alert>
-  //         </Stack>
-  //       )}
-  //       <div className="login-wrap">
-  //         <div className="login-logo-pnl">
-  //           <img src={logo} alt="" />
-  //         </div>
-  //         <div className="login-card">
-  //           <h2 className="pageHead">Login</h2>
-  //           <form onSubmit={submitHandler}>
-  //             <div className="grid grid-1-col">
-  //               <div className="grid-item">
-  //                 <FormControl fullWidth error={formErrors.username.invalid}>
-  //                   <TextField
-  //                     variant="outlined"
-  //                     label="Username"
-  //                     error={formErrors.username.invalid}
-  //                     value={loginData.username}
-  //                     onChange={inputChangeHandler}
-  //                     name="username"
-  //                     id="username"
-  //                     inputProps={{ maxLength: 50 }}
-  //                   />
-  //                   {formErrors.username.invalid && (
-  //                     <FormHelperText>
-  //                       {formErrors.username.message}
-  //                     </FormHelperText>
-  //                   )}
-  //                 </FormControl>
-  //               </div>
-  //               <div className="grid-item">
-  //                 <FormControl fullWidth error={formErrors.username.invalid}>
-  //                   <TextField
-  //                     variant="outlined"
-  //                     label="Password"
-  //                     type="password"
-  //                     error={formErrors.password.invalid}
-  //                     value={loginData.password}
-  //                     onChange={inputChangeHandler}
-  //                     name="password"
-  //                     id="password"
-  //                     inputProps={{ maxLength: 50 }}
-  //                   />
-  //                   {formErrors.password.invalid && (
-  //                     <FormHelperText>
-  //                       {formErrors.password.message}
-  //                     </FormHelperText>
-  //                   )}
-  //                 </FormControl>
-  //               </div>
-  //               <div className="grig-item right">
-  //                 <Button
-  //                   variant="contained"
-  //                   size="medium"
-  //                   type="submit"
-  //                   color="primary"
-  //                   className="btn-login"
-  //                 >
-  //                   Login
-  //                 </Button>
-  //               </div>
-  //             </div>
-  //           </form>
-  //         </div>
-  //       </div>
-  //     </Paper>
-  //   </>
-  // );
-
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -231,12 +147,12 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <section className="sectionimage">
-        <div className="px-4 py-adjust px-md-5 text-center text-lg-start">
+      <section className="sectionimage" style={{ height: "93dvh" }}>
+        <div className="px-4 py-5 px-md-5 text-center text-lg-start">
           <div className="container">
             <div className="row gx-lg-5 align-items-center down">
               <div className="col-lg-6 mb-5 mb-lg-0">
-                <h1 className="my-4 h1 display-6  ls-tight">
+                <h1 className="my-4 display-6 h1 ls-tight">
                   Welcome to the Transporter NoteBook Digital ERP System
                 </h1>
                 <h4 className="divider h4 ls-tight">
@@ -255,7 +171,7 @@ const Login = () => {
                   <div className="card-body py-5 px-md-5">
                     <form>
                       <div className="row">
-                        <p style={{ textAlign: "center" }}>
+                        <p className="p" style={{ textAlign: "center" }}>
                           <img
                             src={jsmt}
                             alt="Transporter NoteBook"
@@ -305,44 +221,14 @@ const Login = () => {
                         <div className="text-center">
                           <button
                             type="submit"
-                            className="btn button btn-primary btn-block mb-4 formbutton"
+                            className="btn btn-primary btn-block mb-4 formbutton button"
                             onClick={submitHandler}
                           >
                             LOGIN
                           </button>
                         </div>
                       </div>
-                      {/* <div className="row">
-                        <div className="col-lg-6">
-                          <p
-                            style={{
-                              textAlign: "left",
-                              color: "black",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              name="checkbox"
-                              id="checkbox"
-                              className="input"
-                            />
-                            <label
-                              htmlFor="remember_me"
-                              style={{ paddingLeft: "5px" }}
-                            >
-                              Remember me
-                            </label>
-                          </p>
-                        </div>
-                        <div className="col-lg-6">
-                          <p style={{ textAlign: "right" }}>
-                            <a href="#">Forgot Password?</a>
-                          </p>
-                        </div>
-                      </div> */}
-                      {httpError !== "" && (
+                      {httpError && (
                         <Stack
                           sx={{
                             width: "100%",
@@ -359,20 +245,6 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-              {/* <div className="col-lg-6"></div>
-              <div className="col-lg-6 mb-5 mb-lg-0 form signup">
-                <div className="card signup">
-                  <form action="">
-                    <a
-                      className="btn btn-primary btn-lg btn-block signupbtn"
-                      href="#!"
-                      role="button"
-                    >
-                      Sign Up
-                    </a>
-                  </form>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -380,7 +252,7 @@ const Login = () => {
       <section style={{ padding: "10px" }}>
         <div className="container">
           <div className="row">
-            <div className="col-lg-4 alignCenter">
+            <div className="col-lg-7">
               <img src={web} alt="Transporter NoteBook Website" height="50%" />{" "}
               &nbsp;
               <a
@@ -391,19 +263,11 @@ const Login = () => {
                 Transporter Note Book
               </a>
             </div>
-            <div className="col-lg-4 alignCenter">
-              Powered by{" "}
-              <a
-                href="https://www.vspace.co.in/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                vspace.in
-              </a>{" "}
-              software
+            <div className="col-lg-3">
+              Powered by <a href="vspace.in">vspace.in</a> software
             </div>
-            <div className="col-lg-4 alignCenter">
-              Email <a href="mailto:tnb@vspace.in">tnb@vspae.in</a>
+            <div className="col-lg-2">
+              Email <a href="mailto:tnb@vspae.in">tnb@vspae.in</a>
             </div>
           </div>
         </div>

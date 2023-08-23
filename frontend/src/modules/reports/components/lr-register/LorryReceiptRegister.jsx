@@ -307,7 +307,7 @@ const LorryReceiptRegister = () => {
           <div className="">
             <FormControl
               size="small"
-              sx={{ width: "150px", marginRight: "5px", marginBottom: "20px" }}
+              sx={{ width: "210px", marginRight: "5px", marginBottom: "20px" }}
             >
               <Autocomplete
                 disablePortal
@@ -360,27 +360,7 @@ const LorryReceiptRegister = () => {
                     }
                     openOnFocus
                     renderInput={(params) => (
-                      <TextField {...params} label="Consignor" fullWidth />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={2}>
-                <FormControl fullWidth size="small">
-                  <Autocomplete
-                    disablePortal
-                    autoSelect
-                    autoHighlight={true}
-                    size="small"
-                    name="consignee"
-                    options={customers}
-                    value={search.consignee}
-                    onChange={(e, value) =>
-                      autocompleteChangeListener(e, value, "consignee")
-                    }
-                    openOnFocus
-                    renderInput={(params) => (
-                      <TextField {...params} label="Consignee" fullWidth />
+                      <TextField {...params} label="Customer" fullWidth />
                     )}
                   />
                 </FormControl>

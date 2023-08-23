@@ -640,9 +640,6 @@ const Routing = () => {
               }
             />
           </Route>
-
-          {/* RateMasterList
-          AddRateMaster */}
         </Route>
         <Route path="/transactions">
           <Route
