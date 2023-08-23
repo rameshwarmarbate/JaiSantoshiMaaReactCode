@@ -24,7 +24,7 @@ async function translator(text) {
       messages: [
         {
           role: "user",
-          content: `Convert following ${text} in to Marathi Devanagari script`,
+          content: `Convert the following ${text} into the Marathi Devanagari script`,
         },
       ],
       stop: ["\n", "\ninput:", "In Marathi Devanagari script", "would be:"],
