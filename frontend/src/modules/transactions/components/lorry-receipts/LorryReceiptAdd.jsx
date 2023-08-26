@@ -315,46 +315,56 @@ const LorryReceiptAdd = () => {
           ...updatedLR,
           branch: updatedLR?.branch?._id,
           user: user?.employee?.name || "",
+          isSaveAndPrint,
+          isWithoutAmount,
         })
       )
         .then(({ payload = {} }) => {
-          const { message, lrNo } = payload?.data || {};
+          const { message, lrNo, file } = payload?.data || {};
           if (message) {
             setHttpError(message);
           } else {
-            if (isSaveAndPrint) {
-              if (payload?.data._id) {
-                dispatch(
-                  downloadLorryReceipt({
-                    id: payload?.data._id,
-                    email: "",
-                    isWithoutAmount,
-                    user: user?.employee?.name || "",
-                  })
-                )
-                  .then(({ payload = {} }) => {
-                    const fileURL = base64ToObjectURL(payload?.data?.file);
-                    if (fileURL) {
-                      const winPrint = window.open(fileURL, "_blank");
-                      winPrint.focus();
-                      winPrint.print();
-                      setHttpError("");
-                      setFormErrors(initialErrorState);
-                      setLorryReceipt(initialState);
-                    }
-                  })
-                  .catch((e) => {
-                    setHttpError(e.message);
-                  });
-              }
-            } else {
-              setHttpError("");
-              setFormErrors(initialErrorState);
-              setLorryReceipt(initialState);
-            }
+            // if (isSaveAndPrint) {
+            //   if (payload?.data._id) {
+            //     dispatch(
+            //       downloadLorryReceipt({
+            //         id: payload?.data._id,
+            //         email: "",
+            //         isWithoutAmount,
+            //         user: user?.employee?.name || "",
+            //       })
+            //     )
+            //       .then(({ payload = {} }) => {
+            //         const fileURL = base64ToObjectURL(payload?.data?.file);
+            //         if (fileURL) {
+            //           const winPrint = window.open(fileURL, "_blank");
+            //           winPrint.focus();
+            //           winPrint.print();
+            //           setHttpError("");
+            //           setFormErrors(initialErrorState);
+            //           setLorryReceipt(initialState);
+            //         }
+            //       })
+            //       .catch((e) => {
+            //         setHttpError(e.message);
+            //       });
+            //   }
+            // } else {
+            setHttpError("");
+            setFormErrors(initialErrorState);
+            setLorryReceipt(initialState);
+            //}
             if (lrNo) {
               setLrNo(lrNo);
               handleClickOpen();
+            }
+            if (file) {
+              const fileURL = base64ToObjectURL(file);
+              if (fileURL) {
+                const winPrint = window.open(fileURL, "_blank");
+                winPrint.focus();
+                winPrint.print();
+              }
             }
           }
         })

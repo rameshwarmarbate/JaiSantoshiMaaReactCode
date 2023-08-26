@@ -185,11 +185,11 @@ const MoneyTransfers = () => {
 
   const getBranchNameById = (branchId) => {
     if (branches?.length) {
-      const filteredBranch = branches?.filter?.(
+      const filteredBranch = branches?.find?.(
         (branch) => branch._id === branchId
       );
-      if (filteredBranch?.length) {
-        return filteredBranch[0].name;
+      if (filteredBranch) {
+        return filteredBranch.name;
       }
       return branchId;
     }
@@ -257,7 +257,7 @@ const MoneyTransfers = () => {
           <div className="page_actions">
             <FormControl
               size="small"
-              sx={{ width: "210px", marginRight: "5px" }}
+              sx={{ width: "230px", marginRight: "5px" }}
             >
               <Autocomplete
                 disablePortal

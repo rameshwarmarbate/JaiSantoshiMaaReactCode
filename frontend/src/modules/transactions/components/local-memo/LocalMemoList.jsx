@@ -278,7 +278,7 @@ const LocalMemoList = () => {
           {
             <FormControl
               size="small"
-              sx={{ width: "210px", marginRight: "5px" }}
+              sx={{ width: "230px", marginRight: "5px" }}
             >
               <Autocomplete
                 disablePortal

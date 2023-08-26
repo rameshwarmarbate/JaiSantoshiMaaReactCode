@@ -307,7 +307,7 @@ const LorryReceiptRegister = () => {
           <div className="">
             <FormControl
               size="small"
-              sx={{ width: "210px", marginRight: "5px", marginBottom: "20px" }}
+              sx={{ width: "230px", marginRight: "5px", marginBottom: "20px" }}
             >
               <Autocomplete
                 disablePortal

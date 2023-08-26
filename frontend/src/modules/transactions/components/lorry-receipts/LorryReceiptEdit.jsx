@@ -369,44 +369,54 @@ const LorryReceiptEdit = () => {
       if (updatedLR.payMode) {
         updatedLR.payMode = updatedLR.payMode.value;
       }
+      updatedLR.isSaveAndPrint = isSaveAndPrint;
+      updatedLR.isWithoutAmount = isWithoutAmount;
       dispatch(updateLorryReceipt(updatedLR))
         .then(({ payload = {} }) => {
-          const { message } = payload?.data || {};
+          const { message, file } = payload?.data || {};
           if (message) {
             setHttpError(message);
           } else {
-            if (isSaveAndPrint) {
-              if (payload?.data._id) {
-                dispatch(
-                  downloadLorryReceipt({
-                    id: payload?.data._id,
-                    email: "",
-                    isWithoutAmount,
-                    user: user?.employee?.name || "",
-                  })
-                )
-                  .then(({ payload = {} }) => {
-                    const fileURL = base64ToObjectURL(payload?.data?.file);
-                    if (fileURL) {
-                      const winPrint = window.open(fileURL, "_blank");
-                      winPrint.focus();
-                      winPrint.print();
-                      setHttpError("");
-                      setFormErrors(initialErrorState);
-                      setLorryReceipt(initialState);
-                      goToLorryReceipts();
-                    }
-                  })
-                  .catch((e) => {
-                    setHttpError(e.message);
-                  });
+            // if (isSaveAndPrint) {
+            //   if (payload?.data._id) {
+            //     dispatch(
+            //       downloadLorryReceipt({
+            //         id: payload?.data._id,
+            //         email: "",
+            //         isWithoutAmount,
+            //         user: user?.employee?.name || "",
+            //       })
+            //     )
+            //       .then(({ payload = {} }) => {
+            //         const fileURL = base64ToObjectURL(payload?.data?.file);
+            //         if (fileURL) {
+            //           const winPrint = window.open(fileURL, "_blank");
+            //           winPrint.focus();
+            //           winPrint.print();
+            //           setHttpError("");
+            //           setFormErrors(initialErrorState);
+            //           setLorryReceipt(initialState);
+            //           goToLorryReceipts();
+            //         }
+            //       })
+            //       .catch((e) => {
+            //         setHttpError(e.message);
+            //       });
+            //   }
+            // } else {
+            if (file) {
+              const fileURL = base64ToObjectURL(file);
+              if (fileURL) {
+                const winPrint = window.open(fileURL, "_blank");
+                winPrint.focus();
+                winPrint.print();
               }
-            } else {
-              setHttpError("");
-              setFormErrors(initialErrorState);
-              setLorryReceipt(initialState);
-              goToLorryReceipts();
             }
+            setHttpError("");
+            setFormErrors(initialErrorState);
+            setLorryReceipt(initialState);
+            goToLorryReceipts();
+            //}
           }
         })
         .catch((error) => {

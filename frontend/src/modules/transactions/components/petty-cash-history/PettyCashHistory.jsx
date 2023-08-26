@@ -298,7 +298,7 @@ const PettyCashHistory = () => {
       <div className="page_head">
         <h1 className="pageHead">Petty cash transactions</h1>
         <div className="page_actions">
-          <FormControl size="small" sx={{ width: "210px", marginRight: "5px" }}>
+          <FormControl size="small" sx={{ width: "230px", marginRight: "5px" }}>
             <Autocomplete
               disablePortal
               size="small"

@@ -432,7 +432,7 @@ const loginCtrl = async (req, res, next) => {
               return res.status(200).json({ message: findEmpErr.message });
             }
             updatedUser.employee = findEmpData;
-
+            delete updatedUser.password;
             if (foundUser.branch) {
               Branch.findById(
                 foundUser.branch,
