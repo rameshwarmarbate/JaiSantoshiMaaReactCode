@@ -360,7 +360,10 @@ const BillAdd = () => {
     if (!formData.customer) {
       errors.customer = { invalid: true, message: "Customer is required" };
     }
-    if (!formData.lrList?.length) {
+    if (
+      !formData.lrList?.length ||
+      !(formData.lrList || []).some?.((lr) => lr)
+    ) {
       errors.lrList = {
         invalid: true,
         message: "At least one lorry receipt is required",

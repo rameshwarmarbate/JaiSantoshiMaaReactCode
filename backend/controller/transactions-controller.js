@@ -1,5 +1,5 @@
 const pdf = require("html-pdf");
-const options = {
+let options = {
   format: "Letter",
   orientation: "portrait",
   height: "10.5in",
@@ -734,6 +734,9 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
       );
       const templatePath =
         path.join(__dirname, "../bills/") + "LorryReceipt-Marathi.html";
+      const isMultiEway = LRData.eWayBillNo?.length > 90,
+        isMultiInvoice = LRData.invoiceNo?.length > 52,
+        isOsWindows = process.platform === "win32";
       res.render(
         templatePath,
         {
@@ -759,7 +762,26 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
         (err, HTML) => {
           const finalPath = path.join(__dirname, "../bills/lorryReceipts/");
           const fileName = LRData.lrNo;
-          pdf.create(HTML, options).toBuffer((buffErr, buffer) => {
+          let htmlRaw = HTML;
+          if (isMultiEway && isMultiInvoice) {
+            htmlRaw = htmlRaw.replace("0.55", "0.52");
+            options = {
+              format: "Letter",
+              orientation: "portrait",
+              height: "auto",
+              width: "8in",
+            };
+          } else if (isMultiInvoice || isMultiEway) {
+            htmlRaw = htmlRaw.replace("0.55", "0.53");
+            options = {
+              format: "Letter",
+              orientation: "portrait",
+              height: "auto",
+              width: "8in",
+            };
+          }
+
+          pdf.create(htmlRaw, options).toBuffer((buffErr, buffer) => {
             if (buffErr) {
               return res.status(200).json({ message: buffErr.message });
             }
