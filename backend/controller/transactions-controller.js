@@ -771,7 +771,11 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
               height: "auto",
               width: "8in",
             };
-          } else if (isMultiInvoice || isMultiEway) {
+          } else if (
+            isMultiInvoice ||
+            isMultiEway ||
+            LRData.transactions?.length > 5
+          ) {
             htmlRaw = htmlRaw.replace("0.55", "0.53");
             options = {
               format: "Letter",

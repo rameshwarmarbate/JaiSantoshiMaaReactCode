@@ -477,6 +477,11 @@ const LorryReceiptEdit = () => {
         invalid: true,
         message: "At lease 1 transaction is required",
       };
+    } else if (formData.transactions?.length > 5) {
+      errors.transactionDetails = {
+        invalid: true,
+        message: "More than 5 articles are not allowed.",
+      };
     }
     if (!formData.lrCharges) {
       errors.lrCharges = {
