@@ -118,6 +118,11 @@
     border: 0;
     vertical-align: middle;
   }
+
+  .tboby-list td {
+    word-break: break-all !important;
+    white-space: break-spaces !important;
+  }
 </style>
 
 <head>
@@ -206,7 +211,7 @@
             <td>Amount</td>
           </tr>
           {{#info.updatedLRList}}
-          <tr>
+          <tr class="tboby-list">
             <td>{{formattedDate}}</td>
             <td>{{formattedLRNo}}</td>
             <td>{{to}}</td>

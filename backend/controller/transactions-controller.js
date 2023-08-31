@@ -735,7 +735,7 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
       const templatePath =
         path.join(__dirname, "../bills/") + "LorryReceipt-Marathi.html";
       const isMultiEway = LRData.eWayBillNo?.length > 90,
-        isMultiInvoice = LRData.invoiceNo?.length > 52,
+        isMultiInvoice = LRData.invoiceNo?.length > 49,
         isOsWindows = process.platform === "win32";
       res.render(
         templatePath,
@@ -764,23 +764,23 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
           const fileName = LRData.lrNo;
           let htmlRaw = HTML;
           if (isMultiEway && isMultiInvoice) {
-            htmlRaw = htmlRaw.replace("0.55", "0.52");
+            // htmlRaw = htmlRaw.replace("0.55", "0.52");
             options = {
               format: "Letter",
               orientation: "portrait",
-              height: "auto",
+              height: "10.6in",
               width: "8in",
             };
           } else if (
             isMultiInvoice ||
             isMultiEway ||
-            LRData.transactions?.length > 5
+            LRData.transactions.length > 5
           ) {
-            htmlRaw = htmlRaw.replace("0.55", "0.53");
+            // htmlRaw = htmlRaw.replace("0.55", "0.53");
             options = {
               format: "Letter",
               orientation: "portrait",
-              height: "auto",
+              height: "10.6in",
               width: "8in",
             };
           }
@@ -2152,11 +2152,14 @@ const printBill = (req, res) => {
           });
           let blankRows = [];
           const isTwoRowsOccupied = lrList?.some(
-            ({ article, consigneeName }) =>
-              consigneeName?.length > 15 || article?.length > 15
+            ({ article, to, invoiceNo }) =>
+              to?.length > 15 || article?.length > 15 || invoiceNo?.length > 15
           );
           const length =
-            24 - (isTwoRowsOccupied ? lrList.length * 2 : lrList.length);
+            23 -
+            (isTwoRowsOccupied
+              ? updatedLRList.length * 2
+              : updatedLRList.length);
           for (let i = 0; i < length; i = i + 1) {
             blankRows.push({ sr: "-" });
           }

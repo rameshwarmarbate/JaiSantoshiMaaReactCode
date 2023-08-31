@@ -741,6 +741,7 @@ const LorryReceiptEdit = () => {
                     onChange={inputChangeHandler}
                     name="invoiceNo"
                     id="invoiceNo"
+                    inputProps={{ maxLength: 50 }}
                   />
                 </FormControl>
               </div>
@@ -754,6 +755,7 @@ const LorryReceiptEdit = () => {
                     onChange={inputChangeHandler}
                     name="eWayBillNo"
                     id="eWayBillNo"
+                    inputProps={{ maxLength: 50 }}
                   />
                 </FormControl>
               </div>

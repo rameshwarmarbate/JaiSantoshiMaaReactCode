@@ -58,6 +58,7 @@ const CustomerAdd = () => {
     name: "",
     address: "",
     telephone: "",
+    alternateTelephone: "",
     fax: "",
     cstNo: "",
     gstNo: "",
@@ -290,6 +291,20 @@ const CustomerAdd = () => {
                           {formErrors.telephone.message}
                         </FormHelperText>
                       )}
+                    </FormControl>
+                  </div>
+                  <div className="grid-item">
+                    <FormControl fullWidth>
+                      <TextField
+                        size="small"
+                        variant="outlined"
+                        label="Alternate Telephone"
+                        value={customer.alternateTelephone}
+                        onChange={inputChangeHandler}
+                        onInput={validatePhoneNumber}
+                        name="alternateTelephone"
+                        id="alternateTelephone"
+                      />
                     </FormControl>
                   </div>
                   <div className="grid-item">

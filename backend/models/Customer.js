@@ -14,6 +14,9 @@ const Customer = new Schema(
     telephone: {
       type: String,
     },
+    alternateTelephone: {
+      type: String,
+    },
     fax: {
       type: String,
     },
