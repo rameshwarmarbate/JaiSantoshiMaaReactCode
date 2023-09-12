@@ -38,42 +38,67 @@ const initialState = {
   from: null,
   to: null,
   payType: "",
+  searchText: "",
 };
 
 const LorryReceiptRegister = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
     {
+      field: "srNo",
+      headerName: "Sr. No.",
+    },
+    {
       field: "lrNo",
-      headerName: "LR no.",
+      headerName: "L.R. Note No.",
       flex: 1,
     },
     {
       field: "date",
-      headerName: "Date",
+      headerName: "Consign Date",
+      flex: 1,
+    },
+    {
+      field: "invoiceNo",
+      headerName: "Invoice No",
       flex: 1,
     },
     {
       field: "consignorName",
-      headerName: "Consignor",
+      headerName: "Consignor Name",
       minWidth: 170,
       flex: 1,
     },
     {
       field: "consigneeName",
-      headerName: "Consignee",
+      headerName: "Consignee Name",
       minWidth: 170,
       flex: 1,
     },
     {
+      field: "from",
+      headerName: "From",
+      flex: 1,
+    },
+    {
+      field: "to",
+      headerName: "To",
+      flex: 1,
+    },
+    {
+      field: "payType",
+      headerName: "Payment Mode",
+      flex: 1,
+    },
+    {
       field: "totalArticles",
-      headerName: "No of Articles",
+      headerName: "Total Qty",
       type: "number",
       flex: 1,
     },
     {
-      field: "totalWeight",
-      headerName: "Weight",
+      field: "total",
+      headerName: "Grand Total",
       type: "number",
       flex: 1,
     },
@@ -162,6 +187,9 @@ const LorryReceiptRegister = () => {
       if (search.payType) {
         query.payType = search.payType;
       }
+      if (search.searchText) {
+        query.searchText = search.searchText;
+      }
       const requestObject = {
         pagination: {
           limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
@@ -177,18 +205,21 @@ const LorryReceiptRegister = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLR = payload?.data.lorryReceipts?.map?.((lr) => {
-              return {
-                ...lr,
-                date: getFormattedDate(new Date(lr.date)),
-                totalWeight: lr.transactions
-                  ?.reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
-                  ?.toFixed?.(2),
-                totalArticles: lr.transactions
-                  ?.reduce?.((acc, lr) => acc + lr.articleNo, 0)
-                  ?.toFixed?.(2),
-              };
-            });
+            const updatedLR = payload?.data.lorryReceipts?.map?.(
+              (lr, index) => {
+                return {
+                  ...lr,
+                  srNo: index + 1,
+                  date: getFormattedDate(new Date(lr.date)),
+                  totalWeight: lr.transactions
+                    ?.reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
+                    ?.toFixed?.(2),
+                  totalArticles: lr.transactions
+                    ?.reduce?.((acc, lr) => acc + lr.articleNo, 0)
+                    ?.toFixed?.(2),
+                };
+              }
+            );
             setPageState((currState) => {
               return {
                 ...currState,
@@ -269,6 +300,9 @@ const LorryReceiptRegister = () => {
     if (search.payType) {
       query.payType = search.payType;
     }
+    if (search.searchText) {
+      query.searchText = search.searchText;
+    }
     dispatch(downloadLRReport(query))
       .then(({ payload = {} }) => {
         const { message } = payload?.data || {};
@@ -286,11 +320,11 @@ const LorryReceiptRegister = () => {
       });
   };
 
-  const inputChangeHandler = (e) => {
+  const inputChangeHandler = (e, name = "payType") => {
     setSearch((currState) => {
       return {
         ...currState,
-        payType: e.target.value,
+        [name]: e.target.value,
       };
     });
   };
@@ -303,7 +337,9 @@ const LorryReceiptRegister = () => {
           className="page_head-1"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <h1 className="pageHead">Lorry Receipt Stock Status</h1>
+          <h1 className="pageHead">
+            Lorry Receipt Stock Status(LR. Note Register)
+          </h1>
           <div className="">
             <FormControl
               size="small"
@@ -345,7 +381,37 @@ const LorryReceiptRegister = () => {
           <h2 className="mb20">Search</h2>
           <form action="" onSubmit={submitHandler}>
             <Grid container spacing={3}>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="From"
+                      inputFormat="DD/MM/YYYY"
+                      value={search.from}
+                      onChange={dateInputChangeHandler.bind(null, "from")}
+                      renderInput={(params) => (
+                        <TextField name="from" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="To"
+                      inputFormat="DD/MM/YYYY"
+                      value={search.to}
+                      onChange={dateInputChangeHandler.bind(null, "to")}
+                      renderInput={(params) => (
+                        <TextField name="to" size="small" {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
                 <FormControl fullWidth size="small">
                   <Autocomplete
                     disablePortal
@@ -365,37 +431,7 @@ const LorryReceiptRegister = () => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="From"
-                      inputFormat="DD/MM/YYYY"
-                      value={search.from}
-                      onChange={dateInputChangeHandler.bind(null, "from")}
-                      renderInput={(params) => (
-                        <TextField name="from" size="small" {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-              <Grid item xs={2}>
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="To"
-                      inputFormat="DD/MM/YYYY"
-                      value={search.to}
-                      onChange={dateInputChangeHandler.bind(null, "to")}
-                      renderInput={(params) => (
-                        <TextField name="to" size="small" {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <ToggleButtonGroup
                   color="primary"
                   value={search.payType}
@@ -411,8 +447,21 @@ const LorryReceiptRegister = () => {
                   <ToggleButton value="FOC">FOC</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-
-              <Grid style={{ marginTop: "58px", display: "flex" }} item xs={2}>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Search in List By"
+                    value={search.searchText}
+                    onChange={(e) => inputChangeHandler(e, "searchText")}
+                    name="searchText"
+                    id="searchText"
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid style={{ display: "flex" }} item xs={3}>
                 <Button
                   type="submit"
                   variant="contained"

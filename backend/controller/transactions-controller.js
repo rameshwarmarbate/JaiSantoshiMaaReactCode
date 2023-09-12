@@ -2922,30 +2922,40 @@ const getLorryReceiptsForReport = (req, res) => {
     if (req.body.query.payType) {
       query.payType = req.body.query.payType;
     }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { invoiceNo: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        { from: { $regex: searchText, $options: "i" } },
+        { to: { $regex: searchText, $options: "i" } },
+        { payType: { $regex: searchText, $options: "i" } },
+        ...(!isNaN(parseFloat(req.body.query.searchText))
+          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+          : []),
+      ];
+    }
   }
 
-  LorryReceipt.count(query, (countErr, count) => {
-    if (countErr) {
-      return res.status(200).json({
-        message: "Error fetching lorry count!",
-      });
-    } else {
-      LorryReceipt.find(query)
-        .sort("-createdAt")
-        .exec((lrError, lorryReceipts) => {
-          if (lrError) {
-            return res.status(200).json({
-              message: "Error fetching lorry receipts!",
-            });
-          } else {
-            res.json({
-              lorryReceipts: lorryReceipts.slice(start, end),
-              count: lorryReceipts?.length,
-            });
-          }
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((lrError, lorryReceipts) => {
+      if (lrError) {
+        return res.status(200).json({
+          message: "Error fetching lorry receipts!",
         });
-    }
-  });
+      } else {
+        res.json({
+          lorryReceipts: lorryReceipts.slice(start, end),
+          count: lorryReceipts?.length,
+        });
+      }
+    });
 };
 
 const downloadLRReport = (req, res) => {
@@ -2977,6 +2987,24 @@ const downloadLRReport = (req, res) => {
         ...query.date,
         $lte: new Date(newDate)?.toISOString(),
       };
+    }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { invoiceNo: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        { from: { $regex: searchText, $options: "i" } },
+        { to: { $regex: searchText, $options: "i" } },
+        { payType: { $regex: searchText, $options: "i" } },
+        ...(!isNaN(parseFloat(req.body.query.searchText))
+          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+          : []),
+      ];
     }
   }
   LorryReceipt.find(query)
@@ -3253,16 +3281,18 @@ const exportLRDataToXlsx = (data) => {
     []
   );
   worksheet.columns = [
-    { header: "Sr. no", key: "index" },
-    { header: "LR No", key: "formattedLRNo" },
-    { header: "Date", key: "formattedDate" },
+    { header: "Sr. No.", key: "index" },
+    { header: "L.R. Note No.", key: "formattedLRNo" },
+    { header: "Consign Date", key: "formattedDate" },
     { header: "Invoice no", key: "invoiceNo" },
     { header: "Vehicle no", key: "vehicleNo" },
-    { header: "Consignor", key: "consignorName" },
-    { header: "Consignee", key: "consigneeName" },
+    { header: "Consignor Name", key: "consignorName" },
+    { header: "Consignee Name", key: "consigneeName" },
     { header: "From", key: "from" },
     { header: "To", key: "to" },
-    { header: "Total Articles", key: "totalArticles" },
+    { header: "Payment Mode", key: "payType" },
+    { header: "Total Qty", key: "totalArticles" },
+    { header: "Grand Total", key: "total" },
     { header: "Total weight", key: "totalWeight" },
     { header: "Total charge weight", key: "totalChargeWeight" },
     { header: "Total freight", key: "totalFreight" },
@@ -3325,7 +3355,7 @@ const getFormattedDate = (date) => {
   const day = new Date(date)?.getDate();
   const month = new Date(date)?.getMonth() + 1;
   const year = new Date(date)?.getFullYear();
-  return `${day}-${month}-${year}`;
+  return `${("0" + day).slice(-2)}-${("0" + month).slice(-2)}-${year}`;
 };
 
 // prefix 0 to a number
