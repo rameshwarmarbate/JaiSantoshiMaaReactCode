@@ -121,16 +121,16 @@ const Login = () => {
     let toggler = document.getElementById("toggler");
     if (ref.current.type === "text") {
       ref.current.type = "password";
-      toggler.classNameList.remove("far");
-      toggler.classNameList.remove("fa-eye");
-      toggler.classNameList.add("fa-regular");
-      toggler.classNameList.add("fa-eye-slash");
+      toggler.classList.remove("far");
+      toggler.classList.remove("fa-eye");
+      toggler.classList.add("fa-regular");
+      toggler.classList.add("fa-eye-slash");
     } else {
       ref.current.type = "text";
-      toggler.classNameList.add("fa-eye");
-      toggler.classNameList.add("far");
-      toggler.classNameList.remove("fa-regular");
-      toggler.classNameList.remove("fa-eye-slash");
+      toggler.classList.add("fa-eye");
+      toggler.classList.add("far");
+      toggler.classList.remove("fa-regular");
+      toggler.classList.remove("fa-eye-slash");
     }
   };
   return (
