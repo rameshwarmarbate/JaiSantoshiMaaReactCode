@@ -47,6 +47,8 @@ const initialState = {
   chequeDate: null,
   jsmBank: null,
   jsmAccountNo: null,
+  transactionNo: "",
+  remark: "",
 };
 
 const initialErrorState = {
@@ -82,7 +84,17 @@ const initialErrorState = {
     invalid: false,
     message: "",
   },
+  transactionNo: {
+    invalid: false,
+    message: "",
+  },
+  remark: {
+    invalid: false,
+    message: "",
+  },
 };
+
+const paymentModes = [...PAYMENT_MODES, { label: "UPI", value: "UPI" }];
 
 const getUpdatedBills = (bills, paymentCollection) => {
   const filteredBills = bills?.filter?.((bill) => {
@@ -95,6 +107,8 @@ const getUpdatedBills = (bills, paymentCollection) => {
         chequeDate: paymentCollection.chequeDate,
         chequeNo: paymentCollection.chequeNo,
         payMode: paymentCollection.payMode.value,
+        transactionNo: paymentCollection.transactionNo,
+        remark: paymentCollection.remark,
         jsmBank: paymentCollection.jsmBank
           ? paymentCollection.jsmBank.value
           : "",
@@ -524,6 +538,18 @@ const PaymentCollection = () => {
       }
     }
 
+    if (formData.payMode?.value === "UPI") {
+      if (!formData.remark) {
+        errors.remark = { invalid: true, message: "Remark is required" };
+      }
+      if (!formData.transactionNo) {
+        errors.transactionNo = {
+          invalid: true,
+          message: "Transaction No is required",
+        };
+      }
+    }
+
     let validationErrors = false;
     for (const key in errors) {
       if (errors[key].invalid === true) {
@@ -762,7 +788,7 @@ const PaymentCollection = () => {
                         autoSelect
                         size="small"
                         name="payMode"
-                        options={PAYMENT_MODES}
+                        options={paymentModes}
                         value={paymentCollection.payMode}
                         onChange={(e, value) =>
                           autocompleteChangeListener(e, value, "payMode")
@@ -780,6 +806,33 @@ const PaymentCollection = () => {
                       {formErrors.payMode.invalid && (
                         <FormHelperText>
                           {formErrors.payMode.message}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+                  <div className="grid-item">
+                    <FormControl
+                      fullWidth
+                      error={formErrors.transactionNo.invalid}
+                    >
+                      <TextField
+                        size="small"
+                        variant="outlined"
+                        label="Transaction no"
+                        value={paymentCollection.transactionNo}
+                        error={formErrors.transactionNo.invalid}
+                        name="transactionNo"
+                        id="transactionNo"
+                        onChange={payInputChangeHandler}
+                        disabled={
+                          paymentCollection.payMode?.value === "UPI"
+                            ? false
+                            : true
+                        }
+                      />
+                      {formErrors.transactionNo.invalid && (
+                        <FormHelperText>
+                          {formErrors.transactionNo.message}
                         </FormHelperText>
                       )}
                     </FormControl>
@@ -947,6 +1000,30 @@ const PaymentCollection = () => {
                       {formErrors.jsmAccountNo.invalid && (
                         <FormHelperText>
                           {formErrors.jsmAccountNo.message}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+                  <div className="grid-item">
+                    <FormControl fullWidth error={formErrors.remark.invalid}>
+                      <TextField
+                        size="small"
+                        variant="outlined"
+                        label="Remark"
+                        value={paymentCollection.remark}
+                        error={formErrors.remark.invalid}
+                        name="remark"
+                        id="remark"
+                        onChange={payInputChangeHandler}
+                        disabled={
+                          paymentCollection.payMode?.value === "UPI"
+                            ? false
+                            : true
+                        }
+                      />
+                      {formErrors.remark.invalid && (
+                        <FormHelperText>
+                          {formErrors.remark.message}
                         </FormHelperText>
                       )}
                     </FormControl>

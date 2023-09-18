@@ -103,6 +103,12 @@ const Bill = new Schema(
         jsmAccountNo: {
           type: String,
         },
+        transactionNo: {
+          type: String,
+        },
+        remark: {
+          type: String,
+        },
         createdBy: {
           type: String,
           required: true,
