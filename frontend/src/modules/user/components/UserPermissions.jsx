@@ -361,6 +361,7 @@ const UserPermissions = () => {
                       size="medium"
                       color="primary"
                       className="ml6"
+                      style={{ width: "max-content" }}
                       onClick={onAddBranch}
                     >
                       Add
