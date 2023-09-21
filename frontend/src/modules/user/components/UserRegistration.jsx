@@ -183,6 +183,7 @@ const UserRegistration = () => {
           ...userRegistration,
           place: userRegistration.branch?._id,
           employee: userRegistration.employee?._id,
+          userBranches: [userRegistration.branch?._id],
         })
       )
         .then(({ payload = {} }) => {

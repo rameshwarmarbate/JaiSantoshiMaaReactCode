@@ -18,6 +18,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   base64ToObjectURL,
+  isSuperAdminOrAdmin,
   mobileNoRegEx,
   validateNumber,
   validatePhoneNumber,
@@ -159,7 +160,13 @@ const LoadingSlipAdd = () => {
 
   useEffect(() => {
     if (loadingSlip.branch) {
-      dispatch(getLorryReceiptsForLS({ branch: loadingSlip.branch, page }))
+      const branches = !isSuperAdminOrAdmin() ? user.userBranches || [] : "";
+      dispatch(
+        getLorryReceiptsForLS({
+          branch: branches,
+          page,
+        })
+      )
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -181,7 +188,7 @@ const LoadingSlipAdd = () => {
           );
         });
     }
-  }, [loadingSlip.branch, page]);
+  }, [page]);
 
   useEffect(() => {
     const err = Object.keys(formErrors);

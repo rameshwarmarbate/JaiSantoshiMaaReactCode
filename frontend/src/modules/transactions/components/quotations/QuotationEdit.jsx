@@ -9,6 +9,7 @@ import {
   Button,
   Paper,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Table from "@mui/material/Table";
@@ -28,6 +29,7 @@ import {
   selectIsLoading,
   updateQuotation,
 } from "./slice/quotationSlice";
+import { validateNumber } from "../../../../services/utils";
 
 const initialState = {
   date: new Date(),
@@ -35,6 +37,11 @@ const initialState = {
   from: null,
   to: null,
   otherField: "",
+  field1: "",
+  field2: "",
+  field3: "",
+  termsAndCond: "",
+  ddChanger: 500,
   ratePer: "",
   stations: [],
 };
@@ -325,6 +332,11 @@ const QuotationEdit = () => {
                     size="small"
                     variant="outlined"
                     label="Rate per"
+                    helperText="Ex. for 'Full Load' use short (F.L.)"
+                    FormHelperTextProps={{
+                      disabled: true,
+                      classes: { sizeSmall: "small" },
+                    }}
                     value={quotation.ratePer}
                     error={formErrors.ratePer.invalid}
                     onChange={inputChangeHandler}
@@ -349,6 +361,90 @@ const QuotationEdit = () => {
                     onChange={inputChangeHandler}
                     name="otherField"
                     id="otherField"
+                    helperText="Ex. for 'Half Load' use short (H.L.)"
+                    FormHelperTextProps={{
+                      disabled: true,
+                      classes: { sizeSmall: "small" },
+                    }}
+                  />
+                </FormControl>
+              </div>{" "}
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Additional Terms and Condition"
+                    value={quotation.termsAndCond}
+                    onChange={inputChangeHandler}
+                    name="termsAndCond"
+                    id="termsAndCond"
+                    inputProps={{ maxLength: 500 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="DD Changer"
+                    value={quotation.ddChanger || ""}
+                    onChange={inputChangeHandler}
+                    onInput={validateNumber}
+                    name="ddChanger"
+                    id="ddChanger"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          &#8377;
+                        </InputAdornment>
+                      ),
+                      maxLength: 10,
+                    }}
+                    inputProps={{ maxLength: 10 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 1"
+                    value={quotation.field1}
+                    onChange={inputChangeHandler}
+                    name="field1"
+                    id="field1"
+                    inputProps={{ maxLength: 20 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 2"
+                    value={quotation.field2}
+                    onChange={inputChangeHandler}
+                    name="field2"
+                    id="field2"
+                    inputProps={{ maxLength: 20 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 3"
+                    value={quotation.field3}
+                    onChange={inputChangeHandler}
+                    name="field3"
+                    id="field3"
+                    inputProps={{ maxLength: 20 }}
                   />
                 </FormControl>
               </div>

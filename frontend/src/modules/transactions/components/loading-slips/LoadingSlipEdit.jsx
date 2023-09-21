@@ -18,6 +18,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   base64ToObjectURL,
+  isSuperAdminOrAdmin,
   mobileNoRegEx,
   validateNumber,
   validatePhoneNumber,
@@ -141,6 +142,7 @@ const LoadingSlipEdit = () => {
   const [lsLrList, setLsLrList] = useState([]);
   const [, setUpdatedLRList] = useState([]);
   const [isLocalMemo, setIsLocalMemo] = useState(false);
+  const [selectedLR, setSelectedLR] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -165,8 +167,9 @@ const LoadingSlipEdit = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (loadingSlip.branch) {
-      dispatch(getLorryReceipts(loadingSlip.branch))
+    if (lsId) {
+      const branches = !isSuperAdminOrAdmin() ? user.userBranches || [] : "";
+      dispatch(getLorryReceipts(branches))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
           if (message) {
@@ -190,7 +193,7 @@ const LoadingSlipEdit = () => {
           );
         });
     }
-  }, [loadingSlip.branch, lsId]);
+  }, [lsId]);
 
   useEffect(() => {
     const err = Object.keys(formErrors);
@@ -302,7 +305,7 @@ const LoadingSlipEdit = () => {
     e.preventDefault();
     if (!validateForm(loadingSlip)) {
       const updatedLoadingSlip = { ...loadingSlip };
-      updatedLoadingSlip.lrList = lsLrList?.filter?.((lr) => lr.checked);
+      updatedLoadingSlip.lrList = selectedLR?.filter?.((lr) => lr.checked);
       dispatch(updateLoadingSlip(updatedLoadingSlip))
         .then(({ payload = {} }) => {
           const { message } = payload?.data || {};
@@ -892,6 +895,8 @@ const LoadingSlipEdit = () => {
             lorryReceipts={lsLrList}
             setLorryReceipts={setLsLrList}
             handleSelectedLr={handleSelectedLr}
+            selectedLR={selectedLR}
+            setSelectedLR={setSelectedLR}
           />
           <Divider sx={{ margin: "20px 0" }} />
           <form action="" onSubmit={submitHandler} id="loadingSlipForm">

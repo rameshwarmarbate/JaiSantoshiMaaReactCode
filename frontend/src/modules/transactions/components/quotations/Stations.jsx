@@ -12,6 +12,9 @@ import { validateNumber } from "../../../../services/utils";
 const initialState = {
   station: null,
   amount: "",
+  field1: "",
+  field2: "",
+  field3: "",
   otherFieldValue: "",
 };
 
@@ -167,6 +170,63 @@ const Stations = ({ places, quotation, setQuotation }) => {
                 onChange={inputChangeHandler}
                 name="otherFieldValue"
                 id="otherFieldValue"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">&#8377;</InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className="grid-item">
+            <FormControl fullWidth size="small">
+              <TextField
+                size="small"
+                variant="outlined"
+                label="Field 1"
+                value={station.field1 || ""}
+                onInput={validateNumber}
+                onChange={inputChangeHandler}
+                name="field1"
+                id="field1"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">&#8377;</InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className="grid-item">
+            <FormControl fullWidth size="small">
+              <TextField
+                size="small"
+                variant="outlined"
+                label="Field 2"
+                value={station.field2 || ""}
+                onInput={validateNumber}
+                onChange={inputChangeHandler}
+                name="field2"
+                id="field2"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">&#8377;</InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className="grid-item">
+            <FormControl fullWidth size="small">
+              <TextField
+                size="small"
+                variant="outlined"
+                label="Field 3"
+                value={station.field3 || ""}
+                onInput={validateNumber}
+                onChange={inputChangeHandler}
+                name="field3"
+                id="field3"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">&#8377;</InputAdornment>

@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Button, Divider, TextField } from "@mui/material";
+import { Button, Divider, FormLabel, Grid, TextField } from "@mui/material";
 
 const FreightDetails = ({
   loadingSlip,
@@ -64,16 +64,10 @@ const FreightDetails = ({
     }
   }, [lorryReceipts, customers]);
 
-  const inputChangeHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.checked;
-    const updatedLR = filteredLR?.map?.((lr) => {
-      if (lr._id === name) {
-        lr.checked = value;
-      }
-      return lr;
-    });
-    setFilteredLR(updatedLR);
+  const inputChangeHandler = (e, index) => {
+    const list = [...filteredLR];
+    list[index] = { ...list[index], checked: e.target.checked };
+    setFilteredLR([...list]);
   };
 
   useEffect(() => {
@@ -100,19 +94,15 @@ const FreightDetails = ({
   };
 
   const searchChangeHandler = (e) => {
-    setSearch(
-      e.target.value
-        ? e.target.value?.trim?.()?.toLowerCase?.()
-        : e.target.value
-    );
-  };
-
-  useEffect(() => {
+    const search = e.target.value
+      ? e.target.value?.trim?.()?.toLowerCase?.()
+      : e.target.value;
+    setSearch(search);
     if (search) {
       setFilteredLR((currState) => {
         const updatedLR = currState;
         updatedLR?.forEach?.((lr) => {
-          lr.show = lr.lrNo.includes?.(search);
+          lr.show = lr.lrNo?.toLowerCase?.().includes?.(search);
         });
         return updatedLR;
       });
@@ -125,16 +115,55 @@ const FreightDetails = ({
         return updatedLR;
       });
     }
-  }, [search]);
+  };
 
+  let totalRedord = 0,
+    selected = 0;
+
+  const renderItems =
+    filteredLR?.length > 0 &&
+    filteredLR?.map?.((lr, index) => {
+      if (lr.show) {
+        totalRedord += 1;
+      }
+      if (lr.checked && lr.show) {
+        selected += 1;
+      }
+      return lr.show ? (
+        <FormControlLabel
+          className="groupCheckbox"
+          key={lr.lrNo}
+          control={
+            <Checkbox
+              name={lr._id}
+              size="small"
+              checked={lr.checked}
+              onChange={(e) => inputChangeHandler(e, index)}
+            />
+          }
+          label={
+            <span
+              style={{
+                fontSize: "0.9em",
+                display: "inline-block",
+                lineHeight: "1em",
+              }}
+            >
+              {lr.lrNo}
+            </span>
+          }
+        />
+      ) : null;
+    });
   return (
     <>
-      <div className="grid grid-7-col">
-        <div className="grid-item">
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
           <h2 className="mb20 text-inline">Lorry receipts</h2>
-        </div>
+        </Grid>
+
         {filteredLR?.length > 0 && (
-          <div className="grid-item">
+          <Grid item xs={3}>
             <TextField
               size="small"
               variant="outlined"
@@ -144,40 +173,18 @@ const FreightDetails = ({
               name="search"
               id="search"
             />
-          </div>
+          </Grid>
         )}
-      </div>
+        <Grid item xs={2}>
+          <h4 className=" text-inline" style={{ paddingTop: "5px" }}>
+            {totalRedord} Out of {selected} selected
+          </h4>
+        </Grid>
+      </Grid>
       <div className="bl_lrCheckboxes">
         <form action="" onSubmit={submitHandler} id="lrSelectionForm">
           <FormGroup className="checkboxGroup">
-            {filteredLR?.length > 0 &&
-              filteredLR?.map?.((lr) =>
-                lr.show ? (
-                  <FormControlLabel
-                    className="groupCheckbox"
-                    key={lr.lrNo}
-                    control={
-                      <Checkbox
-                        name={lr._id}
-                        size="small"
-                        checked={lr.checked}
-                        onChange={inputChangeHandler}
-                      />
-                    }
-                    label={
-                      <span
-                        style={{
-                          fontSize: "0.9em",
-                          display: "inline-block",
-                          lineHeight: "1em",
-                        }}
-                      >
-                        {lr.lrNo}
-                      </span>
-                    }
-                  />
-                ) : null
-              )}
+            {renderItems}
             {filteredLR?.length === 0 && <p>No lorry receipts for challan</p>}
           </FormGroup>
         </form>

@@ -33,6 +33,18 @@
     margin: 0 3mm;
   }
 
+  .logo_image {
+    max-width: calc(100% - 6mm);
+    max-height: 20mm;
+    margin: 0 3mm;
+  }
+
+  .logo_image-1 {
+    max-width: calc(100% - 2mm);
+    max-height: 25mm;
+    margin: 0 3mm;
+  }
+
   table {
     width: 100%;
   }
@@ -45,8 +57,8 @@
     margin: 5mm 0;
   }
 
-  .mb10 {
-    margin-bottom: 10mm;
+  .mb5 {
+    margin-bottom: 3mm;
   }
 
   ul {
@@ -77,20 +89,24 @@
   }
 
   .tbl_stations {
-    border: 1px solid #000;
+    border: 1px solid #292828;
     border-collapse: collapse;
   }
 
   .tbl_stations th {
     text-align: center;
-    border: 1px solid #000;
+    border: 1px solid #292828;
     padding: 1mm;
   }
 
   .tbl_stations td {
     text-align: center;
-    border: 1px solid #000;
+    border: 1px solid #292828;
     padding: 1mm;
+  }
+
+  .subHead {
+    font-size: 12pt;
   }
 </style>
 
@@ -112,15 +128,15 @@
             </td>
             <td width="60%">
               <h2>JAI SANTOSHI MAA TRANSPORT</h2>
-              <p>
+              <p class="subHead">
                 <strong>Head office:</strong> S. NO. 48/1, New Urali Devachi,
                 Pune-Saswad Road. Tal. Haweli, Dist. Pune 412308
               </p>
-              <p>Mobile: 9922942607 / 9822658775</p>
-              <p>GST No.: 27AJBPJ0448F1ZK</p>
+              <p class="subHead">Mobile: 9922942607 / 9822658775</p>
+              <p class="subHead">GST No.: 27AJBPJ0448F1ZK</p>
             </td>
             <td width="20%">
-              <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="logo_image" />
+              <img src="{{{info.laxmi}}}" alt="Jai Santoshi Maa" class="logo_image-1" />
             </td>
           </tr>
         </table>
@@ -128,7 +144,7 @@
     </tr>
   </table>
   <hr />
-  <table class="mb10">
+  <table class="mb5">
     <tr>
       <td width="80%">
         <p>To, <strong>{{info.quotation.customer}}</strong></p>
@@ -140,8 +156,6 @@
   </table>
   <p>Respected Sir / Madam,</p>
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
   <p>
     As per our personal discussion held regarding transportation of your
     valuable customers inflowing regions. Enclosed find below our lowest rates
@@ -149,76 +163,34 @@
     <strong>{{info.toDate}}</strong>.
   </p>
   <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  <table>
+  <table class="tbl_stations">
     <tr>
-      <td width="33.33%">
-        <table class="tbl_stations">
-          <tr>
-            <th>Station</th>
-            <th>Rate Per {{info.quotation.ratePer}}</th>
-            <th>{{info.quotation.otherField}}</th>
-          </tr>
-          {{#info.stations1}}
-          <tr>
-            <td>{{station}}</td>
-            <td>{{amount}}</td>
-            <td>{{otherFieldValue}}</td>
-          </tr>
-          {{/info.stations1}} {{#info.blankRows1}}
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          {{/info.blankRows1}}
-        </table>
-      </td>
-      <td width="33.33%">
-        <table class="tbl_stations">
-          <tr>
-            <th>Station</th>
-            <th>Rate Per {{info.quotation.ratePer}}</th>
-            <th>{{info.quotation.otherField}}</th>
-          </tr>
-          {{#info.stations2}}
-          <tr>
-            <td>{{station}}</td>
-            <td>{{amount}}</td>
-            <td>{{otherFieldValue}}</td>
-          </tr>
-          {{/info.stations2}} {{#info.blankRows2}}
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          {{/info.blankRows2}}
-        </table>
-      </td>
-      <td width="33.33%">
-        <table class="tbl_stations">
-          <tr>
-            <th>Station</th>
-            <th>Rate Per {{info.quotation.ratePer}}</th>
-            <th>{{info.quotation.otherField}}</th>
-          </tr>
-          {{#info.stations3}}
-          <tr>
-            <td>{{station}}</td>
-            <td>{{amount}}</td>
-            <td>{{otherFieldValue}}</td>
-          </tr>
-          {{/info.stations3}} {{#info.blankRows3}}
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          {{/info.blankRows3}}
-        </table>
-      </td>
+      <th>Station</th>
+      <th>Rate Per {{info.quotation.ratePer}}</th>
+      <th>{{info.quotation.otherField}}</th>
+      <th>{{info.quotation.field1}}</th>
+      <th>{{info.quotation.field2}}</th>
+      <th>{{info.quotation.field3}}</th>
     </tr>
+    {{#info.stations1}}
+    <tr>
+      <td>{{station}}</td>
+      <td>{{amount}}</td>
+      <td>{{otherFieldValue}}</td>
+      <td>{{field1}}</td>
+      <td>{{field2}}</td>
+      <td>{{field3}}</td>
+    </tr>
+    {{/info.stations1}} {{#info.blankRows1}}
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    {{/info.blankRows1}}
   </table>
 
   <p>&nbsp;</p>
@@ -230,6 +202,7 @@
         <ul>
           <li>LR Charges Rs. 10/- per LR</li>
           <li>Delivery schedule 2nd Day for all stations</li>
+          <li>{{info.quotation.termsAndCond}}</li>
         </ul>
       </td>
       <td style="vertical-align: bottom">

@@ -3,6 +3,7 @@ const secrets = require("../secrets/secrets");
 const User = require("../models/User.js");
 const Employee = require("../models/Employee.js");
 const Branch = require("../models/Branch.js");
+const { ObjectId } = require("mongodb");
 
 const signupAdminCtrl = (req, res) => {
   const user = new User({
@@ -181,11 +182,22 @@ const getUsers = (req, res) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.params.id, (error, data) => {
+  User.aggregate([
+    { $match: { _id: ObjectId(req.params.id) } },
+    { $unwind: { path: "$userBranches", preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: "branch",
+        localField: "userBranches",
+        foreignField: "_id",
+        as: "userBranches",
+      },
+    },
+  ]).exec((error, data) => {
     if (error) {
       res.json({ message: error.message });
     } else {
-      res.json(data);
+      res.json(data[0]);
     }
   });
 };
@@ -273,6 +285,7 @@ const updateUserPermissions = (req, res, next) => {
       $set: {
         permissions: req.body.permissions,
         updatedBy: req.body.updatedBy,
+        userBranches: req.body.userBranches,
       },
     },
     (error, data) => {

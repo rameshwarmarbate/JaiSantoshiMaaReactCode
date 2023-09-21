@@ -8,11 +8,15 @@ import {
   Paper,
   Autocomplete,
   TextField,
+  FormHelperText,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Alert, Stack } from "@mui/material";
 import classes from "./UserPermissions.module.css";
 import { LoadingSpinner } from "../../../ui-controls";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import {
   getUserDetail,
   getBranches,
@@ -20,7 +24,12 @@ import {
   updateUserPermissions,
   selectIsLoading,
 } from "../slice/userSlice";
-
+const initialErrorState = {
+  branch: {
+    invalid: false,
+    message: "",
+  },
+};
 const UserPermissions = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -28,11 +37,14 @@ const UserPermissions = () => {
   const [branchUsers, setBranchUsers] = useState([]);
   const [httpError, setHttpError] = useState("");
   const [branches, setBranches] = useState([]);
+  const [userBranches, setUserBranches] = useState([]);
+  const [userBranch, setUserBranch] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [fetchedUser, setFetchedUser] = useState({});
   const [permissions, setPermissions] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
+  const [formErrors, setFormErrors] = useState(initialErrorState);
 
   const navigate = useNavigate();
 
@@ -118,6 +130,11 @@ const UserPermissions = () => {
             ...(payload?.data || {}),
           });
           setPermissions(payload?.data?.permissions);
+          if (payload?.data?.userBranches) {
+            setUserBranches(payload.data?.userBranches || []);
+          } else {
+            setUserBranches([]);
+          }
         })
         .catch(() => {
           setHttpError(
@@ -136,6 +153,32 @@ const UserPermissions = () => {
 
   const userChangeHandler = (e, value) => {
     setSelectedUser(value);
+  };
+
+  const handleUserBranchHandler = (e, value) => {
+    setUserBranch(value);
+    setFormErrors(initialErrorState);
+  };
+
+  const triggerDelete = (index) => {
+    userBranches.splice(index, 1);
+    setUserBranches([...userBranches]);
+  };
+
+  const onAddBranch = () => {
+    if (!userBranch) {
+      let errors = {};
+      errors.branch = { invalid: true, message: "Branch is required." };
+      setFormErrors(errors);
+    } else if (userBranches.some(({ _id }) => _id === userBranch._id)) {
+      let errors = {};
+      errors.branch = { invalid: true, message: "Branch is already selected." };
+      setFormErrors(errors);
+    } else {
+      setUserBranches((prevState) => [...prevState, userBranch]);
+      setUserBranch(null);
+      setFormErrors(initialErrorState);
+    }
   };
 
   const handleSwitchChange = (e, checked) => {
@@ -166,6 +209,7 @@ const UserPermissions = () => {
     const requestObject = {
       id: selectedUser?.id,
       permissions: permissions,
+      userBranches: userBranches.map(({ _id }) => _id),
     };
 
     dispatch(updateUserPermissions(requestObject))
@@ -275,6 +319,85 @@ const UserPermissions = () => {
                   </FormControl>
                 )}
               </div>
+              <div className="grid-item">
+                {branches && branches?.length > 0 && (
+                  <FormControl
+                    fullWidth
+                    size="small"
+                    error={formErrors.branch.invalid}
+                  >
+                    <Autocomplete
+                      disablePortal
+                      size="small"
+                      name="branch"
+                      options={branches}
+                      value={userBranch || null}
+                      onChange={handleUserBranchHandler}
+                      getOptionLabel={(branch) => branch.name || ""}
+                      openOnFocus
+                      disabled={!selectedUser}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Assign Branch"
+                          fullWidth
+                          error={formErrors.branch.invalid}
+                        />
+                      )}
+                    />
+                    {formErrors.branch.invalid && (
+                      <FormHelperText>
+                        {formErrors.branch.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              </div>
+              <div className="grid-item">
+                {branches && branches?.length > 0 && (
+                  <FormControl fullWidth size="small">
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      color="primary"
+                      className="ml6"
+                      onClick={onAddBranch}
+                    >
+                      Add
+                    </Button>
+                  </FormControl>
+                )}
+              </div>
+            </div>
+            <div style={{ paddingBottom: "10px" }}>
+              {userBranches.length ? "User assigned Branches" : ""}{" "}
+            </div>
+            <div>
+              <table className={classes.tbl_permissions}>
+                {/* <thead>
+                  <tr>
+                    <th>Branch</th> <th>Action</th>
+                  </tr>
+                </thead> */}
+                <tbody>
+                  {userBranches.map((branch) => {
+                    return (
+                      <tr key={branch._id}>
+                        <td>{branch.name}</td>
+                        <td>
+                          <IconButton
+                            size="small"
+                            onClick={triggerDelete}
+                            color="error"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </Paper>
           {fetchedUser.employee && (

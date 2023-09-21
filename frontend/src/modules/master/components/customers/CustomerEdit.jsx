@@ -160,15 +160,15 @@ const CustomerEdit = () => {
     if (!formData.address?.trim?.()) {
       errors.address = { invalid: true, message: "Address is required" };
     }
-    if (
-      formData.telephone?.trim?.() !== "" &&
-      !mobileNoRegEx.test(formData.telephone)
-    ) {
-      errors.telephone = {
-        invalid: true,
-        message: "Phone number should be 10 digits number",
-      };
-    }
+    // if (
+    //   formData.telephone?.trim?.() !== "" &&
+    //   !mobileNoRegEx.test(formData.telephone)
+    // ) {
+    //   errors.telephone = {
+    //     invalid: true,
+    //     message: "Phone number should be 10 digits number",
+    //   };
+    // }
     if (formData.email !== "" && !emailRegEx.test(formData.email)) {
       errors.email = { invalid: true, message: "Email is invalid" };
     }

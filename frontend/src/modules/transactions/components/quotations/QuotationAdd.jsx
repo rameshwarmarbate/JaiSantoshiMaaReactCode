@@ -9,6 +9,7 @@ import {
   Button,
   Paper,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -26,6 +27,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LoadingSpinner } from "../../../../ui-controls";
 import Stations from "./Stations";
 import { createQuotation, selectIsLoading } from "./slice/quotationSlice";
+import { validateNumber } from "../../../../services/utils";
 
 const initialState = {
   date: new Date(),
@@ -33,6 +35,11 @@ const initialState = {
   from: null,
   to: null,
   otherField: "",
+  field1: "",
+  field2: "",
+  field3: "",
+  termsAndCond: "",
+  ddChanger: 500,
   ratePer: "",
   stations: [],
 };
@@ -309,6 +316,11 @@ const QuotationAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Rate per"
+                    helperText="Ex. for 'Full Load' use short (F.L.)"
+                    FormHelperTextProps={{
+                      disabled: true,
+                      classes: { sizeSmall: "small" },
+                    }}
                     value={quotation.ratePer}
                     error={formErrors.ratePer.invalid}
                     onChange={inputChangeHandler}
@@ -329,10 +341,94 @@ const QuotationAdd = () => {
                     size="small"
                     variant="outlined"
                     label="Other header field"
+                    helperText="Ex. for 'Half Load' use short (H.L.)"
+                    FormHelperTextProps={{
+                      disabled: true,
+                      classes: { sizeSmall: "small" },
+                    }}
                     value={quotation.otherField}
                     onChange={inputChangeHandler}
                     name="otherField"
                     id="otherField"
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Additional Terms and Condition"
+                    value={quotation.termsAndCond}
+                    onChange={inputChangeHandler}
+                    name="termsAndCond"
+                    id="termsAndCond"
+                    inputProps={{ maxLength: 500 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="DD Changer"
+                    value={quotation.ddChanger || ""}
+                    onChange={inputChangeHandler}
+                    onInput={validateNumber}
+                    name="ddChanger"
+                    id="ddChanger"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          &#8377;
+                        </InputAdornment>
+                      ),
+                      maxLength: 10,
+                    }}
+                    inputProps={{ maxLength: 10 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 1"
+                    value={quotation.field1}
+                    onChange={inputChangeHandler}
+                    name="field1"
+                    id="field1"
+                    inputProps={{ maxLength: 20 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 2"
+                    value={quotation.field2}
+                    onChange={inputChangeHandler}
+                    name="field2"
+                    id="field2"
+                    inputProps={{ maxLength: 20 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl fullWidth size="small">
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Field 3"
+                    value={quotation.field3}
+                    onChange={inputChangeHandler}
+                    name="field3"
+                    id="field3"
+                    inputProps={{ maxLength: 20 }}
                   />
                 </FormControl>
               </div>
@@ -350,7 +446,7 @@ const QuotationAdd = () => {
 
           {quotation.stations?.length > 0 ? (
             <TableContainer>
-              <Table sx={{ width: 500 }} className="tbl_jsm">
+              <Table sx={{ width: "80%" }} className="tbl_jsm">
                 <TableHead>
                   <TableRow>
                     <TableCell>Station</TableCell>
@@ -358,7 +454,10 @@ const QuotationAdd = () => {
                       Rate per {quotation.ratePer}
                     </TableCell>
                     <TableCell align="right">{quotation.otherField}</TableCell>
-                    <TableCell align="right">&nbsp;</TableCell>
+                    <TableCell align="right">{quotation.field1}</TableCell>
+                    <TableCell align="right">{quotation.field2}</TableCell>
+                    <TableCell align="right">{quotation.field3}</TableCell>
+                    <TableCell align="center">Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -374,7 +473,16 @@ const QuotationAdd = () => {
                       <TableCell align="right">
                         &#8377; {station.otherFieldValue}
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="right">
+                        &#8377; {station.field1}
+                      </TableCell>
+                      <TableCell align="right">
+                        &#8377; {station.field2}
+                      </TableCell>
+                      <TableCell align="right">
+                        &#8377; {station.field3}
+                      </TableCell>
+                      <TableCell align="center">
                         <IconButton
                           size="small"
                           onClick={(e) => stationDeleteHandler(e, index)}

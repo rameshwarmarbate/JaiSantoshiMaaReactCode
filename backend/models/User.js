@@ -30,6 +30,7 @@ const User = new Schema(
       type: String,
       required: true,
     },
+    userBranches: [mongoose.Types.ObjectId],
     permissions: {
       Admin: {
         MoneyTransfer: {

@@ -22,6 +22,21 @@ const Quotation = new Schema(
     otherField: {
       type: String,
     },
+    field1: {
+      type: String,
+    },
+    field2: {
+      type: String,
+    },
+    field3: {
+      type: String,
+    },
+    termsAndCond: {
+      type: String,
+    },
+    ddChanger: {
+      type: Number,
+    },
     customer: {
       type: String,
     },

@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Button, Divider, TextField } from "@mui/material";
+import { Button, Divider, Grid, TextField } from "@mui/material";
 
 const FreightDetailsEdit = ({
   loadingSlip,
@@ -12,6 +12,8 @@ const FreightDetailsEdit = ({
   lorryReceipts,
   setLorryReceipts,
   handleSelectedLr,
+  selectedLR,
+  setSelectedLR,
 }) => {
   const columns = [
     { field: "_id", headerName: "Id" },
@@ -46,7 +48,6 @@ const FreightDetailsEdit = ({
 
   const [initial, setInitial] = useState(true);
   const [updatedLR, setUpdatedLR] = useState([]);
-  const [selectedLR, setSelectedLR] = useState([]);
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState(0);
 
@@ -86,18 +87,10 @@ const FreightDetailsEdit = ({
     handleSelectedLr(selectedLR);
   }, [selectedLR, handleSelectedLr]);
 
-  const inputChangeHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.checked;
-    setUpdatedLR((currState) => {
-      const updatedState = [...currState];
-      updatedState?.forEach?.((lr) => {
-        if (lr._id === name) {
-          lr.checked = value;
-        }
-      });
-      return updatedState;
-    });
+  const inputChangeHandler = (e, index) => {
+    const list = [...updatedLR];
+    list[index] = { ...list[index], checked: e.target.checked };
+    setUpdatedLR([...list]);
   };
 
   const submitHandler = (e) => {
@@ -115,19 +108,15 @@ const FreightDetailsEdit = ({
   };
 
   const searchChangeHandler = (e) => {
-    setSearch(
-      e.target.value
-        ? e.target.value?.trim?.()?.toLowerCase?.()
-        : e.target.value
-    );
-  };
-
-  useEffect(() => {
+    const search = e.target.value
+      ? e.target.value?.trim?.()?.toLowerCase?.()
+      : e.target.value;
+    setSearch(search);
     if (search) {
       setUpdatedLR((currState) => {
         const updatedLR = currState;
         updatedLR?.forEach?.((lr) => {
-          lr.show = lr.lrNo.includes?.(search);
+          lr.show = lr.lrNo?.toLowerCase?.().includes?.(search);
         });
         return updatedLR;
       });
@@ -140,15 +129,53 @@ const FreightDetailsEdit = ({
         return updatedLR;
       });
     }
-  }, [search]);
+  };
 
+  let totalRedord = 0,
+    selected = 0;
+
+  const renderItems =
+    updatedLR?.length > 0 &&
+    updatedLR?.map?.((lr, index) => {
+      if (lr.show) {
+        totalRedord += 1;
+      }
+      if (lr.checked && lr.show) {
+        selected += 1;
+      }
+      return lr.show ? (
+        <FormControlLabel
+          className="groupCheckbox"
+          key={lr.lrNo}
+          control={
+            <Checkbox
+              name={lr._id}
+              size="small"
+              checked={lr.checked}
+              onChange={(e) => inputChangeHandler(e, index)}
+            />
+          }
+          label={
+            <span
+              style={{
+                fontSize: "0.9em",
+                display: "inline-block",
+                lineHeight: "1em",
+              }}
+            >
+              {lr.lrNo}
+            </span>
+          }
+        />
+      ) : null;
+    });
   return (
     <>
-      <div className="grid grid-7-col">
-        <div className="grid-item">
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
           <h2 className="mb20 text-inline">Lorry receipts</h2>
-        </div>
-        <div className="grid-item">
+        </Grid>
+        <Grid item xs={2}>
           <TextField
             size="small"
             variant="outlined"
@@ -158,39 +185,15 @@ const FreightDetailsEdit = ({
             name="search"
             id="search"
           />
-        </div>
-      </div>
+        </Grid>
+        <Grid item xs={2}>
+          <h4 className=" text-inline" style={{ paddingTop: "5px" }}>
+            {totalRedord} Out of {selected} selected
+          </h4>
+        </Grid>
+      </Grid>
       <form action="" onSubmit={submitHandler} id="lrSelectionForm">
-        <FormGroup className="checkboxGroup">
-          {updatedLR?.length > 0 &&
-            updatedLR?.map?.((lr) =>
-              lr.show ? (
-                <FormControlLabel
-                  className="groupCheckbox"
-                  key={lr.lrNo}
-                  control={
-                    <Checkbox
-                      name={lr._id}
-                      size="small"
-                      checked={lr.checked}
-                      onChange={inputChangeHandler}
-                    />
-                  }
-                  label={
-                    <span
-                      style={{
-                        fontSize: "0.9em",
-                        display: "inline-block",
-                        lineHeight: "1em",
-                      }}
-                    >
-                      {lr.lrNo}
-                    </span>
-                  }
-                />
-              ) : null
-            )}
-        </FormGroup>
+        <FormGroup className="checkboxGroup">{renderItems}</FormGroup>
       </form>
       <div className="right">
         <Button
