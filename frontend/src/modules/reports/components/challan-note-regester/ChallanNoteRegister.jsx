@@ -6,108 +6,123 @@ import {
   FormControl,
   Button,
   Paper,
-  Autocomplete,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
+  Autocomplete,
 } from "@mui/material";
-
 import DownloadIcon from "@mui/icons-material/Download";
 import Grid from "@material-ui/core/Grid";
 import { DataGrid } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import FileSaver from "file-saver";
 import {
   getFormattedDate,
+  getFormattedLSNumber,
   isSuperAdminOrAdmin,
 } from "../../../../services/utils";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
-  downloadLRReport,
+  downloadChallanReport,
   getBranches,
   getCustomers,
-  getLorryReceiptsForReport,
+  getLoadingSlipForReport,
   selectIsLoading,
-} from "./slice/lrRegisterSlice";
+} from "./slice/challanRegisterSlice";
+import FileSaver from "file-saver";
 
 const initialState = {
-  consignor: null,
-  consignee: null,
   from: null,
   to: null,
-  payType: "",
-  searchText: "",
+  lrNo: "",
 };
 
-const LorryReceiptRegister = () => {
+const ChallanNoteRegister = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
+    { field: "srNo", headerName: "Sr No." },
     {
-      field: "srNo",
-      headerName: "Sr. No.",
+      field: "vehicleOwnerAddress",
+      headerName: "Challan No",
+      flex: 1,
     },
     {
-      field: "lrNo",
-      headerName: "L.R. Note No.",
+      field: "formattedLSNo",
+      headerName: "Challan Generated From",
       flex: 1,
     },
     {
       field: "date",
-      headerName: "Consign Date",
+      headerName: "Date",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "invoiceNo",
-      headerName: "Invoice No",
+      field: "vehicleNo",
+      headerName: "Vehicle no",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "consignorName",
-      headerName: "Consignor Name",
-      minWidth: 170,
-      flex: 1,
-    },
-    {
-      field: "consigneeName",
-      headerName: "Consignee Name",
-      minWidth: 170,
-      flex: 1,
-    },
-    {
-      field: "from",
+      field: "fromName",
       headerName: "From",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "to",
+      field: "toName",
       headerName: "To",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "payType",
-      headerName: "Payment Mode",
+      field: "totalPayable",
+      headerName: "Total Amount",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "totalArticles",
-      headerName: "Total Qty",
-      type: "number",
+      field: "lrNo",
+      headerName: "LR No",
+      minWidth: 150,
       flex: 1,
     },
     {
-      field: "total",
-      headerName: "Grand Total",
-      type: "number",
+      field: "driverName",
+      headerName: "Consignor",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "qwqwqw",
+      headerName: "Consignee",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "qwqwq",
+      headerName: "No. of Article",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "dqqw",
+      headerName: "Weight",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "dd",
+      headerName: "Status",
+      minWidth: 150,
       flex: 1,
     },
   ];
   const isLoading = useSelector(selectIsLoading);
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [customers, setCustomers] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [httpError, setHttpError] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [search, setSearch] = useState(initialState);
@@ -121,29 +136,8 @@ const LorryReceiptRegister = () => {
     data: [],
     total: 0,
   });
-  const [isloading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getCustomers())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          const updatedCustomers = payload?.data?.map?.((customer) => {
-            return {
-              ...customer,
-              label: customer.name,
-            };
-          });
-          setCustomers(updatedCustomers);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
-
     dispatch(getBranches())
       .then(({ payload = {} }) => {
         const { message } = payload?.data || {};
@@ -163,20 +157,27 @@ const LorryReceiptRegister = () => {
       .catch((error) => {
         setHttpError(error.message);
       });
+
+    dispatch(getCustomers())
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          setHttpError("");
+          setCustomers(payload?.data);
+        }
+      })
+      .catch((error) => {
+        setHttpError(error.message);
+      });
   }, []);
 
   useEffect(() => {
     if (isSubmitted && ((user.branch && selectedBranch) || !user.branch)) {
-      setLoading(true);
       const query = {};
       if (selectedBranch && selectedBranch._id) {
         query.branch = selectedBranch._id;
-      }
-      if (search.consignor && search.consignor._id) {
-        query.consignor = search.consignor._id;
-      }
-      if (search.consignee && search.consignee._id) {
-        query.consignee = search.consignee._id;
       }
       if (search.from) {
         query.from = search.from;
@@ -184,12 +185,10 @@ const LorryReceiptRegister = () => {
       if (search.to) {
         query.to = search.to;
       }
-      if (search.payType) {
-        query.payType = search.payType;
+      if (search.lrNo) {
+        query.lrNo = search.lrNo;
       }
-      if (search.searchText) {
-        query.searchText = search.searchText;
-      }
+
       const requestObject = {
         pagination: {
           limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
@@ -198,33 +197,26 @@ const LorryReceiptRegister = () => {
         query: query,
       };
 
-      dispatch(getLorryReceiptsForReport(requestObject))
+      dispatch(getLoadingSlipForReport(requestObject))
         .then(({ payload = {} }) => {
-          setLoading(false);
           const { message } = payload?.data || {};
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLR = payload?.data.lorryReceipts?.map?.(
-              (lr, index) => {
-                return {
-                  ...lr,
-                  srNo: index + 1,
-                  date: getFormattedDate(new Date(lr.date)),
-                  totalWeight: lr.transactions
-                    ?.reduce?.((acc, lr) => acc + lr.chargeWeight, 0)
-                    ?.toFixed?.(2),
-                  totalArticles: lr.transactions
-                    ?.reduce?.((acc, lr) => acc + lr.articleNo, 0)
-                    ?.toFixed?.(2),
-                };
-              }
-            );
+            const updatedLS = payload?.data.loadingSlips?.map?.((ls, index) => {
+              return {
+                ...ls,
+                srNo: index + 1,
+                lrNo: ls.lrList[0]?.lrNo,
+                date: getFormattedDate(new Date(ls.date)),
+                formattedLSNo: getFormattedLSNumber(ls.lsNo),
+              };
+            });
             setPageState((currState) => {
               return {
                 ...currState,
                 isLoading: false,
-                data: updatedLR,
+                data: updatedLS || [],
                 total: payload?.data.count,
               };
             });
@@ -234,7 +226,6 @@ const LorryReceiptRegister = () => {
         .catch((error) => {
           setIsSubmitted(false);
           setHttpError(error.message);
-          setLoading(false);
         });
     }
   }, [
@@ -242,7 +233,59 @@ const LorryReceiptRegister = () => {
     paginationModel.pageSize,
     selectedBranch,
     isSubmitted,
+    dispatch,
+    search.from,
+    search.lrNo,
+    search.to,
   ]);
+
+  const triggerDownload = (e) => {
+    e.preventDefault();
+    const query = { isPrint: true };
+    if (selectedBranch && selectedBranch._id) {
+      query.branch = selectedBranch._id;
+    }
+    if (search.from) {
+      query.from = search.from;
+    }
+    if (search.to) {
+      query.to = search.to;
+    }
+    if (search.lrNo) {
+      query.lrNo = search.lrNo;
+    }
+    const requestObject = {
+      pagination: {
+        limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
+        page: paginationModel.page + 1,
+      },
+      query: query,
+    };
+    dispatch(downloadChallanReport(requestObject))
+      .then(({ payload = {} }) => {
+        const { message } = payload?.data || {};
+        if (message) {
+          setHttpError(message);
+        } else {
+          const blob = new Blob([payload?.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          FileSaver.saveAs(blob, "ChallanStatus.xlsx");
+        }
+      })
+      .catch((error) => {
+        setHttpError(error.message);
+      });
+  };
+
+  const autocompleteChangeListener = (e, option, name) => {
+    setSearch((currState) => {
+      return {
+        ...currState,
+        [name]: option,
+      };
+    });
+  };
 
   const branchChangeHandler = (e, value) => {
     setSelectedBranch(value);
@@ -253,15 +296,6 @@ const LorryReceiptRegister = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-  };
-
-  const autocompleteChangeListener = (e, option, name) => {
-    setSearch((currState) => {
-      return {
-        ...currState,
-        [name]: option,
-      };
-    });
   };
 
   const dateInputChangeHandler = (name, date) => {
@@ -279,65 +313,26 @@ const LorryReceiptRegister = () => {
     setIsSubmitted(true);
   };
 
-  const triggerDownload = (e) => {
-    e.preventDefault();
-    const query = {};
-    if (selectedBranch && selectedBranch._id) {
-      query.branch = selectedBranch._id;
-    }
-    if (search.consignor && search.consignor._id) {
-      query.consignor = search.consignor._id;
-    }
-    if (search.consignee && search.consignee._id) {
-      query.consignee = search.consignee._id;
-    }
-    if (search.from) {
-      query.from = search.from;
-    }
-    if (search.to) {
-      query.to = search.to;
-    }
-    if (search.payType) {
-      query.payType = search.payType;
-    }
-    if (search.searchText) {
-      query.searchText = search.searchText;
-    }
-    dispatch(downloadLRReport(query))
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          const blob = new Blob([payload?.data], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          });
-          FileSaver.saveAs(blob, "LorryReceipts.xlsx");
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
-  };
-
-  const inputChangeHandler = (e, name = "payType") => {
+  const inputChangeHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
     setSearch((currState) => {
       return {
         ...currState,
-        [name]: e.target.value,
+        [name]: value,
       };
     });
   };
 
   return (
     <>
-      {(isLoading || isloading) && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
       <div className="inner-wrap">
         <div
           className="page_head-1"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <h1 className="pageHead">LR. Note Register</h1>
+          <h1 className="pageHead">Challan Note Register</h1>
           <div className="">
             <FormControl
               size="small"
@@ -379,7 +374,7 @@ const LorryReceiptRegister = () => {
           <h2 className="mb20">Search</h2>
           <form action="" onSubmit={submitHandler}>
             <Grid container spacing={3}>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -394,7 +389,7 @@ const LorryReceiptRegister = () => {
                   </LocalizationProvider>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -429,37 +424,21 @@ const LorryReceiptRegister = () => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={search.payType}
-                  exclusive
-                  onChange={(e) => inputChangeHandler(e, "payType")}
-                  aria-label="Platform"
-                  size="small"
-                >
-                  <ToggleButton value="">All</ToggleButton>
-                  <ToggleButton value="TBB">TBB</ToggleButton>
-                  <ToggleButton value="ToPay">ToPay</ToggleButton>
-                  <ToggleButton value="Paid">Paid</ToggleButton>
-                  <ToggleButton value="FOC">FOC</ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <TextField
                     size="small"
                     variant="outlined"
-                    label="Search in List By"
-                    value={search.searchText}
-                    onChange={(e) => inputChangeHandler(e, "searchText")}
-                    name="searchText"
-                    id="searchText"
+                    label="Lorry receipt no."
+                    value={search.lrNo}
+                    onChange={inputChangeHandler}
+                    name="lrNo"
+                    id="lrNo"
                     inputProps={{ maxLength: 50 }}
                   />
                 </FormControl>
               </Grid>
-              <Grid style={{ display: "flex" }} item xs={3}>
+              <Grid style={{ display: "flex" }} item xs={2}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -538,4 +517,4 @@ const LorryReceiptRegister = () => {
   );
 };
 
-export default LorryReceiptRegister;
+export default ChallanNoteRegister;

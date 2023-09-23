@@ -1,7 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import localStorage from "redux-persist/lib/storage";
 import userReducer from "../modules/user/slice/userSlice";
-import billRegisterReducer from "../modules/reports/components/bill-register/slice/billRegisterSlice";
 import lrRegisterReducer from "../modules/reports/components/lr-register/slice/lrRegisterSlice";
 import tripSheetReducer from "../modules/reports/components/loading-trip-sheet/slice/tripSheetSlice";
 import acknowledgeReducer from "../modules/transactions/components/acknowledgement/slice/acknowledgeSlice";
@@ -30,7 +29,6 @@ import vehicleReducer from "../modules/master/components/vehicles/slice/vehicleS
 const appReducer = combineReducers({
   user: userReducer,
   lrregisterreport: lrRegisterReducer,
-  billregisterreport: billRegisterReducer,
   tripsheetreport: tripSheetReducer,
   acknowledge: acknowledgeReducer,
   bill: billReducer,

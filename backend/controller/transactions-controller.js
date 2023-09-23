@@ -736,9 +736,6 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
       );
       const templatePath =
         path.join(__dirname, "../bills/") + "LorryReceipt-Marathi.html";
-      const isMultiEway = LRData.eWayBillNo?.length > 90,
-        isMultiInvoice = LRData.invoiceNo?.length > 49,
-        isOsWindows = process.platform === "win32";
       res.render(
         templatePath,
         {
@@ -765,26 +762,10 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
           const finalPath = path.join(__dirname, "../bills/lorryReceipts/");
           const fileName = LRData.lrNo;
           let htmlRaw = HTML;
-          if (isMultiEway && isMultiInvoice) {
-            // htmlRaw = htmlRaw.replace("0.55", "0.52");
-            options = {
-              format: "Letter",
-              orientation: "portrait",
-              height: "10.6in",
-              width: "8in",
-            };
-          } else if (
-            isMultiInvoice ||
-            isMultiEway ||
-            LRData.transactions.length > 5
-          ) {
-            // htmlRaw = htmlRaw.replace("0.55", "0.53");
-            options = {
-              format: "Letter",
-              orientation: "portrait",
-              height: "10.6in",
-              width: "8in",
-            };
+
+          var isWin = process.platform === "win32";
+          if (isWin) {
+            htmlRaw = htmlRaw.replace("0.55", "0.94");
           }
 
           pdf.create(htmlRaw, options).toBuffer((buffErr, buffer) => {
@@ -1501,7 +1482,12 @@ const printLoadingSlip = (req, res) => {
           },
           (err, HTML) => {
             const fileName = lsData.lsNo;
-            pdf.create(HTML, options2).toBuffer((buffErr, buffer) => {
+            var isWin = process.platform === "win32";
+            let htmlRaw = HTML;
+            if (isWin) {
+              htmlRaw = htmlRaw.replace("0.55", "0.98");
+            }
+            pdf.create(htmlRaw, options2).toBuffer((buffErr, buffer) => {
               if (buffErr) {
                 return res.status(200).json({ message: buffErr.message });
               }
@@ -2226,8 +2212,13 @@ const printBill = (req, res) => {
             (err, HTML) => {
               const finalPath = path.join(__dirname, "../bills/bills/");
               const fileName = data.billNo;
+              var isWin = process.platform === "win32";
+              let htmlRaw = HTML;
+              if (isWin) {
+                htmlRaw = htmlRaw.replace("0.55", "0.98");
+              }
               pdf
-                .create(HTML, options2)
+                .create(htmlRaw, options2)
                 // .toFile(
                 //   path.join(finalPath, fileName + ".pdf"),
                 //   (err, result) => {
@@ -2728,8 +2719,13 @@ const viewQuotation = (req, res) => {
         (err, HTML) => {
           const finalPath = path.join(__dirname, "../bills/quotations/");
           const fileName = data.quotationNo;
+          var isWin = process.platform === "win32";
+          let htmlRaw = HTML;
+          if (isWin) {
+            htmlRaw = htmlRaw.replace("0.55", "0.98");
+          }
           pdf
-            .create(HTML, options2)
+            .create(htmlRaw, options2)
             // .toFile(path.join(finalPath, fileName + ".pdf"), (err, result) => {
             //   if (err) {
             //     return res.status(200).send({
@@ -2831,7 +2827,13 @@ const viewPaymentCollection = (req, res) => {
           (err, HTML) => {
             const finalPath = path.join(__dirname, "../bills/vouchers/");
             const fileName = voucherNumber;
-            pdf.create(HTML, options2).toBuffer((buffErr, buffer) => {
+
+            var isWin = process.platform === "win32";
+            let htmlRaw = HTML;
+            if (isWin) {
+              htmlRaw = htmlRaw.replace("0.55", "1");
+            }
+            pdf.create(htmlRaw, options2).toBuffer((buffErr, buffer) => {
               if (buffErr) {
                 return res.status(200).json({ message: buffErr.message });
               }

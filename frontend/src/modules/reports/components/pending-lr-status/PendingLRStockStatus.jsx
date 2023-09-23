@@ -8,8 +8,6 @@ import {
   Paper,
   Autocomplete,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
 } from "@mui/material";
 
 import DownloadIcon from "@mui/icons-material/Download";
@@ -30,7 +28,7 @@ import {
   getCustomers,
   getLorryReceiptsForReport,
   selectIsLoading,
-} from "./slice/lrRegisterSlice";
+} from "./slice/pendingLRSlice";
 
 const initialState = {
   consignor: null,
@@ -41,26 +39,21 @@ const initialState = {
   searchText: "",
 };
 
-const LorryReceiptRegister = () => {
+const PendingLRStockStatus = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
     {
       field: "srNo",
-      headerName: "Sr. No.",
+      headerName: "Sr No.",
     },
     {
       field: "lrNo",
-      headerName: "L.R. Note No.",
+      headerName: "Consign No",
       flex: 1,
     },
     {
       field: "date",
       headerName: "Consign Date",
-      flex: 1,
-    },
-    {
-      field: "invoiceNo",
-      headerName: "Invoice No",
       flex: 1,
     },
     {
@@ -76,29 +69,14 @@ const LorryReceiptRegister = () => {
       flex: 1,
     },
     {
-      field: "from",
-      headerName: "From",
-      flex: 1,
-    },
-    {
-      field: "to",
-      headerName: "To",
-      flex: 1,
-    },
-    {
-      field: "payType",
-      headerName: "Payment Mode",
-      flex: 1,
-    },
-    {
       field: "totalArticles",
-      headerName: "Total Qty",
+      headerName: "No. of Articles",
       type: "number",
       flex: 1,
     },
     {
-      field: "total",
-      headerName: "Grand Total",
+      field: "totalWeight",
+      headerName: "Weight",
       type: "number",
       flex: 1,
     },
@@ -337,7 +315,7 @@ const LorryReceiptRegister = () => {
           className="page_head-1"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <h1 className="pageHead">LR. Note Register</h1>
+          <h1 className="pageHead">Pending LR Stock Status</h1>
           <div className="">
             <FormControl
               size="small"
@@ -380,6 +358,46 @@ const LorryReceiptRegister = () => {
           <form action="" onSubmit={submitHandler}>
             <Grid container spacing={3}>
               <Grid item xs={3}>
+                <FormControl fullWidth size="small">
+                  <Autocomplete
+                    disablePortal
+                    autoSelect
+                    autoHighlight={true}
+                    size="small"
+                    name="consignor"
+                    options={customers}
+                    value={search.consignor}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(e, value, "consignor")
+                    }
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="Consignor" fullWidth />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl fullWidth size="small">
+                  <Autocomplete
+                    disablePortal
+                    autoSelect
+                    autoHighlight={true}
+                    size="small"
+                    name="consignee"
+                    options={customers}
+                    value={search.consignee}
+                    onChange={(e, value) =>
+                      autocompleteChangeListener(e, value, "consignee")
+                    }
+                    openOnFocus
+                    renderInput={(params) => (
+                      <TextField {...params} label="Consignee" fullWidth />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -409,42 +427,7 @@ const LorryReceiptRegister = () => {
                   </LocalizationProvider>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
-                <FormControl fullWidth size="small">
-                  <Autocomplete
-                    disablePortal
-                    autoSelect
-                    autoHighlight={true}
-                    size="small"
-                    name="consignor"
-                    options={customers}
-                    value={search.consignor}
-                    onChange={(e, value) =>
-                      autocompleteChangeListener(e, value, "consignor")
-                    }
-                    openOnFocus
-                    renderInput={(params) => (
-                      <TextField {...params} label="Customer" fullWidth />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={3}>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={search.payType}
-                  exclusive
-                  onChange={(e) => inputChangeHandler(e, "payType")}
-                  aria-label="Platform"
-                  size="small"
-                >
-                  <ToggleButton value="">All</ToggleButton>
-                  <ToggleButton value="TBB">TBB</ToggleButton>
-                  <ToggleButton value="ToPay">ToPay</ToggleButton>
-                  <ToggleButton value="Paid">Paid</ToggleButton>
-                  <ToggleButton value="FOC">FOC</ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
+
               <Grid item xs={3}>
                 <FormControl fullWidth>
                   <TextField
@@ -538,4 +521,4 @@ const LorryReceiptRegister = () => {
   );
 };
 
-export default LorryReceiptRegister;
+export default PendingLRStockStatus;

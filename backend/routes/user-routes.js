@@ -17,6 +17,8 @@ routes.route("/login").post(userCtrl.loginCtrl);
 // Get all users
 routes.route("/getUsers").get(checkAuth, userCtrl.getUsers);
 
+routes.route("/userRegister").get(checkAuth, userCtrl.userRegister);
+
 // Get a user
 routes.route("/getUser/:id").get(checkAuth, userCtrl.getUser);
 

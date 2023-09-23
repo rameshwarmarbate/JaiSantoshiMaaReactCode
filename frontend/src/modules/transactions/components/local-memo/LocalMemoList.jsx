@@ -100,7 +100,6 @@ const LocalMemoList = () => {
       renderCell: (params) => {
         const triggerView = (e) => {
           e.stopPropagation();
-          console.log("View bill");
           //viewLR(params.row._id);
         };
 

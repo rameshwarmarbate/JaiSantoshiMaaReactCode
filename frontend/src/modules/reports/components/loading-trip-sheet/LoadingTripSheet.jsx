@@ -32,51 +32,57 @@ import FileSaver from "file-saver";
 const initialState = {
   from: null,
   to: null,
-  lrNo: "",
+  owner: "",
+  vehicle: "",
 };
 
 const LoadingTripSheet = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
+    { field: "srNo", headerName: "Sr No" },
     {
       field: "formattedLSNo",
-      headerName: "LS no.",
+      headerName: "LTS no.",
       flex: 1,
     },
     {
       field: "date",
       headerName: "Date",
-      minWidth: 150,
+      flex: 1,
+    },
+    {
+      field: "vehicleOwner",
+      headerName: "Owner Name",
       flex: 1,
     },
     {
       field: "vehicleNo",
       headerName: "Vehicle no",
-      minWidth: 150,
       flex: 1,
     },
     {
-      field: "driverName",
-      headerName: "Driver",
-      minWidth: 150,
+      field: "totalFreight",
+      headerName: "Hire Rs",
       flex: 1,
     },
     {
-      field: "phone",
-      headerName: "Driver phone",
-      minWidth: 150,
+      field: "advance",
+      headerName: "Advance Rs",
       flex: 1,
     },
     {
-      field: "fromName",
-      headerName: "From",
-      minWidth: 150,
+      field: "hamali",
+      headerName: "Hamali",
       flex: 1,
     },
     {
-      field: "toName",
-      headerName: "To",
-      minWidth: 150,
+      field: "rent",
+      headerName: "Commision",
+      flex: 1,
+    },
+    {
+      field: "totalPayable",
+      headerName: "Total",
       flex: 1,
     },
   ];
@@ -133,10 +139,12 @@ const LoadingTripSheet = () => {
       if (search.to) {
         query.to = search.to;
       }
-      if (search.lrNo) {
-        query.lrNo = search.lrNo;
+      if (search.owner) {
+        query.owner = search.owner;
       }
-
+      if (search.vehicle) {
+        query.vehicle = search.vehicle;
+      }
       const requestObject = {
         pagination: {
           limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
@@ -151,9 +159,10 @@ const LoadingTripSheet = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLS = payload?.data.loadingSlips?.map?.((ls) => {
+            const updatedLS = payload?.data.loadingSlips?.map?.((ls, index) => {
               return {
                 ...ls,
+                srNo: index + 1,
                 date: getFormattedDate(new Date(ls.date)),
                 formattedLSNo: getFormattedLSNumber(ls.lsNo),
               };
@@ -181,7 +190,8 @@ const LoadingTripSheet = () => {
     isSubmitted,
     dispatch,
     search.from,
-    search.lrNo,
+    search.owner,
+    search.vehicle,
     search.to,
   ]);
 
@@ -197,8 +207,11 @@ const LoadingTripSheet = () => {
     if (search.to) {
       query.to = search.to;
     }
-    if (search.lrNo) {
-      query.lrNo = search.lrNo;
+    if (search.owner) {
+      query.owner = search.owner;
+    }
+    if (search.vehicle) {
+      query.vehicle = search.vehicle;
     }
     const requestObject = {
       pagination: {
@@ -269,7 +282,7 @@ const LoadingTripSheet = () => {
           className="page_head-1"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <h1 className="pageHead">Lorry Receipt Challan Status</h1>
+          <h1 className="pageHead">Loading Trip Sheet Register</h1>
           <div className="">
             <FormControl
               size="small"
@@ -346,11 +359,39 @@ const LoadingTripSheet = () => {
                   <TextField
                     size="small"
                     variant="outlined"
-                    label="Lorry receipt no."
-                    value={search.lrNo}
+                    label="Owner"
+                    value={search.owner}
                     onChange={inputChangeHandler}
-                    name="lrNo"
-                    id="lrNo"
+                    name="owner"
+                    id="owner"
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Vehicle"
+                    value={search.vehicle}
+                    onChange={inputChangeHandler}
+                    name="vehicle"
+                    id="vehicle"
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Search in List By"
+                    value={search.searchText}
+                    onChange={inputChangeHandler}
+                    name="searchText"
+                    id="searchText"
                     inputProps={{ maxLength: 50 }}
                   />
                 </FormControl>

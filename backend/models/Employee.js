@@ -6,7 +6,7 @@ const Employee = new Schema(
     code: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
     name: {
       type: String,

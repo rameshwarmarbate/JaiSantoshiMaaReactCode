@@ -181,6 +181,83 @@ const getUsers = (req, res) => {
   });
 };
 
+const userRegister = (req, res) => {
+  User.aggregate([
+    { $sort: { createdAt: -1 } },
+    {
+      $addFields: {
+        convertedBranchId: { $toObjectId: "$branch" },
+      },
+    },
+    {
+      $addFields: {
+        convertedEmployeeId: { $toObjectId: "$employee" },
+      },
+    },
+    {
+      $addFields: {
+        convertedCreatedById: {
+          $cond: {
+            if: {
+              $ne: ["$createdBy", "system"],
+            },
+            then: { $toObjectId: "$createdBy" },
+            else: null,
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "branch",
+        localField: "convertedBranchId",
+        foreignField: "_id",
+        as: "Branch",
+      },
+    },
+    {
+      $lookup: {
+        from: "employee",
+        localField: "convertedEmployeeId",
+        foreignField: "_id",
+        as: "Employee",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "convertedCreatedById",
+        foreignField: "_id",
+        as: "User",
+      },
+    },
+  ]).exec(function (error, users) {
+    if (error) {
+      return res.status(200).json({
+        message: "Error fetching users!",
+      });
+    } else {
+      const updatedUsers = [];
+      users.forEach((user, index) => {
+        const updatedUser = {
+          branch: user.Branch[0]?.name || "",
+          employee: user.Employee[0]?.name || "",
+          username: user.username,
+          active: user.active,
+          createdBy:
+            user.type.toLowerCase() !== "superadmin"
+              ? user.User[0]?.username
+              : "superadmin",
+          createdAt: getFormattedDate(user.createdAt),
+          id: index + 1,
+        };
+        updatedUsers.push(updatedUser);
+      });
+      res.json(updatedUsers);
+    }
+  });
+};
+
 const getUser = (req, res, next) => {
   User.aggregate([
     { $match: { _id: ObjectId(req.params.id) } },
@@ -569,7 +646,12 @@ const getSearchedUsers = (req, res, next) => {
 };
 
 const getRegex = (str) => `^${str}$`;
-
+const getFormattedDate = (date) => {
+  const day = new Date(date)?.getDate();
+  const month = new Date(date)?.getMonth() + 1;
+  const year = new Date(date)?.getFullYear();
+  return `${("0" + day).slice(-2)}-${("0" + month).slice(-2)}-${year}`;
+};
 module.exports = {
   signupAdminCtrl,
   signupCtrl,
@@ -579,6 +661,7 @@ module.exports = {
   removeUser,
   getUser,
   getUsersByBranch,
+  userRegister,
   updateUser,
   getSearchedUsers,
 };

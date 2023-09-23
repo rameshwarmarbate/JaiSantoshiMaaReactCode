@@ -136,25 +136,41 @@ const navItems = [
     icon: <FiEdit />,
     children: [
       {
-        label: "Lorry Receipt Stock Status",
+        label: "Pending LR Stock Status",
+        to: "/reports/pendingLRStatus",
+      },
+      {
+        label: "Lorry Receipt Status",
+        to: "/reports/lorryReceiptStatus",
+      },
+      {
+        label: "Lorry Receipt Register",
         to: "/reports/lorryReceiptRegister",
       },
       {
-        label: "Lorry Receipt Challan Status",
+        label: "Challan Register",
+        to: "/reports/challanRegister",
+      },
+      {
+        label: "Delivery Status Report",
+        to: "/reports/deliveryStatus",
+      },
+      {
+        label: "Add FO Number",
+        to: "/reports/addFONumber",
+      },
+      {
+        label: "Loading Trip Sheet Register",
         to: "/reports/loadingTripSheet",
       },
-      // {
-      //   label: "Bill Register",
-      //   to: "/reports/billRegister",
-      // },
-      // {
-      //   label: "Billed LR Status",
-      //   to: "/reports/billedLRStatus",
-      // },
-      // {
-      //   label: "Payment Collection Report",
-      //   to: "/reports/paymentCollectionReport",
-      // },
+      {
+        label: "Transaction Detail",
+        to: "/reports/transactionDetails",
+      },
+      {
+        label: "User Register",
+        to: "/reports/userRegister",
+      },
     ],
   },
 ];

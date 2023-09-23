@@ -19,7 +19,6 @@ const ArticleAdd = lazy(() =>
 const ArticleEdit = lazy(() =>
   import("../modules/master/components/articles/ArticleEdit")
 );
-const Reports = lazy(() => import("../modules/reports/container"));
 const Places = lazy(() =>
   import("../modules/master/components/places/PlacesList")
 );
@@ -210,18 +209,25 @@ const LorryReceiptRegister = lazy(() =>
 const LoadingTripSheet = lazy(() =>
   import("../modules/reports/components/loading-trip-sheet/LoadingTripSheet")
 );
-const BillRegister = lazy(() =>
-  import("../modules/reports/components/bill-register/BillRegister")
+
+const PendingLRStockStatus = lazy(() =>
+  import("../modules/reports/components/pending-lr-status/PendingLRStockStatus")
 );
-const BilledLRStatus = lazy(() =>
-  import("../modules/reports/components/billed-lr-status/BilledLRStatus")
-);
-const PaymentCollectionReport = lazy(() =>
+
+const LorryReceiptStatus = lazy(() =>
   import(
-    "../modules/reports/components/payment-collection/PaymentCollectionReport"
+    "../modules/reports/components/lorry-receipt-status/LorryReceiptStatus"
   )
 );
 
+const ChallanNoteRegister = lazy(() =>
+  import(
+    "../modules/reports/components/challan-note-regester/ChallanNoteRegister"
+  )
+);
+const UserRegister = lazy(() =>
+  import("../modules/reports/components/user-register/UserRegister")
+);
 const Unauthorized = lazy(() => import("./Unauthorized"));
 
 const NotFound = lazy(() => import("./NotFound"));
@@ -952,14 +958,63 @@ const Routing = () => {
               </RequireAuth>
             }
           />
-          <Route path="/reports/billRegister" element={<BillRegister />} />
-          <Route path="/reports/billedLRStatus" element={<BilledLRStatus />} />
           <Route
-            path="/reports/paymentCollectionReport"
-            element={<PaymentCollectionReport />}
+            path="/reports/pendingLRStatus"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <PendingLRStockStatus />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/lorryReceiptStatus"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <LorryReceiptStatus />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/challanRegister"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <ChallanNoteRegister />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/deliveryStatus"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <LoadingTripSheet />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/addFONumber"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <FONumAdd />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/transactionDetails"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <LoadingTripSheet />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/userRegister"
+            element={
+              <RequireAuth parent="Accounts" path="LoadingSlip" process="write">
+                <UserRegister />
+              </RequireAuth>
+            }
           />
         </Route>
-        <Route path="/reports" element={<Reports />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
