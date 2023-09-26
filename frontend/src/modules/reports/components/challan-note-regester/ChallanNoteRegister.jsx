@@ -15,11 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  getFormattedDate,
-  getFormattedLSNumber,
-  isSuperAdminOrAdmin,
-} from "../../../../services/utils";
+import { isSuperAdminOrAdmin } from "../../../../services/utils";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   downloadChallanReport,
@@ -34,86 +30,89 @@ const initialState = {
   from: null,
   to: null,
   lrNo: "",
+  consignor: null,
 };
 
 const ChallanNoteRegister = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
-    { field: "srNo", headerName: "Sr No." },
-    {
-      field: "vehicleOwnerAddress",
-      headerName: "Challan No",
-      flex: 1,
-    },
+    { field: "srNo", headerName: "Sr No.", minWidth: 80, flex: 1 },
     {
       field: "formattedLSNo",
+      headerName: "Challan No",
+      flex: 1,
+      minWidth: 80,
+    },
+    {
+      field: "generatedFrom",
       headerName: "Challan Generated From",
       flex: 1,
+      minWidth: 100,
     },
     {
       field: "date",
       headerName: "Date",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
     },
     {
       field: "vehicleNo",
       headerName: "Vehicle no",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
     },
     {
-      field: "fromName",
+      field: "from",
       headerName: "From",
-      minWidth: 150,
+      minWidth: 120,
       flex: 1,
     },
     {
-      field: "toName",
+      field: "to",
       headerName: "To",
-      minWidth: 150,
+      minWidth: 120,
       flex: 1,
     },
     {
-      field: "totalPayable",
+      field: "total",
       headerName: "Total Amount",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
     },
     {
       field: "lrNo",
       headerName: "LR No",
-      minWidth: 150,
+      minWidth: 100,
       flex: 1,
     },
     {
-      field: "driverName",
+      field: "consignorName",
       headerName: "Consignor",
       minWidth: 150,
       flex: 1,
     },
     {
-      field: "qwqwqw",
+      field: "consigneeName",
       headerName: "Consignee",
       minWidth: 150,
       flex: 1,
     },
     {
-      field: "qwqwq",
+      field: "noOfArticle",
       headerName: "No. of Article",
-      minWidth: 150,
+      minWidth: 90,
       flex: 1,
     },
     {
-      field: "dqqw",
+      field: "totalWeight",
       headerName: "Weight",
-      minWidth: 150,
+      minWidth: 90,
       flex: 1,
     },
     {
-      field: "dd",
+      field: "payType",
       headerName: "Status",
-      minWidth: 150,
+      minWidth: 90,
       flex: 1,
     },
   ];
@@ -188,7 +187,9 @@ const ChallanNoteRegister = () => {
       if (search.lrNo) {
         query.lrNo = search.lrNo;
       }
-
+      if (search.consignor) {
+        query.consignor = search.consignor._id;
+      }
       const requestObject = {
         pagination: {
           limit: paginationModel.pageSize ? paginationModel.pageSize : 100,
@@ -203,20 +204,11 @@ const ChallanNoteRegister = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLS = payload?.data.loadingSlips?.map?.((ls, index) => {
-              return {
-                ...ls,
-                srNo: index + 1,
-                lrNo: ls.lrList[0]?.lrNo,
-                date: getFormattedDate(new Date(ls.date)),
-                formattedLSNo: getFormattedLSNumber(ls.lsNo),
-              };
-            });
             setPageState((currState) => {
               return {
                 ...currState,
                 isLoading: false,
-                data: updatedLS || [],
+                data: payload?.data.loadingSlips || [],
                 total: payload?.data.count,
               };
             });
@@ -253,6 +245,9 @@ const ChallanNoteRegister = () => {
     }
     if (search.lrNo) {
       query.lrNo = search.lrNo;
+    }
+    if (search.consignor) {
+      query.consignor = search.consignor._id;
     }
     const requestObject = {
       pagination: {
@@ -418,6 +413,7 @@ const ChallanNoteRegister = () => {
                       autocompleteChangeListener(e, value, "consignor")
                     }
                     openOnFocus
+                    getOptionLabel={(customer) => customer.name}
                     renderInput={(params) => (
                       <TextField {...params} label="Customer" fullWidth />
                     )}

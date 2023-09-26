@@ -71,7 +71,7 @@ const LoadingTripSheet = () => {
       flex: 1,
     },
     {
-      field: "hamali",
+      field: "totalHamali",
       headerName: "Hamali",
       flex: 1,
     },
@@ -159,19 +159,11 @@ const LoadingTripSheet = () => {
           if (message) {
             setHttpError(message);
           } else {
-            const updatedLS = payload?.data.loadingSlips?.map?.((ls, index) => {
-              return {
-                ...ls,
-                srNo: index + 1,
-                date: getFormattedDate(new Date(ls.date)),
-                formattedLSNo: getFormattedLSNumber(ls.lsNo),
-              };
-            });
             setPageState((currState) => {
               return {
                 ...currState,
                 isLoading: false,
-                data: updatedLS || [],
+                data: payload?.data.loadingSlips || [],
                 total: payload?.data.count,
               };
             });

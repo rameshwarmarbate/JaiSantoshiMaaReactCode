@@ -34,6 +34,7 @@ const Vehicle = require("../models/Vehicle");
 const SuppliersBill = require("../models/SuppliersBill");
 const Quotation = require("../models/Quotation");
 const sendEmail = require("../controller/email");
+const { ObjectId } = require("mongodb");
 const { translator } = require("./openAI");
 
 const getLorryReceipts = (req, res, next) => {
@@ -2918,8 +2919,8 @@ const getLorryReceiptsForReport = (req, res) => {
         { from: { $regex: searchText, $options: "i" } },
         { to: { $regex: searchText, $options: "i" } },
         { payType: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseFloat(req.body.query.searchText))
-          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+        ...(!isNaN(parseInt(req.body.query.searchText))
+          ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
     }
@@ -2991,8 +2992,8 @@ const getPendingLorryReceiptForReport = (req, res) => {
         { date: { $regex: searchText, $options: "i" } },
         { consignorName: { $regex: searchText, $options: "i" } },
         { consigneeName: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseFloat(req.body.query.searchText))
-          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+        ...(!isNaN(parseInt(req.body.query.searchText))
+          ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
     }
@@ -3137,8 +3138,8 @@ const downloadLRReport = (req, res) => {
         { from: { $regex: searchText, $options: "i" } },
         { to: { $regex: searchText, $options: "i" } },
         { payType: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseFloat(req.body.query.searchText))
-          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+        ...(!isNaN(parseInt(req.body.query.searchText))
+          ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
     }
@@ -3202,14 +3203,6 @@ const downloadLRReport = (req, res) => {
 };
 
 const downloadPendingLRReport = (req, res) => {
-  if (!req.body.pagination.page || !req.body.pagination.limit) {
-    return res.status(200).json({ message: "Pagination inputs not provided!" });
-  }
-
-  const limit = req.body.pagination.limit || 100;
-  const start = (req.body.pagination.page - 1) * limit;
-  const end = req.body.pagination.page * limit;
-
   const query = {
     active: true,
     $or: [{ deliveryDate: null }, { deliveryDate: "" }],
@@ -3251,8 +3244,8 @@ const downloadPendingLRReport = (req, res) => {
         { date: { $regex: searchText, $options: "i" } },
         { consignorName: { $regex: searchText, $options: "i" } },
         { consigneeName: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseFloat(req.body.query.searchText))
-          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+        ...(!isNaN(parseInt(req.body.query.searchText))
+          ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
     }
@@ -3316,14 +3309,6 @@ const downloadPendingLRReport = (req, res) => {
 };
 
 const downloadLoadedLRReport = (req, res) => {
-  if (!req.body.pagination.page || !req.body.pagination.limit) {
-    return res.status(200).json({ message: "Pagination inputs not provided!" });
-  }
-
-  const limit = req.body.pagination.limit || 100;
-  const start = (req.body.pagination.page - 1) * limit;
-  const end = req.body.pagination.page * limit;
-
   const query = {
     active: true,
     status: 1,
@@ -3543,41 +3528,76 @@ const getLoadingSlipForReport = (req, res) => {
     }
   }
 
-  LoadingSlip.find(query)
-    .sort("-createdAt")
-    .exec((lsError, loadingSlips) => {
-      if (lsError) {
-        return res.status(200).json({
-          message: "Error fetching lorry receipt challans!",
+  LoadingSlip.aggregate([
+    { $match: query },
+    {
+      $addFields: {
+        list: {
+          $map: {
+            input: "$lrList",
+            as: "lrObj",
+            in: "$$lrObj.lrNo",
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "lorryReceipt",
+        localField: "list",
+        foreignField: "lrNo",
+        as: "lorryReceipts",
+      },
+    },
+    {
+      $unset: ["list", "lrList", "supplierPayments"],
+    },
+    { $sort: { createdAt: -1 } },
+  ]).exec((lsError, loadingSlips) => {
+    if (lsError) {
+      return res.status(200).json({
+        message: "Error fetching lorry receipt challans!",
+      });
+    } else {
+      const updatedLS = loadingSlips.map((ls, index) => {
+        return {
+          _id: ls._id,
+          date: getFormattedDate(new Date(ls.date)),
+          formattedLSNo: (ls.lsNo + "").padStart?.(6, "0"),
+          totalHamali: ls.lorryReceipts.reduce(
+            (total, lr) => total + lr.hamali,
+            0
+          ),
+          srNo: index + 1,
+          vehicleOwner: ls.vehicleOwner,
+          vehicleNo: ls.vehicleNo,
+          totalFreight: ls.totalFreight,
+          advance: ls.advance,
+          rent: ls.rent,
+          totalPayable: ls.totalPayable,
+        };
+      });
+      if (req.body.query.isPrint) {
+        const workbook = exportLoadingSlipToXlsx(updatedLS);
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+          "Content-Disposition",
+          "attachment; filename=" + "data.xlsx"
+        );
+        return workbook.xlsx.write(res).then(() => {
+          res.status(200).end();
         });
       } else {
-        if (req.body.query.isPrint) {
-          const updatedLS = loadingSlips.map((ls, index) => {
-            ls.date = getFormattedDate(new Date(ls.date));
-            ls.formattedLSNo = (ls.lsNo + "").padStart?.(6, "0");
-            ls.index = index + 1;
-            return ls;
-          });
-          const workbook = exportLRChallanDataToXlsx(updatedLS);
-          res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          );
-          res.setHeader(
-            "Content-Disposition",
-            "attachment; filename=" + "data.xlsx"
-          );
-          return workbook.xlsx.write(res).then(() => {
-            res.status(200).end();
-          });
-        } else {
-          res.json({
-            loadingSlips: loadingSlips.slice(start, end),
-            count: loadingSlips?.length,
-          });
-        }
+        res.json({
+          loadingSlips: updatedLS.slice(start, end),
+          count: updatedLS?.length,
+        });
       }
-    });
+    }
+  });
 };
 
 const getChallanForReport = (req, res) => {
@@ -3622,16 +3642,30 @@ const getChallanForReport = (req, res) => {
   }
 
   LoadingSlip.aggregate([
-    { $match: query },
-    { $unwind: "$lrList" },
+    {
+      $addFields: {
+        list: {
+          $map: {
+            input: "$lrList",
+            as: "lrObj",
+            in: "$$lrObj.lrNo",
+          },
+        },
+      },
+    },
     {
       $lookup: {
         from: "lorryReceipt",
-        localField: "lrList.lrNo",
+        localField: "list",
         foreignField: "lrNo",
         as: "lorryReceipts",
       },
     },
+    {
+      $unset: ["list", "lrList", "supplierPayments"],
+    },
+    { $match: query },
+    { $sort: { createdAt: -1 } },
   ]).exec((lsError, loadingSlips) => {
     if (lsError) {
       console.log(lsError);
@@ -3639,14 +3673,51 @@ const getChallanForReport = (req, res) => {
         message: "Error fetching lorry receipt challans!",
       });
     } else {
-      if (req.body.query.isPrint) {
-        const updatedLS = loadingSlips.map((ls, index) => {
-          ls.date = getFormattedDate(new Date(ls.date));
-          ls.formattedLSNo = (ls.lsNo + "").padStart?.(6, "0");
-          ls.index = index + 1;
-          return ls;
+      let returnList = [];
+      let srNo = 1;
+      loadingSlips.map((ls) => {
+        ls.date = getFormattedDate(new Date(ls.date));
+        ls.formattedLSNo = (ls.lsNo + "").padStart?.(6, "0");
+        ls.lorryReceipts?.forEach?.((element) => {
+          let noOfArticle = 0,
+            totalWeight = 0;
+          element.transactions.every((article) => {
+            noOfArticle += article.articleNo;
+            totalWeight += article.weight;
+          });
+
+          if (
+            req.body.query.consignor === element.consignor ||
+            req.body.query.consignor === element.consignee ||
+            !req.body.query.consignor
+          ) {
+            returnList = [
+              ...returnList,
+              {
+                _id: element._id,
+                srNo: srNo,
+                formattedLSNo: ls.formattedLSNo,
+                from: element.from,
+                generatedFrom: element.from,
+                date: ls.date,
+                vehicleNo: ls.vehicleNo,
+                to: element.to,
+                total: element.total,
+                lrNo: element.lrNo,
+                consignorName: element.consignorName,
+                consigneeName: element.consigneeName,
+                noOfArticle,
+                totalWeight,
+                payType: element.payType,
+              },
+            ];
+            srNo += 1;
+          }
         });
-        const workbook = exportLRChallanDataToXlsx(updatedLS);
+        return ls;
+      });
+      if (req.body.query.isPrint) {
+        const workbook = exportLRChallanDataToXlsx(returnList);
         res.setHeader(
           "Content-Type",
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3660,8 +3731,8 @@ const getChallanForReport = (req, res) => {
         });
       } else {
         res.json({
-          loadingSlips: loadingSlips.slice(start, end),
-          count: loadingSlips?.length,
+          loadingSlips: returnList.slice(start, end),
+          count: returnList?.length,
         });
       }
     }
@@ -3786,7 +3857,7 @@ const exportLoadedLRDataToXlsx = (data) => {
 
 const exportPendingLRDataToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Lorry receipts");
+  const worksheet = workbook.addWorksheet("Pending LR");
   const columns = data.reduce(
     (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
     []
@@ -3804,25 +3875,53 @@ const exportPendingLRDataToXlsx = (data) => {
   return workbook;
 };
 
-const exportLRChallanDataToXlsx = (data) => {
+const exportLoadingSlipToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("LR Challan");
+  const worksheet = workbook.addWorksheet("Loading Tripsheet");
   const columns = data.reduce(
     (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
     []
   );
 
   worksheet.columns = [
-    { header: "Sr. no", key: "index" },
-    { header: "LS no.", key: "lsNo" },
+    { header: "Sr. no", key: "srNo" },
+    { header: "LTS no.", key: "formattedLSNo" },
+    { header: "Date", key: "date" },
+    { header: "Owner Name", key: "vehicleOwner" },
+    { header: "Vehicle no", key: "vehicleNo" },
+    { header: "Hire Rs", key: "totalFreight" },
+    { header: "Advance Rs", key: "advance" },
+    { header: "Hamali", key: "totalHamali" },
+    { header: "Commision", key: "rent" },
+    { header: "Total", key: "totalPayable" },
+  ];
+  worksheet.addRows(data);
+  return workbook;
+};
+
+const exportLRChallanDataToXlsx = (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Challan Register");
+  const columns = data.reduce(
+    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
+    []
+  );
+
+  worksheet.columns = [
+    { header: "Sr No.", key: "srNo" },
+    { header: "Challan No", key: "formattedLSNo" },
+    { header: "Challan Generated From", key: "generatedFrom" },
     { header: "Date", key: "date" },
     { header: "Vehicle no", key: "vehicleNo" },
-    { header: "Driver", key: "driverName" },
-    { header: "Driver phone", key: "phone" },
-    { header: "From", key: "fromName" },
-    { header: "To", key: "toName" },
-    { header: "Hire amount", key: "totalFreight" },
-    { header: "Balance", key: "totalPayable" },
+    { header: "From", key: "from" },
+    { header: "To", key: "to" },
+    { header: "Total Amount", key: "total" },
+    { header: "LR No", key: "lrNo" },
+    { header: "Consignor", key: "consignorName" },
+    { header: "Consignee", key: "consigneeName" },
+    { header: "No. of Article", key: "noOfArticle" },
+    { header: "Weight", key: "totalWeight" },
+    { header: "Status", key: "payType" },
   ];
   worksheet.addRows(data);
   return workbook;
