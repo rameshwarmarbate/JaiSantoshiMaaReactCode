@@ -1,1 +1,0 @@
-import{a as t}from"./react-bfabd40c.js";import{O as e}from"./react-router-1b5f20a2.js";import"./@babel-e11bafe1.js";import"./@remix-run-d753ad9e.js";const l=()=>t.createElement(t.Fragment,null,t.createElement(e,null));export{l as default};
