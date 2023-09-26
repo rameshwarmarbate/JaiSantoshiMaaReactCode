@@ -41,8 +41,8 @@ export const downloadLRReport = createAsyncThunk(
     return { data, status };
   }
 );
-export const tripSheetSlice = createSlice({
-  name: "tripsheet",
+export const pendingLRSlice = createSlice({
+  name: "pendingLR",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -89,6 +89,5 @@ export const tripSheetSlice = createSlice({
   },
 });
 
-export default tripSheetSlice.reducer;
-export const selectIsLoading = (state) =>
-  state.lrregisterreport.status === "loading";
+export default pendingLRSlice.reducer;
+export const selectIsLoading = (state) => state.pendinglr.status === "loading";

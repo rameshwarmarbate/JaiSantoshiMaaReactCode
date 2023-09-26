@@ -11,12 +11,12 @@ export function fetchCustomers() {
 }
 
 export function fetchLorryReceiptsForReport(requestObject) {
-  const url = `api/transactions/getLorryReceiptsForReport`;
+  const url = `api/transactions/getPendingLorryReceiptForReport`;
   return fetchFromApiServer("POST", url, requestObject);
 }
 
 export function fetchLRReport(query) {
-  const url = `api/transactions/downloadLRReport`;
+  const url = `api/transactions/downloadPendingLRReport`;
   return fetchFromApiServer("BLOB", url, {
     query: query,
   });

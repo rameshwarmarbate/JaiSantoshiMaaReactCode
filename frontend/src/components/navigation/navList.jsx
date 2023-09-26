@@ -166,6 +166,24 @@ const navItems = [
       {
         label: "Transaction Detail",
         to: "/reports/transactionDetails",
+        children: [
+          {
+            label: "Tyre Supplier Payment",
+            to: "/reports/transactionDetails1",
+          },
+          {
+            label: "Petrol Supplier Payment",
+            to: "/reports/transactionDetails2",
+          },
+          {
+            label: "Vehicle Supplier Payment",
+            to: "/reports/transactionDetails3",
+          },
+          {
+            label: "Payment Collection Report",
+            to: "/reports/transactionDetails4",
+          },
+        ],
       },
       {
         label: "User Register",

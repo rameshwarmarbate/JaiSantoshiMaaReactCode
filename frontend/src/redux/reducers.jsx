@@ -1,6 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import localStorage from "redux-persist/lib/storage";
 import userReducer from "../modules/user/slice/userSlice";
+import challanRegisterReducer from "../modules/reports/components/challan-note-regester/slice/challanRegisterSlice";
+import lrStatusReducer from "../modules/reports/components/lorry-receipt-status/slice/lrStatusSlice";
+import userRegisterReducer from "../modules/reports/components/user-register/slice/userRegisterSlice";
+import pendingLRReducer from "../modules/reports/components/pending-lr-status/slice/pendingLRSlice";
 import lrRegisterReducer from "../modules/reports/components/lr-register/slice/lrRegisterSlice";
 import tripSheetReducer from "../modules/reports/components/loading-trip-sheet/slice/tripSheetSlice";
 import acknowledgeReducer from "../modules/transactions/components/acknowledgement/slice/acknowledgeSlice";
@@ -29,6 +33,10 @@ import vehicleReducer from "../modules/master/components/vehicles/slice/vehicleS
 const appReducer = combineReducers({
   user: userReducer,
   lrregisterreport: lrRegisterReducer,
+  challanregister: challanRegisterReducer,
+  lrstatus: lrStatusReducer,
+  pendinglr: pendingLRReducer,
+  userregister: userRegisterReducer,
   tripsheetreport: tripSheetReducer,
   acknowledge: acknowledgeReducer,
   bill: billReducer,

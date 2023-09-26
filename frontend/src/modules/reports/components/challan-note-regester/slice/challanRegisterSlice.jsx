@@ -41,8 +41,8 @@ export const downloadChallanReport = createAsyncThunk(
     return { data, status };
   }
 );
-export const tripSheetSlice = createSlice({
-  name: "tripsheet",
+export const challanRegisterSlice = createSlice({
+  name: "challanRegister",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -61,7 +61,7 @@ export const tripSheetSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state) => {
-        // state.status = "succeeded";
+        state.status = "succeeded";
       })
       .addCase(getCustomers.rejected, (state) => {
         state.status = "failed";
@@ -89,6 +89,6 @@ export const tripSheetSlice = createSlice({
   },
 });
 
-export default tripSheetSlice.reducer;
+export default challanRegisterSlice.reducer;
 export const selectIsLoading = (state) =>
-  state.tripsheetreport.status === "loading";
+  state.challanregister.status === "loading";

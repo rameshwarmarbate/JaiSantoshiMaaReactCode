@@ -11,11 +11,11 @@ export function fetchCustomers() {
 }
 
 export function fetchLoadingSlipForReport(requestObject) {
-  const url = `api/transactions/getLoadingSlipForReport`;
+  const url = `api/transactions/getChallanForReport`;
   return fetchFromApiServer("POST", url, requestObject);
 }
 
 export function fetchLRChallanReport(requestObject) {
-  const url = `api/transactions/getLoadingSlipForReport`;
+  const url = `api/transactions/getChallanForReport`;
   return fetchFromApiServer("BLOB", url, requestObject);
 }

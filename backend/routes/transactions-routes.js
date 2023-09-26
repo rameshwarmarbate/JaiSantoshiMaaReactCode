@@ -295,8 +295,28 @@ routes
   .post(checkAuth, transactionsCtrl.getLorryReceiptsForReport);
 
 routes
+  .route("/getPendingLorryReceiptForReport")
+  .post(checkAuth, transactionsCtrl.getPendingLorryReceiptForReport);
+
+routes
   .route("/downloadLRReport")
   .post(checkAuth, transactionsCtrl.downloadLRReport);
+
+routes
+  .route("/downloadPendingLRReport")
+  .post(checkAuth, transactionsCtrl.downloadPendingLRReport);
+
+routes
+  .route("/downloadLoadedLRReport")
+  .post(checkAuth, transactionsCtrl.downloadLoadedLRReport);
+
+routes
+  .route("/getLoadedLorryReceiptForReport")
+  .post(checkAuth, transactionsCtrl.getLoadedLorryReceiptForReport);
+
+routes
+  .route("/getChallanForReport")
+  .post(checkAuth, transactionsCtrl.getChallanForReport);
 
 routes.route("/getAllLRAck").post(checkAuth, transactionsCtrl.getAllLRAck);
 routes

@@ -290,7 +290,7 @@ const PendingLRStockStatus = () => {
           const blob = new Blob([payload?.data], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           });
-          FileSaver.saveAs(blob, "LorryReceipts.xlsx");
+          FileSaver.saveAs(blob, "PendingLorryReceipts.xlsx");
         }
       })
       .catch((error) => {

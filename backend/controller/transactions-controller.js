@@ -2941,6 +2941,159 @@ const getLorryReceiptsForReport = (req, res) => {
     });
 };
 
+const getPendingLorryReceiptForReport = (req, res) => {
+  if (!req.body.pagination.page || !req.body.pagination.limit) {
+    return res.status(200).json({ message: "Pagination inputs not provided!" });
+  }
+
+  const limit = req.body.pagination.limit || 100;
+  const start = (req.body.pagination.page - 1) * limit;
+  const end = req.body.pagination.page * limit;
+
+  const query = {
+    active: true,
+    $or: [{ deliveryDate: null }, { deliveryDate: "" }],
+  };
+  if (req.body.query) {
+    if (req.body.query.branch) {
+      query.branch = req.body.query.branch;
+    }
+    if (req.body.query.consignor) {
+      query.consignor = req.body.query.consignor;
+    }
+    if (req.body.query.consignee) {
+      query.consignee = req.body.query.consignee;
+    }
+    if (req.body.query.from) {
+      const date = new Date(req.body.query.from);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+      query.date = {
+        ...query.date,
+        $gte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.to) {
+      const date = new Date(req.body.query.to);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+      query.date = {
+        ...query.date,
+        $lte: new Date(newDate)?.toISOString(),
+      };
+    }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        ...(!isNaN(parseFloat(req.body.query.searchText))
+          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+          : []),
+      ];
+    }
+  }
+
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((lrError, lorryReceipts) => {
+      if (lrError) {
+        console.log(lrError);
+        return res.status(200).json({
+          message: "Error fetching lorry receipts!",
+        });
+      } else {
+        res.json({
+          lorryReceipts: lorryReceipts.slice(start, end),
+          count: lorryReceipts?.length,
+        });
+      }
+    });
+};
+
+const getLoadedLorryReceiptForReport = (req, res) => {
+  if (!req.body.pagination.page || !req.body.pagination.limit) {
+    return res.status(200).json({ message: "Pagination inputs not provided!" });
+  }
+
+  const limit = req.body.pagination.limit || 100;
+  const start = (req.body.pagination.page - 1) * limit;
+  const end = req.body.pagination.page * limit;
+
+  const query = {
+    active: true,
+    status: 1,
+  };
+  if (req.body.query) {
+    if (req.body.query.branch) {
+      query.branch = req.body.query.branch;
+    }
+    if (req.body.query.from) {
+      const date = new Date(req.body.query.from);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+      query.date = {
+        ...query.date,
+        $gte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.to) {
+      const date = new Date(req.body.query.to);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+      query.date = {
+        ...query.date,
+        $lte: new Date(newDate)?.toISOString(),
+      };
+    }
+
+    if (req.body.query.payType) {
+      if (req.body.query.payType?.toLowerCase() === "open") {
+        query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
+      } else {
+        query["$or"] = [
+          { deliveryDate: { $ne: null } },
+          { deliveryDate: { $ne: "" } },
+        ];
+      }
+    }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        { from: { $regex: searchText, $options: "i" } },
+        { to: { $regex: searchText, $options: "i" } },
+        { payType: { $regex: searchText, $options: "i" } },
+      ];
+    }
+  }
+
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((lrError, lorryReceipts) => {
+      if (lrError) {
+        console.log(lrError);
+        return res.status(200).json({
+          message: "Error fetching lorry receipts!",
+        });
+      } else {
+        res.json({
+          lorryReceipts: lorryReceipts.slice(start, end),
+          count: lorryReceipts?.length,
+        });
+      }
+    });
+};
+
 const downloadLRReport = (req, res) => {
   const query = { active: true };
   if (req.body.query) {
@@ -3030,6 +3183,239 @@ const downloadLRReport = (req, res) => {
 
             if (updatedData.length === printData.length) {
               const workbook = exportLRDataToXlsx(updatedData);
+              res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              );
+              res.setHeader(
+                "Content-Disposition",
+                "attachment; filename=" + "data.xlsx"
+              );
+              return workbook.xlsx.write(res).then(() => {
+                res.status(200).end();
+              });
+            }
+          } catch (e) {}
+        });
+      }
+    });
+};
+
+const downloadPendingLRReport = (req, res) => {
+  if (!req.body.pagination.page || !req.body.pagination.limit) {
+    return res.status(200).json({ message: "Pagination inputs not provided!" });
+  }
+
+  const limit = req.body.pagination.limit || 100;
+  const start = (req.body.pagination.page - 1) * limit;
+  const end = req.body.pagination.page * limit;
+
+  const query = {
+    active: true,
+    $or: [{ deliveryDate: null }, { deliveryDate: "" }],
+  };
+  if (req.body.query) {
+    if (req.body.query.branch) {
+      query.branch = req.body.query.branch;
+    }
+    if (req.body.query.consignor) {
+      query.consignor = req.body.query.consignor;
+    }
+    if (req.body.query.consignee) {
+      query.consignee = req.body.query.consignee;
+    }
+    if (req.body.query.from) {
+      const date = new Date(req.body.query.from);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+      query.date = {
+        ...query.date,
+        $gte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.to) {
+      const date = new Date(req.body.query.to);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+      query.date = {
+        ...query.date,
+        $lte: new Date(newDate)?.toISOString(),
+      };
+    }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        ...(!isNaN(parseFloat(req.body.query.searchText))
+          ? [{ total: { $regex: parseFloat(req.body.query.searchText) } }]
+          : []),
+      ];
+    }
+  }
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((err, data) => {
+      if (err) {
+        return res.status(200).json({ message: err.message });
+      }
+      if (data && data.length) {
+        const updatedData = JSON.parse(JSON.stringify(data));
+        const printData = [];
+        updatedData.forEach(async (lr, index) => {
+          try {
+            const consignor = await Customer.findById(lr.consignor);
+            const consignee = await Customer.findById(lr.consignee);
+            lr.formattedLRNo = lr.lrNo;
+            lr.formattedDate = getFormattedDate(lr.date);
+            lr.consignorName =
+              consignor && consignor.name ? consignor.name : lr.consignor;
+            lr.consigneeName =
+              consignee && consignee.name ? consignee.name : lr.consignee;
+            lr.totalArticles = lr.transactions.reduce(
+              (acc, tr) => acc + tr.articleNo,
+              0
+            );
+            lr.totalWeight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.weight,
+              0
+            );
+            lr.totalChargeWeight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.chargeWeight,
+              0
+            );
+            lr.totalFreight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.freight,
+              0
+            );
+            lr.index = index + 1;
+            printData.push(lr);
+
+            if (updatedData.length === printData.length) {
+              const workbook = exportPendingLRDataToXlsx(updatedData);
+              res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              );
+              res.setHeader(
+                "Content-Disposition",
+                "attachment; filename=" + "data.xlsx"
+              );
+              return workbook.xlsx.write(res).then(() => {
+                res.status(200).end();
+              });
+            }
+          } catch (e) {}
+        });
+      }
+    });
+};
+
+const downloadLoadedLRReport = (req, res) => {
+  if (!req.body.pagination.page || !req.body.pagination.limit) {
+    return res.status(200).json({ message: "Pagination inputs not provided!" });
+  }
+
+  const limit = req.body.pagination.limit || 100;
+  const start = (req.body.pagination.page - 1) * limit;
+  const end = req.body.pagination.page * limit;
+
+  const query = {
+    active: true,
+    status: 1,
+  };
+  if (req.body.query) {
+    if (req.body.query.branch) {
+      query.branch = req.body.query.branch;
+    }
+    if (req.body.query.from) {
+      const date = new Date(req.body.query.from);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+      query.date = {
+        ...query.date,
+        $gte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.to) {
+      const date = new Date(req.body.query.to);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+      query.date = {
+        ...query.date,
+        $lte: new Date(newDate)?.toISOString(),
+      };
+    }
+
+    if (req.body.query.payType) {
+      if (req.body.query.payType?.toLowerCase() === "open") {
+        query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
+      } else {
+        query["$or"] = [
+          { deliveryDate: { $ne: null } },
+          { deliveryDate: { $ne: "" } },
+        ];
+      }
+    }
+
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        ...(query["$or"] || []),
+        { lrNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { consignorName: { $regex: searchText, $options: "i" } },
+        { consigneeName: { $regex: searchText, $options: "i" } },
+        { from: { $regex: searchText, $options: "i" } },
+        { to: { $regex: searchText, $options: "i" } },
+        { payType: { $regex: searchText, $options: "i" } },
+      ];
+    }
+  }
+  LorryReceipt.find(query)
+    .sort("-createdAt")
+    .exec((err, data) => {
+      if (err) {
+        return res.status(200).json({ message: err.message });
+      }
+      if (data && data.length) {
+        const updatedData = JSON.parse(JSON.stringify(data));
+        const printData = [];
+        updatedData.forEach(async (lr, index) => {
+          try {
+            const consignor = await Customer.findById(lr.consignor);
+            const consignee = await Customer.findById(lr.consignee);
+            lr.formattedLRNo = lr.lrNo;
+            lr.formattedDate = getFormattedDate(lr.date);
+            lr.consignorName =
+              consignor && consignor.name ? consignor.name : lr.consignor;
+            lr.consigneeName =
+              consignee && consignee.name ? consignee.name : lr.consignee;
+            lr.totalArticles = lr.transactions.reduce(
+              (acc, tr) => acc + tr.articleNo,
+              0
+            );
+            lr.totalWeight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.weight,
+              0
+            );
+            lr.totalChargeWeight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.chargeWeight,
+              0
+            );
+            lr.totalFreight = lr.transactions.reduce(
+              (acc, tr) => acc + tr.freight,
+              0
+            );
+            lr.index = index + 1;
+            printData.push(lr);
+
+            if (updatedData.length === printData.length) {
+              const workbook = exportLoadedLRDataToXlsx(updatedData);
               res.setHeader(
                 "Content-Type",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3194,6 +3580,94 @@ const getLoadingSlipForReport = (req, res) => {
     });
 };
 
+const getChallanForReport = (req, res) => {
+  if (!req.body.pagination.page || !req.body.pagination.limit) {
+    return res.status(200).json({ message: "Pagination inputs not provided!" });
+  }
+
+  const limit = req.body.pagination.limit || 100;
+  const start = (req.body.pagination.page - 1) * limit;
+  const end = req.body.pagination.page * limit;
+
+  const query = { active: true };
+  if (req.body.query) {
+    if (req.body.query.branch) {
+      query.branch = req.body.query.branch;
+    }
+    if (req.body.query.from) {
+      const date = new Date(req.body.query.from);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(0, 0, 0, 000);
+      query.date = {
+        ...query.date,
+        $gte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.to) {
+      const date = new Date(req.body.query.to);
+      const updatedDate = new Date(date).setDate(date?.getDate() + 1);
+      const newDate = new Date(updatedDate).setUTCHours(23, 59, 59, 999);
+      query.date = {
+        ...query.date,
+        $lte: new Date(newDate)?.toISOString(),
+      };
+    }
+    if (req.body.query.lrNo) {
+      query.lrList = {
+        $elemMatch: {
+          lrNo: new RegExp(req.body.query.lrNo?.toUpperCase()),
+        },
+      };
+    }
+  }
+
+  LoadingSlip.aggregate([
+    { $match: query },
+    { $unwind: "$lrList" },
+    {
+      $lookup: {
+        from: "lorryReceipt",
+        localField: "lrList.lrNo",
+        foreignField: "lrNo",
+        as: "lorryReceipts",
+      },
+    },
+  ]).exec((lsError, loadingSlips) => {
+    if (lsError) {
+      console.log(lsError);
+      return res.status(200).json({
+        message: "Error fetching lorry receipt challans!",
+      });
+    } else {
+      if (req.body.query.isPrint) {
+        const updatedLS = loadingSlips.map((ls, index) => {
+          ls.date = getFormattedDate(new Date(ls.date));
+          ls.formattedLSNo = (ls.lsNo + "").padStart?.(6, "0");
+          ls.index = index + 1;
+          return ls;
+        });
+        const workbook = exportLRChallanDataToXlsx(updatedLS);
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+          "Content-Disposition",
+          "attachment; filename=" + "data.xlsx"
+        );
+        return workbook.xlsx.write(res).then(() => {
+          res.status(200).end();
+        });
+      } else {
+        res.json({
+          loadingSlips: loadingSlips.slice(start, end),
+          count: loadingSlips?.length,
+        });
+      }
+    }
+  });
+};
+
 module.exports = {
   getLorryReceipts,
   getLorryReceiptsWithCount,
@@ -3247,6 +3721,11 @@ module.exports = {
   viewQuotation,
   viewPaymentCollection,
   getLorryReceiptsForReport,
+  getPendingLorryReceiptForReport,
+  downloadPendingLRReport,
+  getLoadedLorryReceiptForReport,
+  downloadLoadedLRReport,
+  getChallanForReport,
   downloadLRReport,
   getAllLRAck,
   addFONum,
@@ -3279,6 +3758,47 @@ const exportLRDataToXlsx = (data) => {
     { header: "Total weight", key: "totalWeight" },
     { header: "Total charge weight", key: "totalChargeWeight" },
     { header: "Total freight", key: "totalFreight" },
+  ];
+  worksheet.addRows(data);
+  return workbook;
+};
+
+const exportLoadedLRDataToXlsx = (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Lorry receipts");
+  const columns = data.reduce(
+    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
+    []
+  );
+  worksheet.columns = [
+    { header: "Sr. No.", key: "index" },
+    { header: "Consign No", key: "formattedLRNo" },
+    { header: "Consign Date", key: "formattedDate" },
+    { header: "Consignor Name", key: "consignorName" },
+    { header: "From", key: "from" },
+    { header: "Consignee Name", key: "consigneeName" },
+    { header: "To", key: "to" },
+    { header: "Payment Mode", key: "payType" },
+  ];
+  worksheet.addRows(data);
+  return workbook;
+};
+
+const exportPendingLRDataToXlsx = (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Lorry receipts");
+  const columns = data.reduce(
+    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
+    []
+  );
+  worksheet.columns = [
+    { header: "Sr. No.", key: "index" },
+    { header: "Consign No", key: "formattedLRNo" },
+    { header: "Consign Date", key: "formattedDate" },
+    { header: "Consignor Name", key: "consignorName" },
+    { header: "Consignee Name", key: "consigneeName" },
+    { header: "No of Articles", key: "totalArticles" },
+    { header: "Weight", key: "totalWeight" },
   ];
   worksheet.addRows(data);
   return workbook;

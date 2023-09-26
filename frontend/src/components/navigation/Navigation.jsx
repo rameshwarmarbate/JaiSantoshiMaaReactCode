@@ -70,7 +70,11 @@ const CustomLink = ({ to, children, ...props }) => {
       {props.subnav && props.subnav?.length > 0 && (
         <ul>
           {props.subnav?.map?.((subnavItem) => (
-            <CustomSubLink key={subnavItem.to} subto={subnavItem.to}>
+            <CustomSubLink
+              key={subnavItem.to}
+              subto={subnavItem.to}
+              subLink={subnavItem.children}
+            >
               {subnavItem.label}
             </CustomSubLink>
           ))}
@@ -83,7 +87,7 @@ const CustomLink = ({ to, children, ...props }) => {
   );
 };
 
-const CustomSubLink = ({ subto, children, ...props }) => {
+const CustomSubLink = ({ subto, children, subLink, ...props }) => {
   const resolvedPath = useResolvedPath(subto);
   // const isActive = useMatch({ path: resolvedPath.pathname, startsWith: true });
   const location = useLocation();
@@ -94,11 +98,25 @@ const CustomSubLink = ({ subto, children, ...props }) => {
   }
 
   return (
-    <li key={subto} className={isActive || isChildActive ? classes.active : ""}>
+    <li
+      key={subto}
+      className={
+        isActive || isChildActive ? `${classes.active} hoverMenu` : "hoverMenu"
+      }
+    >
       {/* return (<li key={subto} className=''> */}
       <Link to={subto} {...props}>
         {children}
       </Link>
+      {/* {subLink && subLink?.length > 0 && (
+        <div style={{ paddingLeft: "15px" }} className={"hMenu"}>
+          {subLink?.map?.((subnavItem) => (
+            <div key={subnavItem.to}>
+              <Link to={subnavItem.to}>{subnavItem.label}</Link>
+            </div>
+          ))}
+        </div>
+      )} */}
     </li>
   );
 };
