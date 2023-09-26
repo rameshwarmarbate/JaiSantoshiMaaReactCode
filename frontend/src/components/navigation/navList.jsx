@@ -151,10 +151,10 @@ const navItems = [
         label: "Challan Register",
         to: "/reports/challanRegister",
       },
-      {
-        label: "Delivery Status Report",
-        to: "/reports/deliveryStatus",
-      },
+      // {
+      //   label: "Delivery Status Report",
+      //   to: "/reports/deliveryStatus",
+      // },
       {
         label: "Add FO Number",
         to: "/reports/addFONumber",
@@ -163,28 +163,28 @@ const navItems = [
         label: "Loading Trip Sheet Register",
         to: "/reports/loadingTripSheet",
       },
-      {
-        label: "Transaction Detail",
-        to: "/reports/transactionDetails",
-        children: [
-          {
-            label: "Tyre Supplier Payment",
-            to: "/reports/transactionDetails1",
-          },
-          {
-            label: "Petrol Supplier Payment",
-            to: "/reports/transactionDetails2",
-          },
-          {
-            label: "Vehicle Supplier Payment",
-            to: "/reports/transactionDetails3",
-          },
-          {
-            label: "Payment Collection Report",
-            to: "/reports/transactionDetails4",
-          },
-        ],
-      },
+      // {
+      //   label: "Transaction Detail",
+      //   to: "/reports/transactionDetails",
+      //   children: [
+      //     {
+      //       label: "Tyre Supplier Payment",
+      //       to: "/reports/transactionDetails1",
+      //     },
+      //     {
+      //       label: "Petrol Supplier Payment",
+      //       to: "/reports/transactionDetails2",
+      //     },
+      //     {
+      //       label: "Vehicle Supplier Payment",
+      //       to: "/reports/transactionDetails3",
+      //     },
+      //     {
+      //       label: "Payment Collection Report",
+      //       to: "/reports/transactionDetails4",
+      //     },
+      //   ],
+      // },
       {
         label: "User Register",
         to: "/reports/userRegister",

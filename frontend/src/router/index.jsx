@@ -934,10 +934,7 @@ const Routing = () => {
           </Route>
         </Route>
         <Route path="/reports">
-          <Route
-            index
-            element={<Navigate to="/reports/lorryReceiptRegister" />}
-          />
+          <Route index element={<Navigate to="/reports/pendingLRStatus" />} />
           <Route
             path="/reports/lorryReceiptRegister"
             element={
