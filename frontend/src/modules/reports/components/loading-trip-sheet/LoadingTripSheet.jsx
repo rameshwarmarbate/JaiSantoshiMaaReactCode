@@ -145,6 +145,9 @@ const LoadingTripSheet = () => {
       if (search.vehicle) {
         query.vehicle = search.vehicle;
       }
+      if (search.searchText) {
+        query.searchText = search.searchText;
+      }
       const requestObject = {
         pagination: {
           limit: paginationModel.pageSize ? paginationModel.pageSize : 100,

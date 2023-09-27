@@ -2879,12 +2879,6 @@ const getLorryReceiptsForReport = (req, res) => {
     if (req.body.query.branch) {
       query.branch = req.body.query.branch;
     }
-    if (req.body.query.consignor) {
-      query["$or"] = [
-        { consignor: req.body.query.consignor },
-        { consignee: req.body.query.consignor },
-      ];
-    }
     if (req.body.query.from) {
       const date = new Date(req.body.query.from);
       const updatedDate = new Date(date).setDate(date?.getDate() + 1);
@@ -2907,10 +2901,11 @@ const getLorryReceiptsForReport = (req, res) => {
       query.payType = req.body.query.payType;
     }
 
+    let allSearch = "",
+      consignor = "";
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
+      allSearch = [
         { lrNo: { $regex: searchText, $options: "i" } },
         { date: { $regex: searchText, $options: "i" } },
         { invoiceNo: { $regex: searchText, $options: "i" } },
@@ -2923,6 +2918,19 @@ const getLorryReceiptsForReport = (req, res) => {
           ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
+    }
+    if (req.body.query.consignor) {
+      consignor = [
+        { consignor: req.body.query.consignor },
+        { consignee: req.body.query.consignor },
+      ];
+    }
+    if (req.body.query.searchText && req.body.query.consignor) {
+      query["$and"] = [{ $or: allSearch }, { $or: consignor }];
+    } else if (req.body.query.searchText) {
+      query["$or"] = allSearch;
+    } else if (req.body.query.consignor) {
+      query["$or"] = consignor;
     }
   }
 
@@ -2953,7 +2961,6 @@ const getPendingLorryReceiptForReport = (req, res) => {
 
   const query = {
     active: true,
-    $or: [{ deliveryDate: null }, { deliveryDate: "" }],
   };
   if (req.body.query) {
     if (req.body.query.branch) {
@@ -2986,16 +2993,22 @@ const getPendingLorryReceiptForReport = (req, res) => {
 
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
-        { lrNo: { $regex: searchText, $options: "i" } },
-        { date: { $regex: searchText, $options: "i" } },
-        { consignorName: { $regex: searchText, $options: "i" } },
-        { consigneeName: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseInt(req.body.query.searchText))
-          ? [{ total: parseInt(req.body.query.searchText) }]
-          : []),
+      query["$and"] = [
+        { $or: [{ deliveryDate: null }, { deliveryDate: "" }] },
+        {
+          $or: [
+            { lrNo: { $regex: searchText, $options: "i" } },
+            { date: { $regex: searchText, $options: "i" } },
+            { consignorName: { $regex: searchText, $options: "i" } },
+            { consigneeName: { $regex: searchText, $options: "i" } },
+            ...(!isNaN(parseInt(req.body.query.searchText))
+              ? [{ total: parseInt(req.body.query.searchText) }]
+              : []),
+          ],
+        },
       ];
+    } else {
+      query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
     }
   }
 
@@ -3051,22 +3064,13 @@ const getLoadedLorryReceiptForReport = (req, res) => {
         $lte: new Date(newDate)?.toISOString(),
       };
     }
-
-    if (req.body.query.payType) {
-      if (req.body.query.payType?.toLowerCase() === "open") {
-        query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
-      } else {
-        query["$or"] = [
-          { deliveryDate: { $ne: null } },
-          { deliveryDate: { $ne: "" } },
-        ];
-      }
-    }
+    let allSearch = "",
+      payType = "",
+      orAnd = "$or";
 
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
+      allSearch = [
         { lrNo: { $regex: searchText, $options: "i" } },
         { date: { $regex: searchText, $options: "i" } },
         { consignorName: { $regex: searchText, $options: "i" } },
@@ -3075,6 +3079,26 @@ const getLoadedLorryReceiptForReport = (req, res) => {
         { to: { $regex: searchText, $options: "i" } },
         { payType: { $regex: searchText, $options: "i" } },
       ];
+    }
+
+    if (req.body.query.payType) {
+      if (req.body.query.payType?.toLowerCase() === "open") {
+        payType = [{ deliveryDate: null }, { deliveryDate: "" }];
+      } else {
+        orAnd = "$and";
+        payType = [
+          { deliveryDate: { $ne: null } },
+          { deliveryDate: { $ne: "" } },
+        ];
+      }
+    }
+
+    if (req.body.query.searchText && req.body.query.payType) {
+      query["$and"] = [{ $or: allSearch }, { [orAnd]: payType }];
+    } else if (req.body.query.payType) {
+      query[orAnd] = payType;
+    } else if (req.body.query.searchText) {
+      query["$or"] = allSearch;
     }
   }
 
@@ -3101,12 +3125,6 @@ const downloadLRReport = (req, res) => {
     if (req.body.query.branch) {
       query.branch = req.body.query.branch;
     }
-    if (req.body.query.consignor) {
-      query["$or"] = [
-        { consignor: req.body.query.consignor },
-        { consignee: req.body.query.consignor },
-      ];
-    }
     if (req.body.query.from) {
       const date = new Date(req.body.query.from);
       const updatedDate = new Date(date).setDate(date?.getDate() + 1);
@@ -3125,11 +3143,15 @@ const downloadLRReport = (req, res) => {
         $lte: new Date(newDate)?.toISOString(),
       };
     }
+    if (req.body.query.payType) {
+      query.payType = req.body.query.payType;
+    }
 
+    let allSearch = "",
+      consignor = "";
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
+      allSearch = [
         { lrNo: { $regex: searchText, $options: "i" } },
         { date: { $regex: searchText, $options: "i" } },
         { invoiceNo: { $regex: searchText, $options: "i" } },
@@ -3142,6 +3164,19 @@ const downloadLRReport = (req, res) => {
           ? [{ total: parseInt(req.body.query.searchText) }]
           : []),
       ];
+    }
+    if (req.body.query.consignor) {
+      consignor = [
+        { consignor: req.body.query.consignor },
+        { consignee: req.body.query.consignor },
+      ];
+    }
+    if (req.body.query.searchText && req.body.query.consignor) {
+      query["$and"] = [{ $or: allSearch }, { $or: consignor }];
+    } else if (req.body.query.searchText) {
+      query["$or"] = allSearch;
+    } else if (req.body.query.consignor) {
+      query["$or"] = consignor;
     }
   }
   LorryReceipt.find(query)
@@ -3205,7 +3240,6 @@ const downloadLRReport = (req, res) => {
 const downloadPendingLRReport = (req, res) => {
   const query = {
     active: true,
-    $or: [{ deliveryDate: null }, { deliveryDate: "" }],
   };
   if (req.body.query) {
     if (req.body.query.branch) {
@@ -3238,16 +3272,22 @@ const downloadPendingLRReport = (req, res) => {
 
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
-        { lrNo: { $regex: searchText, $options: "i" } },
-        { date: { $regex: searchText, $options: "i" } },
-        { consignorName: { $regex: searchText, $options: "i" } },
-        { consigneeName: { $regex: searchText, $options: "i" } },
-        ...(!isNaN(parseInt(req.body.query.searchText))
-          ? [{ total: parseInt(req.body.query.searchText) }]
-          : []),
+      query["$and"] = [
+        { $or: [{ deliveryDate: null }, { deliveryDate: "" }] },
+        {
+          $or: [
+            { lrNo: { $regex: searchText, $options: "i" } },
+            { date: { $regex: searchText, $options: "i" } },
+            { consignorName: { $regex: searchText, $options: "i" } },
+            { consigneeName: { $regex: searchText, $options: "i" } },
+            ...(!isNaN(parseInt(req.body.query.searchText))
+              ? [{ total: parseInt(req.body.query.searchText) }]
+              : []),
+          ],
+        },
       ];
+    } else {
+      query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
     }
   }
   LorryReceipt.find(query)
@@ -3335,22 +3375,13 @@ const downloadLoadedLRReport = (req, res) => {
         $lte: new Date(newDate)?.toISOString(),
       };
     }
-
-    if (req.body.query.payType) {
-      if (req.body.query.payType?.toLowerCase() === "open") {
-        query["$or"] = [{ deliveryDate: null }, { deliveryDate: "" }];
-      } else {
-        query["$or"] = [
-          { deliveryDate: { $ne: null } },
-          { deliveryDate: { $ne: "" } },
-        ];
-      }
-    }
+    let allSearch = "",
+      payType = "",
+      orAnd = "$or";
 
     if (req.body.query.searchText) {
       const searchText = new RegExp(req.body.query.searchText);
-      query["$or"] = [
-        ...(query["$or"] || []),
+      allSearch = [
         { lrNo: { $regex: searchText, $options: "i" } },
         { date: { $regex: searchText, $options: "i" } },
         { consignorName: { $regex: searchText, $options: "i" } },
@@ -3359,6 +3390,26 @@ const downloadLoadedLRReport = (req, res) => {
         { to: { $regex: searchText, $options: "i" } },
         { payType: { $regex: searchText, $options: "i" } },
       ];
+    }
+
+    if (req.body.query.payType) {
+      if (req.body.query.payType?.toLowerCase() === "open") {
+        payType = [{ deliveryDate: null }, { deliveryDate: "" }];
+      } else {
+        orAnd = "$and";
+        payType = [
+          { deliveryDate: { $ne: null } },
+          { deliveryDate: { $ne: "" } },
+        ];
+      }
+    }
+
+    if (req.body.query.searchText && req.body.query.payType) {
+      query["$and"] = [{ $or: allSearch }, { [orAnd]: payType }];
+    } else if (req.body.query.payType) {
+      query[orAnd] = payType;
+    } else if (req.body.query.searchText) {
+      query["$or"] = allSearch;
     }
   }
   LorryReceipt.find(query)
@@ -3526,6 +3577,34 @@ const getLoadingSlipForReport = (req, res) => {
         },
       };
     }
+    if (req.body.query.owner) {
+      query.vehicleOwner = {
+        $regex: new RegExp(req.body.query.owner),
+        $options: "i",
+      };
+    }
+    if (req.body.query.vehicle) {
+      query.vehicleNo = {
+        $regex: new RegExp(req.body.query.vehicle),
+        $options: "i",
+      };
+    }
+    if (req.body.query.searchText) {
+      const searchText = new RegExp(req.body.query.searchText);
+      query["$or"] = [
+        { lsNo: { $regex: searchText, $options: "i" } },
+        { date: { $regex: searchText, $options: "i" } },
+        { vehicleOwner: { $regex: searchText, $options: "i" } },
+        { vehicleNo: { $regex: searchText, $options: "i" } },
+        ...(!isNaN(parseInt(req.body.query.searchText))
+          ? [
+              { advance: parseInt(req.body.query.searchText) },
+              { rent: parseInt(req.body.query.searchText) },
+              { totalPayable: parseInt(req.body.query.searchText) },
+            ]
+          : []),
+      ];
+    }
   }
 
   LoadingSlip.aggregate([
@@ -3661,10 +3740,10 @@ const getChallanForReport = (req, res) => {
         as: "lorryReceipts",
       },
     },
+    { $match: query },
     {
       $unset: ["list", "lrList", "supplierPayments"],
     },
-    { $match: query },
     { $sort: { createdAt: -1 } },
   ]).exec((lsError, loadingSlips) => {
     if (lsError) {
