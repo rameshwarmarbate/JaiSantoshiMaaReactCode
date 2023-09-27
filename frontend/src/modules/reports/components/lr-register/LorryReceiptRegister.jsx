@@ -490,7 +490,7 @@ const LorryReceiptRegister = () => {
                 endIcon={<DownloadIcon />}
                 onClick={triggerDownload}
               >
-                Download
+                Export To Excel
               </Button>
             </div>
           ) : null}

@@ -3888,147 +3888,253 @@ module.exports = {
 const exportLRDataToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Lorry receipts");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
+
   worksheet.columns = [
-    { header: "Sr. No.", key: "index" },
-    { header: "L.R. Note No.", key: "formattedLRNo" },
-    { header: "Consign Date", key: "formattedDate" },
-    { header: "Invoice no", key: "invoiceNo" },
-    { header: "Vehicle no", key: "vehicleNo" },
-    { header: "Consignor Name", key: "consignorName" },
-    { header: "Consignee Name", key: "consigneeName" },
-    { header: "From", key: "from" },
-    { header: "To", key: "to" },
-    { header: "Payment Mode", key: "payType" },
-    { header: "Total Qty", key: "totalArticles" },
-    { header: "Grand Total", key: "total" },
-    { header: "Total weight", key: "totalWeight" },
-    { header: "Total charge weight", key: "totalChargeWeight" },
-    { header: "Total freight", key: "totalFreight" },
+    { header: "Sr. No.", key: "index", width: 15 },
+    { header: "L.R. Note No.", key: "formattedLRNo", width: 20 },
+    { header: "Consign Date", key: "formattedDate", width: 15 },
+    { header: "Invoice no", key: "invoiceNo", width: 45 },
+    { header: "Vehicle no", key: "vehicleNo", width: 20 },
+    { header: "Consignor Name", key: "consignorName", width: 30 },
+    { header: "Consignee Name", key: "consigneeName", width: 30 },
+    { header: "From", key: "from", width: 30 },
+    { header: "To", key: "to", width: 30 },
+    { header: "Payment Mode", key: "payType", width: 15 },
+    { header: "Total Qty", key: "totalArticles", width: 15 },
+    { header: "Grand Total", key: "total", width: 15 },
+    { header: "Total weight", key: "totalWeight", width: 15 },
+    { header: "Total charge weight", key: "totalChargeWeight", width: 15 },
+    { header: "Total freight", key: "totalFreight", width: 15 },
   ];
   worksheet.addRows(data);
+  [
+    "A1",
+    "B1",
+    "C1",
+    "D1",
+    "E1",
+    "F1",
+    "G1",
+    "H1",
+    "I1",
+    "J1",
+    "K1",
+    "L1",
+    "M1",
+    "N1",
+    "O1",
+  ].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 
 const exportLoadedLRDataToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Lorry receipts");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
   worksheet.columns = [
-    { header: "Sr. No.", key: "index" },
-    { header: "Consign No", key: "formattedLRNo" },
-    { header: "Consign Date", key: "formattedDate" },
-    { header: "Consignor Name", key: "consignorName" },
-    { header: "From", key: "from" },
-    { header: "Consignee Name", key: "consigneeName" },
-    { header: "To", key: "to" },
-    { header: "Payment Mode", key: "payType" },
+    {
+      header: "Sr. No.",
+      key: "index",
+      width: 10,
+    },
+    {
+      header: "Consign No",
+      key: "formattedLRNo",
+      width: 20,
+    },
+    {
+      header: "Consign Date",
+      key: "formattedDate",
+      width: 20,
+    },
+    {
+      header: "Consignor Name",
+      key: "consignorName",
+      width: 30,
+    },
+    {
+      header: "From",
+      key: "from",
+      width: 20,
+    },
+    {
+      header: "Consignee Name",
+      key: "consigneeName",
+      width: 30,
+    },
+    {
+      header: "To",
+      key: "to",
+      width: 20,
+    },
+    {
+      header: "Payment Mode",
+      key: "payType",
+      width: 25,
+    },
   ];
   worksheet.addRows(data);
+  ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 
 const exportPendingLRDataToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Pending LR");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
+
   worksheet.columns = [
-    { header: "Sr. No.", key: "index" },
-    { header: "Consign No", key: "formattedLRNo" },
-    { header: "Consign Date", key: "formattedDate" },
-    { header: "Consignor Name", key: "consignorName" },
-    { header: "Consignee Name", key: "consigneeName" },
-    { header: "No of Articles", key: "totalArticles" },
-    { header: "Weight", key: "totalWeight" },
+    { header: "Sr. No.", key: "index", width: 15 },
+    { header: "Consign No", key: "formattedLRNo", width: 20 },
+    { header: "Consign Date", key: "formattedDate", width: 15 },
+    { header: "Consignor Name", key: "consignorName", width: 30 },
+    { header: "Consignee Name", key: "consigneeName", width: 30 },
+    { header: "No of Articles", key: "totalArticles", width: 15 },
+    { header: "Weight", key: "totalWeight", width: 15 },
   ];
   worksheet.addRows(data);
+
+  ["A1", "B1", "C1", "D1", "E1", "F1", "G1"].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 
 const exportLoadingSlipToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Loading Tripsheet");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
 
   worksheet.columns = [
-    { header: "Sr. no", key: "srNo" },
-    { header: "LTS no.", key: "formattedLSNo" },
-    { header: "Date", key: "date" },
-    { header: "Owner Name", key: "vehicleOwner" },
-    { header: "Vehicle no", key: "vehicleNo" },
-    { header: "Hire Rs", key: "totalFreight" },
-    { header: "Advance Rs", key: "advance" },
-    { header: "Hamali", key: "totalHamali" },
-    { header: "Commision", key: "rent" },
-    { header: "Total", key: "totalPayable" },
+    { header: "Sr. no", key: "srNo", width: 15 },
+    { header: "LTS no.", key: "formattedLSNo", width: 15 },
+    { header: "Date", key: "date", width: 15 },
+    { header: "Owner Name", key: "vehicleOwner", width: 20 },
+    { header: "Vehicle no", key: "vehicleNo", width: 20 },
+    { header: "Hire Rs", key: "totalFreight", width: 15 },
+    { header: "Advance Rs", key: "advance", width: 15 },
+    { header: "Hamali", key: "totalHamali", width: 15 },
+    { header: "Commision", key: "rent", width: 15 },
+    { header: "Total", key: "totalPayable", width: 15 },
   ];
   worksheet.addRows(data);
+  ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J1"].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 
 const exportLRChallanDataToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Challan Register");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
 
   worksheet.columns = [
-    { header: "Sr No.", key: "srNo" },
-    { header: "Challan No", key: "formattedLSNo" },
-    { header: "Challan Generated From", key: "generatedFrom" },
-    { header: "Date", key: "date" },
-    { header: "Vehicle no", key: "vehicleNo" },
-    { header: "From", key: "from" },
-    { header: "To", key: "to" },
-    { header: "Total Amount", key: "total" },
-    { header: "LR No", key: "lrNo" },
-    { header: "Consignor", key: "consignorName" },
-    { header: "Consignee", key: "consigneeName" },
-    { header: "No. of Article", key: "noOfArticle" },
-    { header: "Weight", key: "totalWeight" },
-    { header: "Status", key: "payType" },
+    { header: "Sr No.", key: "srNo", width: 15 },
+    { header: "Challan No", key: "formattedLSNo", width: 15 },
+    { header: "Challan Generated From", key: "generatedFrom", width: 15 },
+    { header: "Date", key: "date", width: 15 },
+    { header: "Vehicle no", key: "vehicleNo", width: 20 },
+    { header: "From", key: "from", width: 20 },
+    { header: "To", key: "to", width: 20 },
+    { header: "Total Amount", key: "total", width: 15 },
+    { header: "LR No", key: "lrNo", width: 15 },
+    { header: "Consignor", key: "consignorName", width: 30 },
+    { header: "Consignee", key: "consigneeName", width: 30 },
+    { header: "No. of Article", key: "noOfArticle", width: 15 },
+    { header: "Weight", key: "totalWeight", width: 15 },
+    { header: "Status", key: "payType", width: 15 },
   ];
   worksheet.addRows(data);
+
+  [
+    "A1",
+    "B1",
+    "C1",
+    "D1",
+    "E1",
+    "F1",
+    "G1",
+    "H1",
+    "I1",
+    "J1",
+    "K1",
+    "L1",
+    "M1",
+    "N1",
+  ].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 
 const exportBillToXlsx = (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Bill");
-  const columns = data.reduce(
-    (acc, obj) => (acc = Object.getOwnPropertyNames(obj)),
-    []
-  );
+
   worksheet.columns = [
-    { header: "Date", key: "formattedDate" },
-    { header: "LR No", key: "formattedLRNo" },
-    { header: "Station", key: "to" },
-    { header: "Invoice No.", key: "invoiceNo" },
-    { header: "Article", key: "article" },
-    { header: "FO Num", key: "foNum" },
-    { header: "Weight", key: "weight" },
-    { header: "No. of Article", key: "articleNo" },
-    { header: "Rate", key: "rate" },
-    { header: "LR Charge", key: "lrCharges" },
-    { header: "Hamali", key: "hamali" },
-    { header: "Delivery Charges", key: "deliveryCharges" },
-    { header: "Amount", key: "total" },
+    { header: "Date", key: "formattedDate", width: 15 },
+    { header: "LR No", key: "formattedLRNo", width: 15 },
+    { header: "Station", key: "to", width: 30 },
+    { header: "Invoice No.", key: "invoiceNo", width: 40 },
+    { header: "Article", key: "article", width: 20 },
+    { header: "FO Num", key: "foNum", width: 20 },
+    { header: "Weight", key: "weight", width: 15 },
+    { header: "No. of Article", key: "articleNo", width: 15 },
+    { header: "Rate", key: "rate", width: 15 },
+    { header: "LR Charge", key: "lrCharges", width: 15 },
+    { header: "Hamali", key: "hamali", width: 15 },
+    { header: "Delivery Charges", key: "deliveryCharges", width: 15 },
+    { header: "Amount", key: "total", width: 15 },
   ];
   worksheet.addRows(data);
+  [
+    "A1",
+    "B1",
+    "C1",
+    "D1",
+    "E1",
+    "F1",
+    "G1",
+    "H1",
+    "I1",
+    "J1",
+    "K1",
+    "L1",
+    "M1",
+  ].map((key) => {
+    worksheet.getCell(key).fill = {
+      type: "pattern",
+      pattern: "lightGrid",
+      fgColor: { argb: "FFFFFFFF" },
+      bgColor: { argb: "065c84" },
+    };
+  });
   return workbook;
 };
 

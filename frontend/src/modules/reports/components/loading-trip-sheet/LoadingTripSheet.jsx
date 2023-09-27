@@ -15,11 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  getFormattedDate,
-  getFormattedLSNumber,
-  isSuperAdminOrAdmin,
-} from "../../../../services/utils";
+import { isSuperAdminOrAdmin } from "../../../../services/utils";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   downloadChallanReport,
@@ -422,7 +418,7 @@ const LoadingTripSheet = () => {
                 endIcon={<DownloadIcon />}
                 onClick={triggerDownload}
               >
-                Download
+                Export To Excel
               </Button>
             </div>
           ) : null}

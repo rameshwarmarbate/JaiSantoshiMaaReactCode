@@ -737,9 +737,10 @@ const LoadingSlipEdit = () => {
                     error={formErrors.vehicleOwnerPhone.invalid}
                     value={loadingSlip.vehicleOwnerPhone}
                     onChange={inputChangeHandler}
+                    onInput={validatePhoneNumber}
                     name="vehicleOwnerPhone"
                     id="vehicleOwnerPhone"
-                    inputProps={{ readOnly: true }}
+                    // inputProps={{ readOnly: true }}
                   />
                   {formErrors.vehicleOwnerPhone.invalid && (
                     <FormHelperText>
