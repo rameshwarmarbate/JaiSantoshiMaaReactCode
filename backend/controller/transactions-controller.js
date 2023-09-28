@@ -3907,30 +3907,6 @@ const exportLRDataToXlsx = (data) => {
     { header: "Total freight", key: "totalFreight", width: 15 },
   ];
   worksheet.addRows(data);
-  [
-    "A1",
-    "B1",
-    "C1",
-    "D1",
-    "E1",
-    "F1",
-    "G1",
-    "H1",
-    "I1",
-    "J1",
-    "K1",
-    "L1",
-    "M1",
-    "N1",
-    "O1",
-  ].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
@@ -3980,14 +3956,6 @@ const exportLoadedLRDataToXlsx = (data) => {
     },
   ];
   worksheet.addRows(data);
-  ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
@@ -4005,15 +3973,6 @@ const exportPendingLRDataToXlsx = (data) => {
     { header: "Weight", key: "totalWeight", width: 15 },
   ];
   worksheet.addRows(data);
-
-  ["A1", "B1", "C1", "D1", "E1", "F1", "G1"].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
@@ -4034,14 +3993,6 @@ const exportLoadingSlipToXlsx = (data) => {
     { header: "Total", key: "totalPayable", width: 15 },
   ];
   worksheet.addRows(data);
-  ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J1"].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
@@ -4066,30 +4017,6 @@ const exportLRChallanDataToXlsx = (data) => {
     { header: "Status", key: "payType", width: 15 },
   ];
   worksheet.addRows(data);
-
-  [
-    "A1",
-    "B1",
-    "C1",
-    "D1",
-    "E1",
-    "F1",
-    "G1",
-    "H1",
-    "I1",
-    "J1",
-    "K1",
-    "L1",
-    "M1",
-    "N1",
-  ].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
@@ -4113,28 +4040,6 @@ const exportBillToXlsx = (data) => {
     { header: "Amount", key: "total", width: 15 },
   ];
   worksheet.addRows(data);
-  [
-    "A1",
-    "B1",
-    "C1",
-    "D1",
-    "E1",
-    "F1",
-    "G1",
-    "H1",
-    "I1",
-    "J1",
-    "K1",
-    "L1",
-    "M1",
-  ].map((key) => {
-    worksheet.getCell(key).fill = {
-      type: "pattern",
-      pattern: "lightGrid",
-      fgColor: { argb: "FFFFFFFF" },
-      bgColor: { argb: "065c84" },
-    };
-  });
   return workbook;
 };
 
