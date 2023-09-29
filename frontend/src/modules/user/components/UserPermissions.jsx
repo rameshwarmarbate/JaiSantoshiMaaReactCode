@@ -406,7 +406,11 @@ const UserPermissions = () => {
               <Divider sx={{ marginBottom: "20px" }} />
 
               <Paper
-                sx={{ padding: "20px", marginBottom: "20px", overflow: "auto" }}
+                sx={{
+                  padding: "20px 20px 60px",
+                  marginBottom: "20px",
+                  overflow: "auto",
+                }}
               >
                 <div>
                   Select All{" "}

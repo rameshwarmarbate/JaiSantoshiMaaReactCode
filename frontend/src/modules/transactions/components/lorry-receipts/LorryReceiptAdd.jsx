@@ -852,6 +852,7 @@ const LorryReceiptAdd = () => {
                   )}
                 </FormControl>
               </div>
+              <div className="grid-item"></div>
               <div className="grid-item">
                 <FormControl
                   fullWidth

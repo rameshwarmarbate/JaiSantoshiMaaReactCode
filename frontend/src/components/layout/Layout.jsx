@@ -6,8 +6,12 @@ const Layout = (props) => {
   const user = useSelector((state) => state.user);
   useEffect(() => {
     if (user.username) {
-      const linkNode = document.getElementsByTagName("link")[1];
-      linkNode?.parentNode?.removeChild(linkNode);
+      const linkNodes = document.getElementsByTagName("link");
+      const list = [...linkNodes];
+      const linkNode = list.find((node) => node.href.includes("mdb-ui-kit"));
+      if (linkNode) {
+        linkNode?.parentNode?.removeChild(linkNode);
+      }
     }
   }, [user]);
   return (
