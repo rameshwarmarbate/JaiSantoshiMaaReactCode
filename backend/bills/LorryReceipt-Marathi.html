@@ -4,7 +4,7 @@
   @page {
     size: A4;
     /* size: 210mm 297mm; */
-    margin: 5mm;
+    margin: 4mm;
     overflow: hidden;
   }
 
@@ -15,6 +15,20 @@
   * {
     padding: 0;
     margin: 0;
+  }
+
+  .table-cell {
+    position: relative;
+  }
+
+  .table-cell:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: -2px;
+    background-color: #333 !important;
+    width: 1px;
+    height: 100%;
   }
 
   body {
@@ -251,27 +265,25 @@
             <td class="right">{{info.lr.totalFreight}}</td>
           </tr>
           <tr>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{articleNo}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{article}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
-              {{#info.lr.transactions}}
-              <p class="content-body">{{info.lr.invoiceNo}}</p>
-              {{/info.lr.transactions}}
+            <td style="max-width: 255px; word-break: break-all;" class="vAlignTop center table-cell" rowspan="4">
+              {{info.lr.invoiceNo}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{weight}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{chargeWeight}}</p>
               {{/info.lr.transactions}}
@@ -429,27 +441,25 @@
             <td class="right">{{info.lr.totalFreight}}</td>
           </tr>
           <tr>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{articleNo}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{article}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
-              {{#info.lr.transactions}}
-              <p class="content-body">{{info.lr.invoiceNo}}</p>
-              {{/info.lr.transactions}}
+            <td style="max-width: 255px; word-break: break-all;" class="vAlignTop center table-cell" rowspan="4">
+              {{info.lr.invoiceNo}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{weight}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{chargeWeight}}</p>
               {{/info.lr.transactions}}
@@ -607,27 +617,25 @@
             <td class="right">{{info.lr.totalFreight}}</td>
           </tr>
           <tr>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{articleNo}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{article}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
-              {{#info.lr.transactions}}
-              <p class="content-body">{{info.lr.invoiceNo}}</p>
-              {{/info.lr.transactions}}
+            <td style="max-width: 255px; word-break: break-all;" class="vAlignTop center table-cell" rowspan="4">
+              {{info.lr.invoiceNo}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{weight}}</p>
               {{/info.lr.transactions}}
             </td>
-            <td class="vAlignTop center" rowspan="4">
+            <td class="vAlignTop center table-cell" rowspan="4">
               {{#info.lr.transactions}}
               <p class="content-body">{{chargeWeight}}</p>
               {{/info.lr.transactions}}

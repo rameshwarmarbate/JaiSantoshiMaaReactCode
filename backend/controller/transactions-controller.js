@@ -811,7 +811,7 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
                   return res.json({ success: true });
                 })
                 .catch((err) => {
-                  return res.status(200).json({ message: err });
+                  return res.status(200).json({ message: err.response });
                 });
             } else {
               return res.json({
@@ -1506,7 +1506,7 @@ const printLoadingSlip = (req, res) => {
                     return res.json({ success: true });
                   })
                   .catch((err) => {
-                    return res.status(200).json({ message: err });
+                    return res.status(200).json({ message: err.response });
                   });
               } else {
                 return res.json({ file: base64String });
@@ -2249,7 +2249,7 @@ const printBill = (req, res) => {
                         return res.json({ success: true });
                       })
                       .catch((err) => {
-                        return res.status(200).json({ message: err });
+                        return res.status(200).json({ message: err.response });
                       });
                   } else {
                     return res.json({ file: base64String });
@@ -2754,7 +2754,7 @@ const viewQuotation = (req, res) => {
                     return res.json({ success: true });
                   })
                   .catch((err) => {
-                    return res.status(200).json({ message: err });
+                    return res.status(200).json({ message: err.response });
                   });
               } else {
                 return res.json({ file: base64String });
@@ -2852,7 +2852,7 @@ const viewPaymentCollection = (req, res) => {
                     return res.json({ success: true });
                   })
                   .catch((err) => {
-                    return res.status(200).json({ message: err });
+                    return res.status(200).json({ message: err.response });
                   });
               } else {
                 return res.json({ file: base64String });
