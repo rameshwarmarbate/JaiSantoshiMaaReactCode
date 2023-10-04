@@ -703,7 +703,7 @@ const LorryReceiptAdd = () => {
                     onChange={inputChangeHandler}
                     name="invoiceNo"
                     id="invoiceNo"
-                    inputProps={{ maxLength: 50 }}
+                    inputProps={{ maxLength: 200 }}
                   />
                 </FormControl>
               </div>

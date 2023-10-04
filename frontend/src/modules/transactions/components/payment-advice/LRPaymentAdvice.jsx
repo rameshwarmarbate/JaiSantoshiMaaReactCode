@@ -209,7 +209,7 @@ const LRPaymentAdvice = ({
   const [formErrors, setFormErrors] = useState(initialErrorState);
   const [payments, setPayments] = useState(initialState);
   const [accountsByBank, setAccountsByBank] = useState([]);
-  const { branches: bankAccounts, banks } =
+  const { bankAccounts, banks } =
     useSelector(({ paymentadvice }) => paymentadvice) || {};
 
   const fetchData = () => {
@@ -767,6 +767,7 @@ const LRPaymentAdvice = ({
                       ? true
                       : false
                   }
+                  getOptionLabel={(option) => option.accountNo}
                   onChange={(e, value) =>
                     autocompleteChangeListener(e, value, "jsmAccountNo")
                   }
