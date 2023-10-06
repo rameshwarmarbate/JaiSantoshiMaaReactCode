@@ -112,6 +112,13 @@
   .noBdrRight {
     border-right: 0;
   }
+
+  .date {
+    padding-top: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+  }
 </style>
 
 <head>
@@ -192,6 +199,9 @@
       </td>
     </tr>
   </table>
+  <div class="date">
+    <div style="font-size: 8pt;">Created Date: {{info.createdDate}}</div>
+  </div>
 </body>
 
 </html>

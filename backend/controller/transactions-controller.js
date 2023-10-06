@@ -757,6 +757,7 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
             checked: checked,
             unchecked: unchecked,
             user: req.body.user,
+            createdDate: convertDateFormat(data.createdAt),
           },
         },
         (err, HTML) => {
@@ -1479,6 +1480,7 @@ const printLoadingSlip = (req, res) => {
               logo: logo,
               laxmi: laxmi,
               total: [{ total: total?.toFixed(2) }],
+              createdDate: convertDateFormat(lsData.createdAt),
             },
           },
           (err, HTML) => {
@@ -2208,6 +2210,7 @@ const printBill = (req, res) => {
                 ...printData,
                 logo,
                 laxmi,
+                createdDate: convertDateFormat(data.createdAt),
               },
             },
             (err, HTML) => {
@@ -2715,6 +2718,7 @@ const viewQuotation = (req, res) => {
             logo: logo,
             laxmi: laxmi,
             blankRows1,
+            createdDate: convertDateFormat(data.createdAt),
           },
         },
         (err, HTML) => {
@@ -2823,6 +2827,7 @@ const viewPaymentCollection = (req, res) => {
                   : "",
               logo: logo,
               laxmi: laxmi,
+              createdDate: convertDateFormat(data.createdAt),
             },
           },
           (err, HTML) => {
@@ -4104,4 +4109,17 @@ const getFormattedDateString = (receivedDate) => {
   const year = date?.getFullYear();
 
   return `${formattedDay} ${monthNames[month]} ${year}`;
+};
+
+const convertDateFormat = (date = new Date()) => {
+  const day = new Date(date).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  return day;
 };
