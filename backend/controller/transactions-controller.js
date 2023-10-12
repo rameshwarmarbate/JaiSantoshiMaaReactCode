@@ -758,6 +758,7 @@ const generateLrPdf = (data, req, res, isSend, isUpdate, isView) => {
             unchecked: unchecked,
             user: req.body.user,
             createdDate: convertDateFormat(data.createdAt),
+            printDate: convertDateFormat(Date.now()),
           },
         },
         (err, HTML) => {
@@ -1481,6 +1482,7 @@ const printLoadingSlip = (req, res) => {
               laxmi: laxmi,
               total: [{ total: total?.toFixed(2) }],
               createdDate: convertDateFormat(lsData.createdAt),
+              printDate: convertDateFormat(Date.now()),
             },
           },
           (err, HTML) => {
@@ -2211,6 +2213,7 @@ const printBill = (req, res) => {
                 logo,
                 laxmi,
                 createdDate: convertDateFormat(data.createdAt),
+                printDate: convertDateFormat(Date.now()),
               },
             },
             (err, HTML) => {
@@ -2719,6 +2722,7 @@ const viewQuotation = (req, res) => {
             laxmi: laxmi,
             blankRows1,
             createdDate: convertDateFormat(data.createdAt),
+            printDate: convertDateFormat(Date.now()),
           },
         },
         (err, HTML) => {
@@ -2828,6 +2832,7 @@ const viewPaymentCollection = (req, res) => {
               logo: logo,
               laxmi: laxmi,
               createdDate: convertDateFormat(data.createdAt),
+              printDate: convertDateFormat(Date.now()),
             },
           },
           (err, HTML) => {
