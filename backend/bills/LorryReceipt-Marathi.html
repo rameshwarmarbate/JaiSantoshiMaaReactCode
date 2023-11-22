@@ -162,8 +162,7 @@
   }
 
   .dashed {
-    border: 1px dashed black;
-    margin: 2mm 0;
+    margin-top: 4mm;
   }
 </style>
 
@@ -238,15 +237,15 @@
       <td>
         <table>
           <tr>
-            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
-            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="noBdr-right">Consignor: {{info.lr.consignorName}}</td>
+            <td>Mobile: {{info.lr.consignorPhone}}</td>
             <td class="center">E-Way Bill no.</td>
           </tr>
           <tr>
             <td class="noBdr-right noBdrBtm">
-              Consignee: {{info.consignee.name}}
+              Consignee: {{info.lr.consigneeName}}
             </td>
-            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm">Mobile: {{info.lr.consigneePhone}}</td>
             <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
           </tr>
         </table>
@@ -379,7 +378,7 @@
       </td>
     </tr>
   </table>
-  <hr class="dashed" />
+  <div class="dashed"></div>
   <table>
     <tr>
       <td>
@@ -420,15 +419,15 @@
       <td>
         <table>
           <tr>
-            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
-            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="noBdr-right">Consignor: {{info.lr.consignorName}}</td>
+            <td>Mobile: {{info.lr.consignorPhone}}</td>
             <td class="center">E-Way Bill no.</td>
           </tr>
           <tr>
             <td class="noBdr-right noBdrBtm">
-              Consignee: {{info.consignee.name}}
+              Consignee: {{info.lr.consigneeName}}
             </td>
-            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm">Mobile: {{info.lr.consigneePhone}}</td>
             <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
           </tr>
         </table>
@@ -561,7 +560,7 @@
       </td>
     </tr>
   </table>
-  <hr class="dashed" />
+  <div class="dashed"></div>
   <table>
     <tr>
       <td>
@@ -602,15 +601,15 @@
       <td>
         <table>
           <tr>
-            <td class="noBdr-right">Consignor: {{info.consignor.name}}</td>
-            <td>Mobile: {{info.consignor.telephone}}</td>
+            <td class="noBdr-right">Consignor: {{info.lr.consignorName}}</td>
+            <td>Mobile: {{info.lr.consignorPhone}}</td>
             <td class="center">E-Way Bill no.</td>
           </tr>
           <tr>
             <td class="noBdr-right noBdrBtm">
-              Consignee: {{info.consignee.name}}
+              Consignee: {{info.lr.consigneeName}}
             </td>
-            <td class="noBdrBtm">Mobile: {{info.consignee.telephone}}</td>
+            <td class="noBdrBtm">Mobile: {{info.lr.consigneePhone}}</td>
             <td class="noBdrBtm center">{{info.lr.eWayBillNo}}</td>
           </tr>
         </table>

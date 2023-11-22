@@ -219,6 +219,7 @@ const UserList = () => {
                       label=""
                       placeholder="Search"
                       value={search}
+                      style={{ width: "300px" }}
                       name="search"
                       id="search"
                       onChange={handleSearchInput}

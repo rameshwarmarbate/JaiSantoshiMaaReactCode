@@ -21,29 +21,29 @@ async function sendEmail(to, base64Content, fileName, subject, text, html) {
   });
 
   if (to && base64Content && fileName && subject && text && html) {
-    let info = await transporter.sendMail({
-      from: '"JSM Support" <support@jaisantoshimaatransport.com>',
-      to: to,
-      subject: subject,
-      text: text,
-      html: html,
-      attachments: [
-        {
-          filename: fileName,
-          content: base64Content,
-          encoding: "base64",
-        },
-      ],
-    });
+    // let info = await transporter.sendMail({
+    //   from: '"JSM Support" <support@jaisantoshimaatransport.com>',
+    //   to: to,
+    //   subject: subject,
+    //   text: text,
+    //   html: html,
+    //   attachments: [
+    //     {
+    //       filename: fileName,
+    //       content: base64Content,
+    //       encoding: "base64",
+    //     },
+    //   ],
+    // });
   } else if (to && subject && text && html) {
-    let info = await transporter.sendMail({
-      from: '"JSM Support" <support@jaisantoshimaatransport.com>',
-      to: to,
-      subject: subject,
-      text: text,
-      html: html,
-      attachments: [],
-    });
+    // let info = await transporter.sendMail({
+    //   from: '"JSM Support" <support@jaisantoshimaatransport.com>',
+    //   to: to,
+    //   subject: subject,
+    //   text: text,
+    //   html: html,
+    //   attachments: [],
+    // });
   } else {
     throw new Error("Parameters are missing!");
   }

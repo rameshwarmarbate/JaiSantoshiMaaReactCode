@@ -18,15 +18,15 @@ const Article = new Schema(
     },
     createdBy: {
       type: String,
-      required: function () {
-        return !this.updatedBy;
-      },
+      // required: function () {
+      //   return !this.updatedBy;
+      // },
     },
     updatedBy: {
       type: String,
-      required: function () {
-        return !this.createdBy;
-      },
+      // required: function () {
+      //   return !this.createdBy;
+      // },
     },
   },
   {
@@ -34,7 +34,5 @@ const Article = new Schema(
     timestamps: true,
   }
 );
-
-Article.index({ name: "text" });
 
 module.exports = mongoose.model("Article", Article);

@@ -134,16 +134,6 @@ export const rateMasterSlice = createSlice({
       })
       .addCase(getArticles.rejected, (state) => {
         state.status = "failed";
-      })
-
-      .addCase(getCustomersForRateMaster.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCustomersForRateMaster.fulfilled, (state) => {
-        state.status = "succeeded";
-      })
-      .addCase(getCustomersForRateMaster.rejected, (state) => {
-        state.status = "failed";
       });
   },
 });

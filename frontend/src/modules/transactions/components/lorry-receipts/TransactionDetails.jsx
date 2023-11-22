@@ -6,6 +6,7 @@ import {
   Button,
   InputAdornment,
   Autocomplete,
+  Grid,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { IconButton } from "@mui/material";
@@ -31,7 +32,7 @@ const initialState = {
   description: "",
   weight: "",
   chargeWeight: "",
-  rateType: RATE_TYPES[0],
+  rateType: RATE_TYPES[0] || null,
   rate: "",
   freight: "",
 };
@@ -466,8 +467,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
         onSubmit={submitHandler}
         className="mb20"
       >
-        <div className="grid grid-8-col">
-          <div className="grid-item">
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
             <FormControl
               fullWidth
               size="small"
@@ -499,8 +500,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.article.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth error={formErrors.articleNo.invalid}>
               <TextField
                 size="small"
@@ -517,8 +518,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.articleNo.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth>
               <TextField
                 size="small"
@@ -530,8 +531,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 id="description"
               />
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth error={formErrors.weight.invalid}>
               <TextField
                 size="small"
@@ -548,8 +549,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.weight.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth error={formErrors.chargeWeight.invalid}>
               <TextField
                 size="small"
@@ -568,8 +569,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 </FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl
               fullWidth
               size="small"
@@ -598,8 +599,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.rateType.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth error={formErrors.rate.invalid}>
               <TextField
                 size="small"
@@ -622,8 +623,8 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.rate.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-          <div className="grid-item">
+          </Grid>
+          <Grid item xs={1.4}>
             <FormControl fullWidth error={formErrors.freight.invalid}>
               <TextField
                 size="small"
@@ -646,9 +647,9 @@ const TransactionDetails = ({ articles, lorryReceipt, setLorryReceipt }) => {
                 <FormHelperText>{formErrors.freight.message}</FormHelperText>
               )}
             </FormControl>
-          </div>
-        </div>
-        <div className="right">
+          </Grid>
+        </Grid>
+        <div className="right" style={{ paddingTop: "10px" }}>
           <Button
             variant="outlined"
             size="medium"

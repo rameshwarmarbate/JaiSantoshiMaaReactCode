@@ -125,7 +125,6 @@ export const billSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
         state.customers = payload?.data;
       })
       .addCase(getCustomers.rejected, (state) => {

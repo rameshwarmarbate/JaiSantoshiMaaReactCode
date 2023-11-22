@@ -239,19 +239,18 @@ const userRegister = (req, res) => {
     } else {
       const updatedUsers = [];
       users.forEach((user, index) => {
-        const updatedUser = {
-          branch: user.Branch[0]?.name || "",
-          employee: user.Employee[0]?.name || "",
-          username: user.username,
-          active: user.active,
-          createdBy:
-            user.type.toLowerCase() !== "superadmin"
-              ? user.User[0]?.username
-              : "superadmin",
-          createdAt: getFormattedDate(user.createdAt),
-          id: index + 1,
-        };
-        updatedUsers.push(updatedUser);
+        if (user.type.toLowerCase() !== "superadmin") {
+          const updatedUser = {
+            branch: user.Branch[0]?.name || "",
+            employee: user.Employee[0]?.name || "",
+            username: user.username,
+            active: user.active,
+            createdBy: user.User[0]?.username,
+            createdAt: getFormattedDate(user.createdAt),
+            id: index + 1,
+          };
+          updatedUsers.push(updatedUser);
+        }
       });
       res.json(updatedUsers);
     }
@@ -261,7 +260,6 @@ const userRegister = (req, res) => {
 const getUser = (req, res, next) => {
   User.aggregate([
     { $match: { _id: ObjectId(req.params.id) } },
-    { $unwind: { path: "$userBranches", preserveNullAndEmptyArrays: true } },
     {
       $lookup: {
         from: "branch",
@@ -456,37 +454,6 @@ const updateUser = (req, res, next) => {
 };
 
 const loginCtrl = async (req, res, next) => {
-  // try {
-  //   const foundUser = await User.findOne({ username: req.body.username });
-  //   if (!foundUser.active) {
-  //     return res.status(200).json({
-  //       "message": "User is not active!"
-  //     });
-  //   }
-  //   if (req.body.password !== foundUser.password) {
-  //     return res.status(200).json({
-  //       "message": "Wrong password!"
-  //     });
-  //   }
-
-  //   const updatedUser = JSON.parse(JSON.stringify(foundUser));
-  //   if (updatedUser.employee) {
-  //     var emp = await Employee.findById(updatedUser.employee);
-  //   }
-  //   if (emp) {
-  //     updatedUser.employee = emp;
-  //   }
-  //   if (foundUser.branch) {
-  //     var userBranchData = await Branch.findById(foundUser.branch);
-  //     updatedUser.branchData = userBranchData;
-  //   }
-  //   return res.json(updatedUser);
-
-  // } catch(e) {
-  //   return res.status(200).json({
-  //     "message": e.message
-  //   });
-  // }
   User.findOne(
     { username: req.body.username?.trim?.() },
     (error, foundUser) => {

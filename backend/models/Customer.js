@@ -71,15 +71,15 @@ const Customer = new Schema(
     },
     createdBy: {
       type: String,
-      required: function () {
-        return !this.updatedBy;
-      },
+      // required: function () {
+      //   return !this.updatedBy;
+      // },
     },
     updatedBy: {
       type: String,
-      required: function () {
-        return !this.createdBy;
-      },
+      // required: function () {
+      //   return !this.createdBy;
+      // },
     },
   },
   {
@@ -87,7 +87,5 @@ const Customer = new Schema(
     timestamps: true,
   }
 );
-
-Customer.index({ name: "text", phone: "text", fax: "text", email: "text" });
 
 module.exports = mongoose.model("Customer", Customer);

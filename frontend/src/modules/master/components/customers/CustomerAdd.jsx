@@ -13,7 +13,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { LoadingSpinner } from "../../../../ui-controls";
 import {
   emailRegEx,
-  mobileNoRegEx,
   states,
   validatePhoneNumber,
 } from "../../../../services/utils";

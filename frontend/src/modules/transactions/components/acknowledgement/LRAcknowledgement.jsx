@@ -44,8 +44,8 @@ import {
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 
 const initialState = {
-  startDate: null,
-  endDate: null,
+  startDate: new Date(),
+  endDate: new Date(),
   type: "",
 };
 

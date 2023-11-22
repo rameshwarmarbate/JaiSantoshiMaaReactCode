@@ -156,20 +156,7 @@ const ChallanNoteRegister = () => {
       .catch((error) => {
         setHttpError(error.message);
       });
-
-    dispatch(getCustomers())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          setCustomers(payload?.data);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    fetchCustomers("");
   }, []);
 
   useEffect(() => {
@@ -230,6 +217,29 @@ const ChallanNoteRegister = () => {
     search.lrNo,
     search.to,
   ]);
+
+  const fetchCustomers = (str) => {
+    const search = str.trim?.();
+    if (search?.length > 2 || !search) {
+      dispatch(getCustomers(search))
+        .then(({ payload = {} }) => {
+          const { message } = payload?.data || {};
+          if (message) {
+            setHttpError(message);
+          } else {
+            setHttpError("");
+            setCustomers(payload?.data);
+          }
+        })
+        .catch((error) => {
+          setHttpError(error.message);
+        });
+    }
+  };
+
+  const consignorChange = ({ target }) => {
+    fetchCustomers(target.value);
+  };
 
   const triggerDownload = (e) => {
     e.preventDefault();
@@ -415,7 +425,12 @@ const ChallanNoteRegister = () => {
                     openOnFocus
                     getOptionLabel={(customer) => customer.name}
                     renderInput={(params) => (
-                      <TextField {...params} label="Customer" fullWidth />
+                      <TextField
+                        {...params}
+                        label="Customer"
+                        fullWidth
+                        onChange={(e) => consignorChange(e)}
+                      />
                     )}
                   />
                 </FormControl>

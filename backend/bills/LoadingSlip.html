@@ -218,20 +218,20 @@
             <td class="center"><strong>Consignee</strong></td>
             <td class="center"><strong>Articles</strong></td>
             <td class="center"><strong>Weight</strong></td>
-            <td class="center"><strong>Payment Mode</strong></td>
-            <td class="center"><strong>Amount</strong></td>
+            <td class="center"><strong>PMode</strong></td>
+            <td width="13%" class="center"><strong>Amount</strong></td>
           </tr>
           {{#info.lrList}}
           <tr>
             <td class="center">{{srNo}}</td>
             <td class="center">{{lrNo}}</td>
             <td>{{consigneeAddress}}</td>
-            <td>{{consignorName}}</td>
-            <td>{{consigneeName}}</td>
+            <td>{{consignorNameMr}}</td>
+            <td>{{consigneeNameMr}}</td>
             <td class="right">{{articles}}</td>
             <td class="right">{{weight}}</td>
             <td class="right">{{payType}}</td>
-            <td class="right">{{total}}</td>
+            <td width="13%" class="right">{{total}}</td>
           </tr>
           {{/info.lrList}} {{#info.total}}
           <tr>
@@ -243,7 +243,7 @@
             <td class="right">&nbsp;</td>
             <td class="right">&nbsp;</td>
             <td class="right"><strong>Total </strong></td>
-            <td class="right"><strong>{{total}}</strong></td>
+            <td width="13%" class="right"><strong>{{total}}</strong></td>
           </tr>
           {{/info.total}} {{#info.blankRows}}
           <tr>
@@ -255,7 +255,7 @@
             <td class="right">&nbsp;</td>
             <td class="right">&nbsp;</td>
             <td class="right">&nbsp;</td>
-            <td class="right">&nbsp;</td>
+            <td width="13%" class="right">&nbsp;</td>
           </tr>
           {{/info.blankRows}}
         </table>

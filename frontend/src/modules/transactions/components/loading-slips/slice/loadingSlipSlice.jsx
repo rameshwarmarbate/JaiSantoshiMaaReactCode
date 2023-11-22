@@ -162,17 +162,6 @@ export const loadingSlipSlice = createSlice({
         state.status = "failed";
       })
 
-      .addCase(getCustomers.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
-        state.customers = payload?.data;
-      })
-      .addCase(getCustomers.rejected, (state) => {
-        state.status = "failed";
-      })
-
       .addCase(getVehicles.pending, (state) => {
         state.status = "loading";
       })

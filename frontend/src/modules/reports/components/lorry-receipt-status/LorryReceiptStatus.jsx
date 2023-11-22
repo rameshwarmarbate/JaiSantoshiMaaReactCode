@@ -87,7 +87,6 @@ const PendingLRStockStatus = () => {
   const isLoading = useSelector(selectIsLoading);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [customers, setCustomers] = useState([]);
   const [branches, setBranches] = useState([]);
   const [httpError, setHttpError] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -105,26 +104,6 @@ const PendingLRStockStatus = () => {
   const [isloading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getCustomers())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          const updatedCustomers = payload?.data?.map?.((customer) => {
-            return {
-              ...customer,
-              label: customer.name,
-            };
-          });
-          setCustomers(updatedCustomers);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
-
     dispatch(getBranches())
       .then(({ payload = {} }) => {
         const { message } = payload?.data || {};
@@ -234,15 +213,6 @@ const PendingLRStockStatus = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-  };
-
-  const autocompleteChangeListener = (e, option, name) => {
-    setSearch((currState) => {
-      return {
-        ...currState,
-        [name]: option,
-      };
-    });
   };
 
   const dateInputChangeHandler = (name, date) => {

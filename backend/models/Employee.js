@@ -66,11 +66,4 @@ const Employee = new Schema(
   }
 );
 
-Employee.index({
-  name: "text",
-  mobile: "text",
-  email: "text",
-  designation: "text",
-});
-
 module.exports = mongoose.model("Employee", Employee);

@@ -123,6 +123,16 @@ const DriverAdd = () => {
       };
     });
   };
+  const inputNameHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value?.toUpperCase();
+    setDriver((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
   const autocompleteChangeListener = (value, name) => {
     setDriver((currState) => {
       return {
@@ -208,9 +218,9 @@ const DriverAdd = () => {
         message: "Mobile number should be 10 digits number",
       };
     }
-    if (!formData.licenseNo?.trim?.()) {
-      errors.licenseNo = { invalid: true, message: "License no is required" };
-    }
+    // if (!formData.licenseNo?.trim?.()) {
+    //   errors.licenseNo = { invalid: true, message: "License no is required" };
+    // }
     let validationErrors = false;
     for (const key in errors) {
       if (errors[key].invalid === true) {
@@ -269,7 +279,7 @@ const DriverAdd = () => {
                     label="Driver name"
                     value={driver.name}
                     error={formErrors.name.invalid}
-                    onChange={inputChangeHandler}
+                    onChange={inputNameHandler}
                     name="name"
                     id="name"
                   />

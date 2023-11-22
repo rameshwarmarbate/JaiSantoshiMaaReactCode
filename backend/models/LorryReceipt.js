@@ -34,6 +34,9 @@ const LorryReceipt = new Schema(
       type: String,
       required: true,
     },
+    consignorNameMr: {
+      type: String,
+    },
     consignorAddress: {
       type: String,
       required: true,
@@ -52,6 +55,9 @@ const LorryReceipt = new Schema(
       type: String,
       required: true,
     },
+    consigneeNameMr: {
+      type: String,
+    },
     consigneeAddress: {
       type: String,
     },
@@ -65,9 +71,15 @@ const LorryReceipt = new Schema(
       type: String,
       required: true,
     },
+    fromMr: {
+      type: String,
+    },
     to: {
       type: String,
       required: true,
+    },
+    toMr: {
+      type: String,
     },
     totalFreight: {
       type: Number,

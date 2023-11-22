@@ -127,16 +127,6 @@ export const pettyCashSlice = createSlice({
         state.status = "failed";
       })
 
-      .addCase(getCustomers.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCustomers.fulfilled, (state) => {
-        // state.status = "succeeded";
-      })
-      .addCase(getCustomers.rejected, (state) => {
-        state.status = "failed";
-      })
-
       .addCase(getBanks.pending, (state) => {
         state.status = "loading";
       })

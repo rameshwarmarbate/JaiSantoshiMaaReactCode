@@ -5,9 +5,9 @@ export function fetchBranches() {
   return fetchFromApiServer("GET", url);
 }
 
-export function fetchCustomers() {
-  const url = `api/master/getCustomers`;
-  return fetchFromApiServer("GET", url);
+export function fetchCustomers(data) {
+  const url = `api/master/getCustomersForDrop`;
+  return fetchFromApiServer("POST", url, { search: data });
 }
 
 export function fetchLoadingSlipForReport(requestObject) {

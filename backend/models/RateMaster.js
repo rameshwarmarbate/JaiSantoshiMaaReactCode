@@ -19,11 +19,11 @@ const RateMaster = new Schema(
         },
         station: {
           type: String,
-          require: true,
+          // require: true,
         },
         stationName: {
           type: String,
-          require: true,
+          // require: true,
         },
         rate: {
           type: Number,

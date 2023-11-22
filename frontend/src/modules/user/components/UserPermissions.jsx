@@ -375,11 +375,6 @@ const UserPermissions = () => {
             </div>
             <div>
               <table className={classes.tbl_permissions}>
-                {/* <thead>
-                  <tr>
-                    <th>Branch</th> <th>Action</th>
-                  </tr>
-                </thead> */}
                 <tbody>
                   {userBranches.map((branch) => {
                     return (
@@ -433,10 +428,7 @@ const UserPermissions = () => {
                       <td width="10%">
                         <Switch
                           name="Admin_Branch_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType ? false : permissions.Admin.Branch.write
-                          }
+                          checked={permissions.Admin.Branch.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -444,10 +436,7 @@ const UserPermissions = () => {
                       <td width="10%">
                         <Switch
                           name="Admin_Place_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType ? false : permissions.Admin.Place.write
-                          }
+                          checked={permissions.Admin.Place.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -455,10 +444,7 @@ const UserPermissions = () => {
                       <td width="10%">
                         <Switch
                           name="Admin_Article_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType ? false : permissions.Admin.Article.write
-                          }
+                          checked={permissions.Admin.Article.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -466,12 +452,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_Employee_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions.Admin.Employee.write
-                          }
+                          checked={permissions.Admin.Employee.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -479,10 +460,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_Driver_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType ? false : permissions.Admin.Driver.write
-                          }
+                          checked={permissions.Admin.Driver.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -492,12 +470,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_Customers_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions.Admin.Customers.write
-                          }
+                          checked={permissions.Admin.Customers.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -505,12 +478,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_Supplier_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions.Admin.Supplier.write
-                          }
+                          checked={permissions.Admin.Supplier.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -518,12 +486,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_VehicleType_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions.Admin.VehicleType.write
-                          }
+                          checked={permissions.Admin.VehicleType.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -531,10 +494,7 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Admin_Vehicle_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType ? false : permissions.Admin.Vehicle.write
-                          }
+                          checked={permissions.Admin.Vehicle.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
@@ -542,11 +502,8 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Sales/Purchase_BankMaster_write"
-                          disabled={isUserType}
                           checked={
-                            isUserType
-                              ? false
-                              : permissions["Sales/Purchase"].BankMaster.write
+                            permissions["Sales/Purchase"].BankMaster.write
                           }
                           onChange={handleSwitchChange}
                         />
@@ -558,42 +515,24 @@ const UserPermissions = () => {
                       <td>
                         <Switch
                           name="Sales/Purchase_BankAccountMaster_write"
-                          disabled={isUserType}
                           checked={
-                            isUserType
-                              ? false
-                              : permissions["Sales/Purchase"].BankAccountMaster
-                                  .write
+                            permissions["Sales/Purchase"].BankAccountMaster
+                              .write
                           }
                           onChange={handleSwitchChange}
                         />
                       </td>
-                      <td>Rate Master (read)</td>
-                      <td>
-                        <Switch
-                          name="Admin_RateMaster_read"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions["Admin"].RateMaster.read
-                          }
-                          onChange={handleSwitchChange}
-                        />
-                      </td>
+
                       <td>Rate Master</td>
                       <td>
                         <Switch
                           name="Admin_RateMaster_write"
-                          disabled={isUserType}
-                          checked={
-                            isUserType
-                              ? false
-                              : permissions["Admin"].RateMaster.write
-                          }
+                          checked={permissions["Admin"].RateMaster.write}
                           onChange={handleSwitchChange}
                         />
                       </td>
+                      <td></td>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td></td>

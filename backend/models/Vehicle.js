@@ -5,11 +5,10 @@ const Vehicle = new Schema(
   {
     owner: {
       type: String,
-      required: true,
+      // required: true,
     },
     vehicleType: {
       type: String,
-      required: true,
     },
     vehicleNo: {
       type: String,
@@ -38,19 +37,19 @@ const Vehicle = new Schema(
       {
         taxType: {
           type: String,
-          required: true,
+          // required: true,
         },
         amount: {
           type: String,
-          required: true,
+          // required: true,
         },
         startDate: {
           type: String,
-          required: true,
+          // required: true,
         },
         endDate: {
           type: String,
-          required: true,
+          // required: true,
         },
         description: {
           type: String,
@@ -63,15 +62,15 @@ const Vehicle = new Schema(
     },
     createdBy: {
       type: String,
-      required: function () {
-        return !this.updatedBy;
-      },
+      // required: function () {
+      //   return !this.updatedBy;
+      // },
     },
     updatedBy: {
       type: String,
-      required: function () {
-        return !this.createdBy;
-      },
+      // required: function () {
+      //   return !this.createdBy;
+      // },
     },
   },
   {

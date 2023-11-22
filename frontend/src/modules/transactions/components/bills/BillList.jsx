@@ -41,6 +41,7 @@ import {
   downloadBill,
   selectIsLoading,
   setSearch as onSearch,
+  getCustomers,
 } from "./slice/billSlice";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 
@@ -176,6 +177,7 @@ const BillList = () => {
           "Something went wrong! Please try later or contact Administrator."
         );
       });
+    dispatch(getCustomers());
   }, []);
 
   const fetchData = () => {

@@ -30,9 +30,9 @@ export function modifyBills(requestObject) {
   return fetchFromApiServer("POST", url, { bills: requestObject });
 }
 
-export function fetchCustomersByBranch(branchId) {
-  const url = `api/master/getCustomersByBranch`;
-  return fetchFromApiServer("POST", url, { branchId: branchId });
+export function fetchCustomersByBranch(search) {
+  const url = `api/master/getCustomersForDrop`;
+  return fetchFromApiServer("POST", url, { search });
 }
 
 export function viewPaymentCollection({ billId, collectionId, email }) {

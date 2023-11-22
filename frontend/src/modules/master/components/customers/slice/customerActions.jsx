@@ -18,9 +18,9 @@ export function modifyCustomer(requestObject) {
   return fetchFromApiServer("PUT", url, requestObject);
 }
 
-export function fetchCustomers() {
-  const url = `api/master/getCustomers`;
-  return fetchFromApiServer("GET", url);
+export function fetchCustomers(data) {
+  const url = `api/master/getCustomersWithPagination`;
+  return fetchFromApiServer("POST", url, data);
 }
 export function removeCustomer(id) {
   const url = `api/master/removeCustomer/${id}`;

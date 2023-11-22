@@ -127,7 +127,7 @@ const initialErrorState = {
 const LoadingSlipEdit = () => {
   const isLoading = useSelector(selectIsLoading);
   const user = useSelector((state) => state.user);
-  const { branches, vehicles, suppliers, places, drivers, customers } =
+  const { branches, vehicles, suppliers, places, drivers } =
     useSelector(({ loadingslip }) => loadingslip) || {};
 
   const [lorryReceipts, setLorryReceipts] = useState([]);
@@ -485,19 +485,19 @@ const LoadingSlipEdit = () => {
     });
     if (name === "vehicle") {
       if (option && option._id) {
-        const selectedVehicle = vehicles?.find?.(
-          (vehicle) => vehicle._id === option._id
-        );
         const selectedSupplier = suppliers?.find?.(
-          (supplier) => supplier._id === selectedVehicle.owner
+          (supplier) =>
+            supplier._id === option.owner || supplier.name === option.ownerName
         );
         setLoadingSlip((currState) => {
           return {
             ...currState,
-            vehicleNo: selectedVehicle.vehicleNo,
-            vehicleOwner: selectedSupplier.name,
-            vehicleOwnerAddress: `${selectedSupplier.address}, ${selectedSupplier.city}`,
-            vehicleOwnerPhone: selectedSupplier.phone,
+            vehicleNo: option?.vehicleNo,
+            vehicleOwner: selectedSupplier?.name,
+            vehicleOwnerAddress: `${selectedSupplier?.address || ""}, ${
+              selectedSupplier?.city || ""
+            }`,
+            vehicleOwnerPhone: selectedSupplier?.phone,
           };
         });
       } else {
@@ -515,13 +515,12 @@ const LoadingSlipEdit = () => {
 
     if (name === "driver") {
       if (option && option._id) {
-        const driver = drivers?.find?.((driver) => driver._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
-            driverName: driver.name,
-            licenseNo: driver.licenseNo,
-            phone: driver.telephone,
+            driverName: option.name,
+            licenseNo: option.licenseNo,
+            phone: option.telephone,
           };
         });
       } else {
@@ -697,6 +696,11 @@ const LoadingSlipEdit = () => {
                         fullWidth
                       />
                     )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.label}
+                      </li>
+                    )}
                   />
                   {formErrors.vehicle.invalid && (
                     <FormHelperText>
@@ -716,11 +720,34 @@ const LoadingSlipEdit = () => {
                     onChange={inputChangeHandler}
                     name="vehicleOwner"
                     id="vehicleOwner"
-                    inputProps={{ readOnly: true }}
+                    // inputProps={{ readOnly: true }}
                   />
                   {formErrors.vehicleOwner.invalid && (
                     <FormHelperText>
                       {formErrors.vehicleOwner.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+              <div className="grid-item">
+                <FormControl
+                  fullWidth
+                  error={formErrors.vehicleOwnerAddress.invalid}
+                >
+                  <TextField
+                    size="small"
+                    variant="outlined"
+                    label="Vehicle owner address"
+                    error={formErrors.vehicleOwnerAddress.invalid}
+                    value={loadingSlip.vehicleOwnerAddress}
+                    onChange={inputChangeHandler}
+                    name="vehicleOwnerAddress"
+                    id="vehicleOwnerAddress"
+                    // inputProps={{ readOnly: true }}
+                  />
+                  {formErrors.vehicleOwnerAddress.invalid && (
+                    <FormHelperText>
+                      {formErrors.vehicleOwnerAddress.message}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -774,6 +801,11 @@ const LoadingSlipEdit = () => {
                         fullWidth
                       />
                     )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.label}
+                      </li>
+                    )}
                   />
                   {formErrors.driver.invalid && (
                     <FormHelperText>{formErrors.driver.message}</FormHelperText>
@@ -791,7 +823,6 @@ const LoadingSlipEdit = () => {
                     onChange={inputChangeHandler}
                     name="licenseNo"
                     id="licenseNo"
-                    inputProps={{ readOnly: true }}
                   />
                   {formErrors.licenseNo.invalid && (
                     <FormHelperText>
@@ -812,7 +843,6 @@ const LoadingSlipEdit = () => {
                     onInput={validatePhoneNumber}
                     name="phone"
                     id="phone"
-                    inputProps={{ readOnly: true }}
                   />
                   {formErrors.phone.invalid && (
                     <FormHelperText>{formErrors.phone.message}</FormHelperText>
@@ -892,7 +922,6 @@ const LoadingSlipEdit = () => {
           <FreightDetailsEdit
             loadingSlip={loadingSlip}
             setLoadingSlip={setLoadingSlip}
-            customers={customers}
             lorryReceipts={lsLrList}
             setLorryReceipts={setLsLrList}
             handleSelectedLr={handleSelectedLr}

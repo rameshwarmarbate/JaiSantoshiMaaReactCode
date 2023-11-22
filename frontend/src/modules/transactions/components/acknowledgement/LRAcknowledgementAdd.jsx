@@ -20,7 +20,7 @@ import {
   selectIsLoading,
   updateLorryReceiptAck,
 } from "./slice/acknowledgeSlice";
-
+import BarcodeReader from "react-barcode-reader/lib/index";
 const initialState = {
   lrNo: null,
   deliveryDate: new Date(),
@@ -136,6 +136,34 @@ const LRAcknowledgementAdd = () => {
         dispatch(getChallanAck(option._id))
           .then(({ payload = {} }) => {
             setChallanNo(payload?.data?.lsNo || "");
+          })
+          .catch((error) => {
+            setHttpError(error.message);
+          });
+      }
+    }
+  };
+
+  const handleError = (err) => {
+    console?.err(err);
+  };
+
+  const handleScan = (result) => {
+    if (result) {
+      const lr = lorryReceipts?.find?.(
+        ({ label }) =>
+          result?.toLowerCase?.()?.trim?.() === label?.toLowerCase?.()?.trim?.()
+      );
+      if (lr._id) {
+        dispatch(getChallanAck(lr._id))
+          .then(({ payload = {} }) => {
+            setChallanNo(payload?.data?.lsNo || "");
+            setLorryReceipt((currState) => {
+              return {
+                ...currState,
+                lrNo: lr,
+              };
+            });
           })
           .catch((error) => {
             setHttpError(error.message);
@@ -350,6 +378,7 @@ const LRAcknowledgementAdd = () => {
                 Save
               </Button>
             </div>
+            <BarcodeReader onError={handleError} onScan={handleScan} />
           </Paper>
         </form>
       </div>

@@ -36,7 +36,6 @@ import {
 import {
   downloadLoadingSlip,
   getBranches,
-  getCustomers,
   getDrivers,
   getLoadingSlips,
   getPlaces,
@@ -185,7 +184,6 @@ const LoadingSlips = () => {
           "Something went wrong! Please try later or contact Administrator."
         );
       });
-    dispatch(getCustomers());
     dispatch(getVehicles());
     dispatch(getSuppliers());
     dispatch(getPlaces());

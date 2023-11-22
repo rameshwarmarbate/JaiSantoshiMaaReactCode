@@ -31,9 +31,19 @@ const VehiclesList = () => {
   const columns = [
     { field: "_id", headerName: "Id" },
     { field: "vehicleNo", headerName: "Vehicle no", flex: 1 },
-    { field: "ownerName", headerName: "Owner", flex: 1 },
+    {
+      field: "ownerName",
+      headerName: "Owner",
+      flex: 1,
+      renderCell: ({ row }) => row.ownerName || row.owner,
+    },
     { field: "ownerAddress", headerName: "Owner address", flex: 1 },
-    { field: "vehicleType", headerName: "Vehicle type", flex: 1 },
+    {
+      field: "vehicleType",
+      headerName: "Vehicle type",
+      flex: 1,
+      renderCell: ({ row }) => row.vehicleType || row.vehicleTypeId,
+    },
     {
       field: "actions",
       headerName: "Action",
@@ -250,6 +260,7 @@ const VehiclesList = () => {
                     autoFocus={!!search}
                     onChange={onSearchChange}
                     value={search}
+                    style={{ width: "300px" }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">

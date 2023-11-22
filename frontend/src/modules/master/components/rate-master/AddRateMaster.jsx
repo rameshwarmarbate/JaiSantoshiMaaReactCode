@@ -144,27 +144,38 @@ const AddRateMaster = () => {
         setHttpError(error.message);
       });
 
-    dispatch(getCustomersForRateMaster())
-      .then(({ payload = {} }) => {
-        const { message } = payload?.data || {};
-        if (message) {
-          setHttpError(message);
-        } else {
-          setHttpError("");
-          const updatedResponse = payload?.data?.map?.((customer) => {
-            return {
-              ...customer,
-              label: customer.name,
-              value: customer.name,
-            };
-          });
-          setCustomers(updatedResponse);
-        }
-      })
-      .catch((error) => {
-        setHttpError(error.message);
-      });
+    fetchCustomers("");
   }, []);
+
+  const fetchCustomers = (str) => {
+    const search = str.trim?.();
+    if (search?.length > 2 || !search) {
+      dispatch(getCustomersForRateMaster(search))
+        .then(({ payload = {} }) => {
+          const { message } = payload?.data || {};
+          if (message) {
+            setHttpError(message);
+          } else {
+            setHttpError("");
+            const updatedResponse = payload?.data?.map?.((customer) => {
+              return {
+                ...customer,
+                label: customer.name,
+                value: customer.name,
+              };
+            });
+            setCustomers(updatedResponse);
+          }
+        })
+        .catch((error) => {
+          setHttpError(error.message);
+        });
+    }
+  };
+
+  const consignorChange = ({ target }) => {
+    fetchCustomers(target.value);
+  };
 
   const inputChangeHandler = (e) => {
     const name = e.target.name;
@@ -365,6 +376,7 @@ const AddRateMaster = () => {
                             label="Customer"
                             error={formErrors.customer.invalid}
                             fullWidth
+                            onChange={consignorChange}
                           />
                         )}
                       />

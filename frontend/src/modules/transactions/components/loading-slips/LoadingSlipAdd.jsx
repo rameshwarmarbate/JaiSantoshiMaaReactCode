@@ -125,7 +125,7 @@ const initialErrorState = {
 const LoadingSlipAdd = () => {
   const isLoading = useSelector(selectIsLoading);
   const user = useSelector((state) => state.user);
-  const { branches, vehicles, suppliers, places, drivers, customers } =
+  const { branches, vehicles, suppliers, places, drivers } =
     useSelector(({ loadingslip }) => loadingslip) || {};
   const { state } = useLocation();
   const [lorryReceipts, setLorryReceipts] = useState([]);
@@ -156,7 +156,7 @@ const LoadingSlipAdd = () => {
         ? setIsLocalMemo(true)
         : setIsLocalMemo(false);
     }
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (loadingSlip.branch) {
@@ -431,19 +431,19 @@ const LoadingSlipAdd = () => {
     });
     if (name === "vehicle") {
       if (option && option._id) {
-        const selectedVehicle = vehicles?.find?.(
-          (vehicle) => vehicle._id === option._id
-        );
         const selectedSupplier = suppliers?.find?.(
-          (supplier) => supplier._id === selectedVehicle.owner
+          (supplier) =>
+            supplier._id === option.owner || supplier.name === option.ownerName
         );
         setLoadingSlip((currState) => {
           return {
             ...currState,
-            vehicleNo: selectedVehicle.vehicleNo,
-            vehicleOwner: selectedSupplier.name,
-            vehicleOwnerAddress: `${selectedSupplier.address}, ${selectedSupplier.city}`,
-            vehicleOwnerPhone: selectedSupplier.phone,
+            vehicleNo: option?.vehicleNo,
+            vehicleOwner: selectedSupplier?.name,
+            vehicleOwnerAddress: `${selectedSupplier?.address || ""}, ${
+              selectedSupplier?.city || ""
+            }`,
+            vehicleOwnerPhone: selectedSupplier?.phone,
           };
         });
       } else {
@@ -461,13 +461,12 @@ const LoadingSlipAdd = () => {
 
     if (name === "driver") {
       if (option && option._id) {
-        const driver = drivers?.find?.((driver) => driver._id === option._id);
         setLoadingSlip((currState) => {
           return {
             ...currState,
-            driverName: driver.name,
-            licenseNo: driver.licenseNo,
-            phone: driver.telephone,
+            driverName: option.name,
+            licenseNo: option.licenseNo,
+            phone: option.telephone,
           };
         });
       } else {
@@ -643,6 +642,11 @@ const LoadingSlipAdd = () => {
                         fullWidth
                       />
                     )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.label}
+                      </li>
+                    )}
                   />
                   {formErrors.vehicle.invalid && (
                     <FormHelperText>
@@ -663,7 +667,7 @@ const LoadingSlipAdd = () => {
                     onChange={inputChangeHandler}
                     name="vehicleOwner"
                     id="vehicleOwner"
-                    inputProps={{ readOnly: true }}
+                    // inputProps={{ readOnly: true }}
                   />
                   {formErrors.vehicleOwner.invalid && (
                     <FormHelperText>
@@ -686,7 +690,7 @@ const LoadingSlipAdd = () => {
                     onChange={inputChangeHandler}
                     name="vehicleOwnerAddress"
                     id="vehicleOwnerAddress"
-                    inputProps={{ readOnly: true }}
+                    // inputProps={{ readOnly: true }}
                   />
                   {formErrors.vehicleOwnerAddress.invalid && (
                     <FormHelperText>
@@ -726,16 +730,14 @@ const LoadingSlipAdd = () => {
                   error={formErrors.driver.invalid}
                 >
                   <Autocomplete
-                    disablePortal
-                    autoSelect
                     size="small"
                     name="driver"
+                    id="driver"
                     options={drivers}
-                    value={loadingSlip.driver}
+                    value={loadingSlip.driver || null}
                     onChange={(e, value) =>
                       autocompleteChangeListener(e, value, "driver")
                     }
-                    openOnFocus
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -743,6 +745,11 @@ const LoadingSlipAdd = () => {
                         error={formErrors.driver.invalid}
                         fullWidth
                       />
+                    )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        {option.label}
+                      </li>
                     )}
                   />
                   {formErrors.driver.invalid && (
@@ -761,7 +768,6 @@ const LoadingSlipAdd = () => {
                     onChange={inputChangeHandler}
                     name="licenseNo"
                     id="licenseNo"
-                    inputProps={{ readOnly: true }}
                   />
                   {formErrors.licenseNo.invalid && (
                     <FormHelperText>
@@ -782,7 +788,6 @@ const LoadingSlipAdd = () => {
                     onInput={validatePhoneNumber}
                     name="phone"
                     id="phone"
-                    inputProps={{ readOnly: true }}
                   />
                   {formErrors.phone.invalid && (
                     <FormHelperText>{formErrors.phone.message}</FormHelperText>
@@ -862,7 +867,6 @@ const LoadingSlipAdd = () => {
           <FreightDetails
             loadingSlip={loadingSlip}
             setLoadingSlip={setLoadingSlip}
-            customers={customers}
             lorryReceipts={lorryReceipts}
           />
           <Divider sx={{ margin: "20px 0" }} />

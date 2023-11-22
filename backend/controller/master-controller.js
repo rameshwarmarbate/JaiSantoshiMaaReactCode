@@ -43,6 +43,7 @@ const addBranch = (req, res, next) => {
         },
       ],
     },
+    "_id name branchCode abbreviation",
     (error, foundBranches) => {
       if (error) {
         return next(error);
@@ -90,7 +91,7 @@ const addBranch = (req, res, next) => {
         }
       });
     }
-  );
+  ).lean();
 };
 
 // Get all branches (100 branches)
@@ -288,6 +289,7 @@ const updateBranch = (req, res, next) => {
 // Get places
 const getPlaces = (req, res, next) => {
   Place.find({ active: true })
+    .lean()
     .sort("-createdAt")
     .exec((error, places) => {
       if (error) {
@@ -497,6 +499,7 @@ const addEmployee = (req, res, next) => {
 // Get 100 employees
 const getEmployees = (req, res, next) => {
   Employee.find({ active: true })
+    .lean()
     .sort("-createdAt")
     .exec((error, employees) => {
       if (error) {
@@ -740,18 +743,89 @@ const updateArticle = (req, res, next) => {
 };
 
 // Get customers
-const getCustomers = (req, res, next) => {
-  Customer.find({ active: true })
-    .sort("-createdAt")
-    .exec((error, customers) => {
-      if (error) {
-        return res.status(200).json({
-          message: "Error fetching customers!",
-        });
-      } else {
-        res.json(customers);
-      }
+const getCustomers = async (req, res, next) => {
+  try {
+    const search = res.body;
+    const param = { active: true };
+    if (search) {
+      param.name = { $regex: new RegExp(search?.trim?.()), $options: "i" };
+    }
+    const customers = await Customer.find(param)
+      .select("name _id address city telephone email") // Only select necessary fields
+      .lean();
+    res.json(customers);
+  } catch (error) {
+    res.status(200).json({
+      message: "Error fetching customers!",
+      error: error.message,
     });
+  }
+};
+
+// Get customers
+const getCustomersForDrop = async (req, res, next) => {
+  try {
+    const pageSize = 100; // Adjust this based on your requirements
+    const search = req.body.search;
+    const param = { active: true };
+    if (search) {
+      param.name = { $regex: new RegExp(search?.trim?.()), $options: "i" };
+    }
+    const customers = await Customer.find(param)
+      .sort("-createdAt")
+      .limit(pageSize)
+      .select("name _id address city telephone email") // Only select necessary fields
+      .lean();
+    res.json(customers);
+  } catch (error) {
+    res.status(200).json({
+      message: "Error fetching customers!",
+      error: error.message,
+    });
+  }
+};
+
+// Get customers
+const getCustomersWithPagination = async (req, res, next) => {
+  try {
+    const { pagination, search, searchType } = req.body;
+    const { page = 1, limit = 100 } = pagination || {};
+    const start = (page - 1) * limit;
+    const param = { active: true };
+    if (search) {
+      const searchText = new RegExp(search);
+      if (!searchType) {
+        param["$or"] = [
+          { name: { $regex: searchText, $options: "i" } },
+          { address: { $regex: searchText, $options: "i" } },
+          { email: { $regex: searchText, $options: "i" } },
+          { city: { $regex: searchText, $options: "i" } },
+          { telephone: { $regex: searchText, $options: "i" } },
+        ];
+      } else {
+        param[searchType] = searchText;
+      }
+    }
+    const customers = await Customer.find(
+      param,
+      "_id city address telephone name email"
+    )
+      .sort("-createdAt")
+      .skip(start)
+      .limit(limit)
+      .lean();
+
+    const count = await Customer.countDocuments(param);
+    res.json({
+      customers,
+      count,
+    });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error fetching customers!",
+      error: error.message,
+    });
+  }
 };
 
 const getCustomersByBranch = (req, res, next) => {
@@ -1393,12 +1467,28 @@ const getVehicleList = (req, res, next) => {
     { $match: { active: true } },
     {
       $addFields: {
-        vehicleTypeId: { $toObjectId: "$vehicleType" },
+        vehicleTypeId: {
+          $cond: {
+            if: {
+              $ne: ["$vehicleType", "UNKNOWN"],
+            },
+            then: { $toObjectId: "$vehicleType" },
+            else: "$vehicleType",
+          },
+        },
       },
     },
     {
       $addFields: {
-        supplierId: { $toObjectId: "$owner" },
+        supplierId: {
+          $cond: {
+            if: {
+              $ne: ["$owner", "UNKNOWN"],
+            },
+            then: { $toObjectId: "$owner" },
+            else: "$owner",
+          },
+        },
       },
     },
     {
@@ -1406,31 +1496,48 @@ const getVehicleList = (req, res, next) => {
         from: "vehicleType",
         localField: "vehicleTypeId",
         foreignField: "_id",
-        as: "vehicleType",
+        as: "vehicleObj",
       },
     },
-    { $unwind: { path: "$vehicleType", preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: "$vehicleObj", preserveNullAndEmptyArrays: true } },
     {
       $lookup: {
         from: "supplier",
         localField: "supplierId",
         foreignField: "_id",
-        as: "owner",
+        as: "ownerObj",
+      },
+    },
+    { $unwind: { path: "$ownerObj", preserveNullAndEmptyArrays: true } },
+    {
+      $addFields: {
+        vehicleType: {
+          $cond: {
+            if: {
+              $ne: ["$vehicleObj.type", null],
+            },
+            then: "$vehicleObj.type",
+            else: "$vehicleType",
+          },
+        },
       },
     },
     {
       $addFields: {
-        vehicleType: "$vehicleType.type",
+        ownerName: {
+          $cond: {
+            if: {
+              $ne: ["$ownerObj", null],
+            },
+            then: "$ownerObj.name",
+            else: "$owner",
+          },
+        },
       },
     },
     {
       $addFields: {
-        ownerName: "$owner.name",
-      },
-    },
-    {
-      $addFields: {
-        ownerAddress: "$owner.address",
+        ownerAddress: "$ownerObj.address",
       },
     },
     { $sort: { createdAt: -1 } },
@@ -1441,6 +1548,8 @@ const getVehicleList = (req, res, next) => {
         ownerName: 1,
         ownerAddress: 1,
         vehicleType: 1,
+        owner: 1,
+        vehicleTypeId: 1,
       },
     },
   ]).exec((error, vehicles) => {
@@ -1934,29 +2043,25 @@ const getLastDriver = (req, res) => {
   });
 };
 
-const getRateListWithPagination = (req, res) => {
-  if (!req.body.pagination.page || !req.body.pagination.limit) {
-    return res.status(200).json({ message: "Pagination is required!" });
-  }
-
-  const limit = req.body.pagination.limit || 100;
-  const start = (req.body.pagination.page - 1) * limit;
-  const end = req.body.pagination.page * limit;
-
-  RateMaster.find({ active: true })
-    .sort("-createdAt")
-    .exec((rmError, rateList) => {
-      if (rmError) {
-        return res.status(200).json({
-          message: rmError.message,
-        });
-      } else {
-        res.json({
-          rateList: rateList.slice(start, end),
-          count: rateList?.length,
-        });
-      }
+const getRateListWithPagination = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 100 } = req.body.pagination || {};
+    const start = (page - 1) * limit;
+    const rateList = await RateMaster.find({ active: true }, "_id customerName")
+      .skip(start)
+      .limit(limit)
+      .lean();
+    const count = await RateMaster.countDocuments({ active: true });
+    res.json({
+      rateList,
+      count,
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error fetching rateList!",
+      error: error.message,
+    });
+  }
 };
 
 const addToRateMaster = (req, res) => {
@@ -2063,17 +2168,31 @@ const addToRateMaster = (req, res) => {
 
 const getCustomersForRateMaster = async (req, res) => {
   try {
+    const search = req.body.search;
+
+    const param = { active: true };
+    if (search) {
+      param.name = { $regex: new RegExp(search?.trim?.()), $options: "i" };
+    }
     const allRateMaster = await RateMaster.find({ active: true });
     if (allRateMaster && allRateMaster.length) {
       const customers = allRateMaster.map((rate) => rate.customer);
-      const foundCustomers = await Customer.find({
-        _id: { $nin: customers },
-      });
+      const foundCustomers = await Customer.find(
+        {
+          _id: { $nin: customers },
+          ...param,
+        },
+        "_id, name"
+      )
+        .limit(100)
+        .lean();
       if (foundCustomers) {
         return res.send(foundCustomers);
       }
     } else {
-      const foundCustomers = await Customer.find({});
+      const foundCustomers = await Customer.find({ ...param }, "_id, name")
+        .limit(100)
+        .lean();
       if (foundCustomers) {
         return res.send(foundCustomers);
       }
@@ -2290,6 +2409,8 @@ module.exports = {
   updateArticle,
   getCustomers,
   getCustomersByBranch,
+  getCustomersWithPagination,
+  getCustomersForDrop,
   getCustomer,
   addCustomer,
   updateCustomer,

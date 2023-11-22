@@ -14,7 +14,8 @@ const Navigation = () => {
             user &&
             user.type &&
             user.type?.toLowerCase?.() === "user" &&
-            (navItem.to === "/users" || navItem.to === "/master")
+            navItem.to === "/users"
+            // (navItem.to === "/users" || navItem.to === "/master")
           ) {
             return null;
           }

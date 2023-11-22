@@ -46,5 +46,6 @@ mongoose
 
 const port = process.env.PORT || 4800;
 const server = app.listen(port, () => {
+  server.timeout = 60000; // Set timeout to 60 seconds
   console.log(`Connected to port ${port}`);
 });

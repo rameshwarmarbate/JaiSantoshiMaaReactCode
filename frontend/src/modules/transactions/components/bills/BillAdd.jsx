@@ -22,6 +22,7 @@ import {
   createBill,
   downloadBill,
   downloadExcelBill,
+  getCustomers,
   getLorryReceiptsByConsignor,
   selectIsLoading,
 } from "./slice/billSlice";
@@ -421,6 +422,17 @@ const BillAdd = () => {
     });
   };
 
+  const fetchCustomers = (str) => {
+    const search = str.trim?.();
+    if (search?.length > 2 || !search) {
+      dispatch(getCustomers(search));
+    }
+  };
+
+  const consignorChange = ({ target }) => {
+    fetchCustomers(target.value);
+  };
+
   const setLRForBill = () => {
     const selectedLR = lorryReceipts?.filter?.((lr) => lr.checked);
     setBill((currState) => {
@@ -516,6 +528,7 @@ const BillAdd = () => {
                         label="Customer"
                         error={formErrors.customer.invalid}
                         fullWidth
+                        onChange={consignorChange}
                       />
                     )}
                   />
@@ -554,46 +567,6 @@ const BillAdd = () => {
                   )}
                 </FormControl>
               </div>
-              <div className="grid-item">
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="From"
-                      inputFormat="DD/MM/YYYY"
-                      value={bill.from || null}
-                      disableFuture={true}
-                      maxDate={bill.to}
-                      onChange={dateInputChangeHandler.bind(null, "from")}
-                      inputProps={{
-                        readOnly: true,
-                      }}
-                      renderInput={(params) => (
-                        <TextField name="from" size="small" {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </div>
-              <div className="grid-item">
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="To"
-                      inputFormat="DD/MM/YYYY"
-                      value={bill.to || null}
-                      disableFuture={true}
-                      minDate={bill.from}
-                      onChange={dateInputChangeHandler.bind(null, "to")}
-                      inputProps={{
-                        readOnly: true,
-                      }}
-                      renderInput={(params) => (
-                        <TextField name="to" size="small" {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </div>
             </div>
           </Paper>
         </form>
@@ -606,6 +579,7 @@ const BillAdd = () => {
             setLRForBill={setLRForBill}
             bill={bill}
             setBill={setBill}
+            dateInputChangeHandler={dateInputChangeHandler}
           />
 
           <Divider sx={{ margin: "20px 0" }} />

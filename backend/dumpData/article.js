@@ -29,7 +29,7 @@ async function init() {
     console.log("Database connection closed");
     process.exit();
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     process.exit();
   }
 }

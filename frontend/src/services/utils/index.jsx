@@ -179,6 +179,9 @@ export const getNextDriverNo = (driver) => {
   if (driver && driver.code) {
     const parts = driver.code.split?.("/");
     const num = +parts[2]?.replace?.("DRV-", "");
+    if (parts?.length < 2) {
+      return `DTP/${new Date().getFullYear()}/DRV-${+parts[0] + 1}`;
+    }
     return `DTP/${new Date().getFullYear()}/DRV-${num + 1}`;
   }
   if (!driver || !driver.code) {
@@ -249,4 +252,10 @@ export const validateNumber = (e) => {
 export const validatePhoneNumber = (e) => {
   const value = e.target.value?.slice?.(0, 10)?.replace?.(/[^0-9]/g, "");
   e.target.value = value;
+};
+
+export const validateAlphaNumeric = (e, length = 50) => {
+  return (e.target.value = e.target.value
+    .replace(/[^a-z0-9]/gi, "")
+    .slice(0, length));
 };

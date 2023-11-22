@@ -118,12 +118,14 @@ const EditRateMaster = () => {
             setRateList((currState) => {
               const rates = payload?.data.rates?.map?.((rate) => {
                 const station = places?.find?.(
-                  (place) => place._id === rate.station
+                  (place) =>
+                    place._id === rate?.station ||
+                    place.name === rate?.stationName
                 );
                 return {
                   ...rate,
-                  station: station,
-                  stationName: station.name,
+                  station: station || rate?.station,
+                  stationName: station?.name || rate?.stationName,
                 };
               });
               return {

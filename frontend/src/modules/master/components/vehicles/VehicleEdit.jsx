@@ -25,6 +25,7 @@ import {
   selectIsLoading,
   updateVehicle,
 } from "./slice/vehicleSlice";
+import { validateAlphaNumeric } from "../../../../services/utils";
 
 const initialState = {
   owner: "",
@@ -135,6 +136,17 @@ const VehicleAdd = () => {
   const inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    setVehicle((currState) => {
+      return {
+        ...currState,
+        [name]: value,
+      };
+    });
+  };
+
+  const inputVehicleNoHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value?.toUpperCase();
     setVehicle((currState) => {
       return {
         ...currState,
@@ -291,7 +303,7 @@ const VehicleAdd = () => {
                       size="small"
                       name="owner"
                       options={suppliers}
-                      value={vehicle.owner || ""}
+                      value={vehicle?.owner || ""}
                       onChange={(e, value) =>
                         autocompleteChangeListener(value, "owner")
                       }
@@ -320,7 +332,8 @@ const VehicleAdd = () => {
                       label="Vehicle number"
                       value={vehicle.vehicleNo}
                       error={formErrors.vehicleNo.invalid}
-                      onChange={inputChangeHandler}
+                      onChange={inputVehicleNoHandler}
+                      onInput={validateAlphaNumeric}
                       name="vehicleNo"
                       id="vehicleNo"
                     />

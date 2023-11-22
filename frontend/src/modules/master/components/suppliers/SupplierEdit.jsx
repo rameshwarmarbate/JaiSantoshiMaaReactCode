@@ -198,6 +198,9 @@ const SupplierEdit = () => {
     if (!editContact) {
       setSupplier((currentState) => {
         const currentSupplier = { ...currentState };
+        currentSupplier.contactPerson = [
+          ...(currentSupplier.contactPerson || []),
+        ];
         currentSupplier.contactPerson?.push?.(receivedPerson);
         return currentSupplier;
       });

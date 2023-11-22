@@ -5,12 +5,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Button, Divider, FormLabel, Grid, TextField } from "@mui/material";
 
-const FreightDetails = ({
-  loadingSlip,
-  setLoadingSlip,
-  customers,
-  lorryReceipts,
-}) => {
+const FreightDetails = ({ loadingSlip, setLoadingSlip, lorryReceipts }) => {
   const columns = [
     { field: "_id", headerName: "Id" },
     {
@@ -37,13 +32,18 @@ const FreightDetails = ({
       flex: 1,
       type: "number",
       renderCell: (params) => {
-        return <strong>₹ {Number(params.row.total)?.toFixed?.(2)}</strong>;
+        return params.row.payType?.toLowerCase() === "topay" ? (
+          <strong>₹ {Number(params.row.total)?.toFixed?.(2)}</strong>
+        ) : (
+          "-"
+        );
       },
     },
   ];
 
   const [filteredLR, setFilteredLR] = useState([]);
   const [selectedLR, setSelectedLR] = useState([]);
+  const [sortedLR, setSortedLR] = useState([]);
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState(0);
 
@@ -62,11 +62,18 @@ const FreightDetails = ({
       });
       setFilteredLR(updatedLorryReceipts);
     }
-  }, [lorryReceipts, customers]);
+  }, [lorryReceipts]);
 
   const inputChangeHandler = (e, index) => {
     const list = [...filteredLR];
     list[index] = { ...list[index], checked: e.target.checked };
+    if (e.target.checked) {
+      setSortedLR((prevState) => [...prevState, list[index]]);
+    } else {
+      setSortedLR((prevState) =>
+        prevState.filter(({ _id }) => list[index]._id !== _id)
+      );
+    }
     setFilteredLR([...list]);
   };
 
@@ -82,15 +89,21 @@ const FreightDetails = ({
   const submitHandler = (e) => {
     e.preventDefault();
     let _total = 0;
+    const submitted = filteredLR.find(
+      (lr) => search?.toLowerCase() === lr.lrNo?.toLowerCase()
+    );
+    let list = submitted ? [...sortedLR, submitted] : [...sortedLR];
     setSelectedLR(
-      filteredLR?.filter?.((lr) => {
-        if (lr.checked) {
-          _total += lr.total;
+      list?.filter?.((lr) => {
+        if (lr.checked || search?.toLowerCase() === lr.lrNo?.toLowerCase()) {
+          lr.checked = true;
+          _total += lr.payType?.toLowerCase() === "topay" ? lr.total : 0;
         }
         return lr.checked;
       })
     );
     setTotal(_total);
+    setLoadingSlip((prevState) => ({ ...prevState, totalFreight: _total }));
   };
 
   const searchChangeHandler = (e) => {
@@ -117,14 +130,14 @@ const FreightDetails = ({
     }
   };
 
-  let totalRedord = 0,
+  let totalRecord = 0,
     selected = 0;
 
   const renderItems =
     filteredLR?.length > 0 &&
     filteredLR?.map?.((lr, index) => {
       if (lr.show) {
-        totalRedord += 1;
+        totalRecord += 1;
       }
       if (lr.checked && lr.show) {
         selected += 1;
@@ -157,50 +170,52 @@ const FreightDetails = ({
     });
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={2}>
-          <h2 className="mb20 text-inline">Lorry receipts</h2>
-        </Grid>
-
-        {filteredLR?.length > 0 && (
-          <Grid item xs={3}>
-            <TextField
-              size="small"
-              variant="outlined"
-              label="Filter LR"
-              value={search}
-              onChange={searchChangeHandler}
-              name="search"
-              id="search"
-            />
+      <form action="" onSubmit={submitHandler} id="lrSelectionForm">
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <h2 className="mb20 text-inline">Lorry receipts</h2>
           </Grid>
-        )}
-        <Grid item xs={2}>
-          <h4 className=" text-inline" style={{ paddingTop: "5px" }}>
-            {totalRedord} Out of {selected} selected
-          </h4>
+
+          {filteredLR?.length > 0 && (
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                variant="outlined"
+                label="Filter LR"
+                value={search}
+                fullWidth
+                onChange={searchChangeHandler}
+                name="search"
+                id="search"
+              />
+            </Grid>
+          )}
+          <Grid item xs={3}>
+            <h4 className=" text-inline" style={{ paddingTop: "5px" }}>
+              {totalRecord} Out of {selected} selected
+            </h4>
+          </Grid>
         </Grid>
-      </Grid>
-      <div className="bl_lrCheckboxes">
-        <form action="" onSubmit={submitHandler} id="lrSelectionForm">
+        <div className="bl_lrCheckboxes">
           <FormGroup className="checkboxGroup">
             {renderItems}
             {filteredLR?.length === 0 && <p>No lorry receipts for challan</p>}
           </FormGroup>
-        </form>
-      </div>
-      <div className="right">
-        <Button
-          variant="contained"
-          size="medium"
-          type="submit"
-          color="primary"
-          form="lrSelectionForm"
-          className="ml6"
-        >
-          Add
-        </Button>
-      </div>
+        </div>
+        <div className="right">
+          <Button
+            variant="contained"
+            size="medium"
+            type="submit"
+            color="primary"
+            form="lrSelectionForm"
+            className="ml6"
+          >
+            Add
+          </Button>
+        </div>
+      </form>
+
       <Divider sx={{ margin: "20px 0" }} />
       <div style={{ width: "100%" }}>
         <DataGrid

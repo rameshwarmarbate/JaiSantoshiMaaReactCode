@@ -9,10 +9,11 @@ const Supplier = new Schema(
     },
     type: {
       type: String,
+      default: "Vehicle",
     },
     address: {
       type: String,
-      required: true,
+      // required: true,
     },
     state: {
       type: String,
@@ -45,7 +46,7 @@ const Supplier = new Schema(
       {
         name: {
           type: String,
-          required: true,
+          // required: true,
         },
         type: {
           type: String,
@@ -58,7 +59,7 @@ const Supplier = new Schema(
         },
         phone: {
           type: String,
-          required: true,
+          // required: true,
         },
         primaryContact: {
           type: Boolean,
@@ -71,15 +72,15 @@ const Supplier = new Schema(
     },
     createdBy: {
       type: String,
-      required: function () {
-        return !this.updatedBy;
-      },
+      // required: function () {
+      //   return !this.updatedBy;
+      // },
     },
     updatedBy: {
       type: String,
-      required: function () {
-        return !this.createdBy;
-      },
+      // required: function () {
+      //   return !this.createdBy;
+      // },
     },
   },
   {

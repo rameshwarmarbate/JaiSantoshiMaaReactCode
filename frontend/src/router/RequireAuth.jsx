@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getUserData } from "../services/utils";
+import Unauthorized from "./Unauthorized";
 
 const RequireAuth = ({ parent, path, process, children }) => {
   const user = useSelector((state) => state.user);
@@ -14,7 +15,7 @@ const RequireAuth = ({ parent, path, process, children }) => {
   if (user.permissions[parent][path][process]) {
     return children;
   } else {
-    return <Navigate to="/unauthorized" replace />;
+    return <Unauthorized />;
   }
 };
 

@@ -92,7 +92,7 @@ const RateMasterList = () => {
           "Something went wrong! Please try later or contact Administrator."
         );
       });
-  }, []);
+  }, [paginationModel]);
 
   const updateSearchValue = useMemo(() => {
     return debounce((newValue) => {
@@ -217,6 +217,7 @@ const RateMasterList = () => {
                     autoFocus={!!search}
                     onChange={onSearchChange}
                     value={search}
+                    style={{ width: "300px" }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">

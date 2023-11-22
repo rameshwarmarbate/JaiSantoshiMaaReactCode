@@ -3,10 +3,19 @@ import { DataGrid } from "@mui/x-data-grid";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, FormControl, TextField } from "@mui/material";
 import { getFormattedDate } from "../../../../services/utils";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
+const LorryReceipts = ({
+  lorryReceipts,
+  setLRForBill,
+  bill,
+  dateInputChangeHandler,
+  setBill,
+}) => {
   const getDescription = (lr) => {
     return `${lr.from} to ${lr.to}`;
   };
@@ -117,9 +126,49 @@ const LorryReceipts = ({ lorryReceipts, setLRForBill, bill, setBill }) => {
 
   return (
     <>
-      <div className="grid grid-7-col">
+      <div className="grid grid-6-col">
         <div className="grid-item">
           <h2 className="mb20 text-inline">Lorry receipts</h2>
+        </div>
+        <div className="grid-item">
+          <FormControl fullWidth>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="From"
+                inputFormat="DD/MM/YYYY"
+                value={bill.from || null}
+                disableFuture={true}
+                maxDate={bill.to}
+                onChange={dateInputChangeHandler.bind(null, "from")}
+                inputProps={{
+                  readOnly: true,
+                }}
+                renderInput={(params) => (
+                  <TextField name="from" size="small" {...params} />
+                )}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </div>
+        <div className="grid-item">
+          <FormControl fullWidth>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="To"
+                inputFormat="DD/MM/YYYY"
+                value={bill.to || null}
+                disableFuture={true}
+                minDate={bill.from}
+                onChange={dateInputChangeHandler.bind(null, "to")}
+                inputProps={{
+                  readOnly: true,
+                }}
+                renderInput={(params) => (
+                  <TextField name="to" size="small" {...params} />
+                )}
+              />
+            </LocalizationProvider>
+          </FormControl>
         </div>
         {lorryReceipts?.length > 0 && (
           <div className="grid-item">

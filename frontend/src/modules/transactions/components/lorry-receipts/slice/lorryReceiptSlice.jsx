@@ -207,18 +207,13 @@ export const lorryReceiptSlice = createSlice({
         state.status = "failed";
       })
 
-      .addCase(getCustomers.pending, (state) => {
-        state.status = "loading";
-      })
+      .addCase(getCustomers.pending, (state) => {})
       .addCase(getCustomers.fulfilled, (state, { payload }) => {
-        // state.status = "succeeded";
         state.customers = payload?.data?.map?.((customer) => {
           return { ...customer, label: customer.name };
         });
       })
-      .addCase(getCustomers.rejected, (state) => {
-        state.status = "failed";
-      })
+      .addCase(getCustomers.rejected, (state) => {})
 
       .addCase(getVehicles.pending, (state) => {
         state.status = "loading";
@@ -339,7 +334,7 @@ export const lorryReceiptSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getLorryReceipt.fulfilled, (state) => {
-        // state.status = "succeeded";
+        state.status = "succeeded";
       })
       .addCase(getLorryReceipt.rejected, (state) => {
         state.status = "failed";

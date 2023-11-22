@@ -51,19 +51,9 @@ export const pendingLRSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        // state.status = "succeeded";
-      })
-      .addCase(getBranches.rejected, (state) => {
-        state.status = "failed";
-      })
-
-      .addCase(getCustomers.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCustomers.fulfilled, (state) => {
         state.status = "succeeded";
       })
-      .addCase(getCustomers.rejected, (state) => {
+      .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
       })
 

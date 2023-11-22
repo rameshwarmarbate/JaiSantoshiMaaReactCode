@@ -10,11 +10,11 @@ const Driver = new Schema(
     },
     name: {
       type: String,
-      required: true,
+      // required: true,
     },
     correspondenceAddress: {
       type: String,
-      required: true,
+      // required: true,
     },
     permanentAddress: {
       type: String,
@@ -27,7 +27,7 @@ const Driver = new Schema(
     },
     telephone: {
       type: String,
-      required: true,
+      // required: true,
     },
     mobile: {
       type: String,
@@ -49,7 +49,7 @@ const Driver = new Schema(
     },
     licenseNo: {
       type: String,
-      required: true,
+      // required: true,
     },
     renewDate: {
       type: String,
@@ -69,15 +69,15 @@ const Driver = new Schema(
     },
     createdBy: {
       type: String,
-      required: function () {
-        return !this.updatedBy;
-      },
+      // required: function () {
+      //   return !this.updatedBy;
+      // },
     },
     updatedBy: {
       type: String,
-      required: function () {
-        return !this.createdBy;
-      },
+      // required: function () {
+      //   return !this.createdBy;
+      // },
     },
   },
   {

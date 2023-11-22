@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { hasSuperAdmin } from "../../../../../services/utils";
 import {
   fetchBranches,
   fetchBanks,
@@ -82,21 +81,9 @@ export const paymentCollectionSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getBranches.fulfilled, (state) => {
-        if (hasSuperAdmin()) {
-          state.status = "succeeded";
-        }
-      })
-      .addCase(getBranches.rejected, (state) => {
-        state.status = "failed";
-      })
-
-      .addCase(getCustomersByBranch.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCustomersByBranch.fulfilled, (state) => {
         state.status = "succeeded";
       })
-      .addCase(getCustomersByBranch.rejected, (state) => {
+      .addCase(getBranches.rejected, (state) => {
         state.status = "failed";
       })
 
@@ -113,7 +100,7 @@ export const paymentCollectionSlice = createSlice({
       .addCase(getBanks.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getBanks.fulfilled, (state) => {
+      .addCase(getBanks.fulfilled, () => {
         // state.status = "succeeded";
       })
       .addCase(getBanks.rejected, (state) => {
@@ -123,7 +110,7 @@ export const paymentCollectionSlice = createSlice({
       .addCase(getBankAccounts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(getBankAccounts.fulfilled, (state) => {
+      .addCase(getBankAccounts.fulfilled, () => {
         // state.status = "succeeded";
       })
       .addCase(getBankAccounts.rejected, (state) => {
